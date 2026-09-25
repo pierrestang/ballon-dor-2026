@@ -1,0 +1,1407 @@
+{
+  "meta": {
+    "season": "2025–26",
+    "period": "3 août 2025 – 19 juillet 2026",
+    "sources": {
+      "stats": "Wikipédia (en.wikipedia.org), licence CC BY-SA 4.0",
+      "assists": "ESPN (relevé manuel)",
+      "fetchedAt": "2026-09-23",
+      "verifiedAt": "2026-09-24"
+    },
+    "credit": "Statistiques : Wikipédia (CC BY-SA 4.0), ESPN",
+    "notes": [
+      "Saison = club + sélection (amicaux exclus). assists = somme des passes connues ; null = non renseigné pour la compétition.",
+      "Exception Messi : la MLS est comptée sur la saison 2025 complète (régulière + playoffs), choix éditorial assumé.",
+      "assistsComplete=false : afficher le total suivi de « + » avec une note.",
+      "Lignes non vérifiables : valeurs d'origine conservées lorsqu'aucune source ne les contredit et qu'elles sont cohérentes avec les totaux et le calendrier (voir dossier de contrôle)."
+    ],
+    "palette": {
+      "gold": {
+        "main": "#E3B23C",
+        "shadow": "#C49228",
+        "highlight": "#F6D682"
+      },
+      "base": {
+        "black": "#0A0A0A"
+      }
+    },
+    "nations": {
+      "France": {
+        "code": "fra",
+        "colors": {
+          "background": "#0B1F4B",
+          "text": "#FFFFFF",
+          "accent": "#E1000F"
+        },
+        "flag": "assets/flags/fra.svg"
+      },
+      "Espagne": {
+        "code": "esp",
+        "colors": {
+          "background": "#C60B1E",
+          "text": "#FFFFFF",
+          "accent": "#FFC400"
+        },
+        "flag": "assets/flags/esp.svg"
+      },
+      "Angleterre": {
+        "code": "eng",
+        "colors": {
+          "background": "#F4F1EA",
+          "text": "#0B1F4B",
+          "accent": "#CE1124"
+        },
+        "flag": "assets/flags/eng.svg"
+      },
+      "Argentine": {
+        "code": "arg",
+        "colors": {
+          "background": "#6CACE4",
+          "text": "#0B1F3A",
+          "accent": "#FFFFFF"
+        },
+        "flag": "assets/flags/arg.svg"
+      },
+      "Géorgie": {
+        "code": "geo",
+        "colors": {
+          "background": "#6D1A2A",
+          "text": "#FFFFFF",
+          "accent": "#0A0A0A"
+        },
+        "flag": "assets/flags/geo.svg"
+      },
+      "Norvège": {
+        "code": "nor",
+        "colors": {
+          "background": "#A6192E",
+          "text": "#FFFFFF",
+          "accent": "#00205B"
+        },
+        "flag": "assets/flags/nor.svg"
+      }
+    },
+    "verificationSources": [
+      "UEFA",
+      "Bundesliga.com",
+      "LaLiga",
+      "Premier League / Manchester City",
+      "Real Madrid",
+      "FC Bayern",
+      "Inter Miami / MLS",
+      "Soccerway",
+      "FotMob",
+      "The Analyst (Opta)"
+    ]
+  },
+  "players": [
+    {
+      "id": "mbappe",
+      "name": "Kylian Mbappé",
+      "position": "Avant-centre",
+      "nationality": {
+        "name": "France",
+        "code": "fra"
+      },
+      "club": {
+        "name": "Real Madrid",
+        "slug": "real-madrid"
+      },
+      "colors": {
+        "background": "#0B1F4B",
+        "text": "#FFFFFF",
+        "accent": "#E1000F"
+      },
+      "assets": {
+        "frames": "assets/players/frames/mbappe/",
+        "frameCount": 72,
+        "photo": "assets/players/photos/mbappe.jpg",
+        "clubLogo": "assets/clubs/real-madrid.webp",
+        "flag": "assets/flags/fra.svg"
+      },
+      "totals": {
+        "matches": 56,
+        "goals": 57,
+        "assists": 10,
+        "assistsComplete": false,
+        "goalContributions": 67,
+        "goalsPerMatch": 1.02
+      },
+      "club_competitions": [
+        {
+          "scope": "national",
+          "matches": 31,
+          "goals": 25,
+          "assists": 5,
+          "displayName": "LaLiga",
+          "category": "Championnat"
+        },
+        {
+          "scope": "national",
+          "matches": 1,
+          "goals": 2,
+          "assists": 0,
+          "displayName": "Copa del Rey",
+          "category": "Coupe nationale"
+        },
+        {
+          "scope": "continental",
+          "matches": 11,
+          "goals": 15,
+          "assists": 1,
+          "displayName": "Ligue des champions",
+          "category": "Coupe continentale"
+        },
+        {
+          "scope": "national",
+          "matches": 1,
+          "goals": 0,
+          "assists": null,
+          "displayName": "Supercoupe d'Espagne",
+          "category": "Supercoupes / autres"
+        }
+      ],
+      "international": [
+        {
+          "scope": "sélection",
+          "matches": 8,
+          "goals": 10,
+          "assists": 4,
+          "displayName": "Coupe du monde 2026",
+          "category": "Coupe du monde"
+        },
+        {
+          "scope": "sélection",
+          "matches": 4,
+          "goals": 5,
+          "assists": null,
+          "displayName": "Qualifications Coupe du monde (UEFA)",
+          "category": "Qualifications Coupe du monde"
+        }
+      ],
+      "trophies": {
+        "collective": [],
+        "individual": [
+          {
+            "type": "scorer",
+            "rank": 1,
+            "competition": "Ligue des champions",
+            "label": "Meilleur buteur — Ligue des champions",
+            "icon": "boot-gold"
+          },
+          {
+            "type": "scorer",
+            "rank": 1,
+            "competition": "Liga",
+            "label": "Meilleur buteur — Liga",
+            "icon": "boot-gold"
+          },
+          {
+            "type": "scorer",
+            "rank": 1,
+            "competition": "Coupe du monde",
+            "label": "Meilleur buteur — Coupe du monde",
+            "icon": "boot-gold"
+          },
+          {
+            "type": "player",
+            "rank": 3,
+            "competition": "Coupe du monde",
+            "label": "3ème meilleur joueur — Coupe du monde",
+            "icon": "ball-bronze"
+          }
+        ]
+      },
+      "verification": {
+        "status": "verified",
+        "notes": [
+          "Club 44 m / 42 b (Real Madrid officiel)",
+          "Passes CdM (4) : source unique"
+        ]
+      }
+    },
+    {
+      "id": "dembele",
+      "name": "Ousmane Dembélé",
+      "position": "Ailier / Avant-centre",
+      "nationality": {
+        "name": "France",
+        "code": "fra"
+      },
+      "club": {
+        "name": "Paris Saint-Germain",
+        "slug": "paris-saint-germain"
+      },
+      "colors": {
+        "background": "#0B1F4B",
+        "text": "#FFFFFF",
+        "accent": "#E1000F"
+      },
+      "assets": {
+        "frames": "assets/players/frames/dembele/",
+        "frameCount": 72,
+        "photo": "assets/players/photos/dembele.jpg",
+        "clubLogo": "assets/clubs/paris-saint-germain.webp",
+        "flag": "assets/flags/fra.svg"
+      },
+      "totals": {
+        "matches": 49,
+        "goals": 26,
+        "assists": 11,
+        "assistsComplete": false,
+        "goalContributions": 37,
+        "goalsPerMatch": 0.53
+      },
+      "club_competitions": [
+        {
+          "scope": "national",
+          "matches": 22,
+          "goals": 10,
+          "assists": 7,
+          "displayName": "Ligue 1",
+          "category": "Championnat"
+        },
+        {
+          "scope": "national",
+          "matches": 2,
+          "goals": 1,
+          "assists": null,
+          "displayName": "Coupe de France",
+          "category": "Coupe nationale"
+        },
+        {
+          "scope": "continental",
+          "matches": 13,
+          "goals": 8,
+          "assists": 2,
+          "displayName": "Ligue des champions",
+          "category": "Coupe continentale"
+        },
+        {
+          "scope": "national",
+          "matches": 1,
+          "goals": 1,
+          "assists": null,
+          "displayName": "Trophée des champions",
+          "category": "Trophée des champions"
+        },
+        {
+          "scope": "continental",
+          "matches": 1,
+          "goals": 0,
+          "assists": null,
+          "displayName": "Supercoupe de l'UEFA",
+          "category": "Supercoupe de l'UEFA"
+        },
+        {
+          "scope": "mondial",
+          "matches": 1,
+          "goals": 0,
+          "assists": null,
+          "displayName": "Coupe intercontinentale",
+          "category": "Coupe intercontinentale"
+        }
+      ],
+      "international": [
+        {
+          "scope": "sélection",
+          "matches": 8,
+          "goals": 6,
+          "assists": 2,
+          "displayName": "Coupe du monde 2026",
+          "category": "Coupe du monde"
+        },
+        {
+          "scope": "sélection",
+          "matches": 1,
+          "goals": 0,
+          "assists": null,
+          "displayName": "Qualifications Coupe du monde (UEFA)",
+          "category": "Qualifications Coupe du monde"
+        }
+      ],
+      "trophies": {
+        "collective": [
+          {
+            "name": "Ligue 1",
+            "icon": "assets/trophies/collective/ligue-1.svg"
+          },
+          {
+            "name": "Trophée des champions",
+            "icon": "assets/trophies/collective/trophee-des-champions.svg"
+          },
+          {
+            "name": "Ligue des champions",
+            "icon": "assets/trophies/collective/ligue-des-champions.svg"
+          },
+          {
+            "name": "Supercoupe de l'UEFA",
+            "icon": "assets/trophies/collective/supercoupe-uefa.svg"
+          },
+          {
+            "name": "Coupe intercontinentale",
+            "icon": "assets/trophies/collective/coupe-intercontinentale.svg"
+          }
+        ],
+        "individual": [
+          {
+            "type": "player",
+            "rank": 1,
+            "competition": "Ligue 1",
+            "label": "Meilleur joueur — Ligue 1",
+            "icon": "ball-gold"
+          }
+        ]
+      },
+      "verification": {
+        "status": "verified-with-arbitration",
+        "notes": [
+          "6 buts CdM reconstitués match par match",
+          "Ligue 1 conservée 22/10/7 : UNFP (20/10/6) relevé avant les 2 dernières journées ; il a joué le 17/05 ; 7 passes cohérentes avec 10 passes club (Foot Mercato)"
+        ]
+      }
+    },
+    {
+      "id": "olise",
+      "name": "Michael Olise",
+      "position": "Ailier droit",
+      "nationality": {
+        "name": "France",
+        "code": "fra"
+      },
+      "club": {
+        "name": "Bayern Munich",
+        "slug": "bayern-munich"
+      },
+      "colors": {
+        "background": "#0B1F4B",
+        "text": "#FFFFFF",
+        "accent": "#E1000F"
+      },
+      "assets": {
+        "frames": "assets/players/frames/olise/",
+        "frameCount": 72,
+        "photo": "assets/players/photos/olise.jpg",
+        "clubLogo": "assets/clubs/bayern-munich.webp",
+        "flag": "assets/flags/fra.svg"
+      },
+      "totals": {
+        "matches": 65,
+        "goals": 24,
+        "assists": 35,
+        "assistsComplete": false,
+        "goalContributions": 59,
+        "goalsPerMatch": 0.37
+      },
+      "club_competitions": [
+        {
+          "scope": "national",
+          "matches": 32,
+          "goals": 15,
+          "assists": 19,
+          "displayName": "Bundesliga",
+          "category": "Championnat"
+        },
+        {
+          "scope": "national",
+          "matches": 6,
+          "goals": 2,
+          "assists": 1,
+          "displayName": "Coupe d'Allemagne",
+          "category": "Coupe nationale"
+        },
+        {
+          "scope": "continental",
+          "matches": 13,
+          "goals": 5,
+          "assists": 8,
+          "displayName": "Ligue des champions",
+          "category": "Coupe continentale"
+        },
+        {
+          "scope": "national",
+          "matches": 1,
+          "goals": 0,
+          "assists": null,
+          "displayName": "Supercoupe d'Allemagne",
+          "category": "Supercoupes / autres"
+        }
+      ],
+      "international": [
+        {
+          "scope": "sélection",
+          "matches": 8,
+          "goals": 0,
+          "assists": 7,
+          "displayName": "Coupe du monde 2026",
+          "category": "Coupe du monde"
+        },
+        {
+          "scope": "sélection",
+          "matches": 5,
+          "goals": 2,
+          "assists": null,
+          "displayName": "Qualifications Coupe du monde (UEFA)",
+          "category": "Qualifications Coupe du monde"
+        }
+      ],
+      "trophies": {
+        "collective": [
+          {
+            "name": "Bundesliga",
+            "icon": "assets/trophies/collective/bundesliga.svg"
+          },
+          {
+            "name": "Coupe d'Allemagne",
+            "icon": "assets/trophies/collective/coupe-allemagne.svg"
+          },
+          {
+            "name": "Supercoupe d'Allemagne",
+            "icon": "assets/trophies/collective/supercoupe-allemagne.svg"
+          }
+        ],
+        "individual": [
+          {
+            "type": "player",
+            "rank": 1,
+            "competition": "Bundesliga",
+            "label": "Meilleur joueur — Bundesliga",
+            "icon": "ball-gold"
+          },
+          {
+            "type": "assists",
+            "rank": 1,
+            "competition": "Bundesliga",
+            "label": "Meilleur passeur — Bundesliga",
+            "icon": "assist-gold"
+          },
+          {
+            "type": "assists",
+            "rank": 1,
+            "competition": "Ligue des champions",
+            "label": "Meilleur passeur — Ligue des champions",
+            "icon": "assist-gold"
+          },
+          {
+            "type": "assists",
+            "rank": 1,
+            "competition": "Coupe du monde",
+            "label": "Meilleur passeur — Coupe du monde",
+            "icon": "assist-gold"
+          }
+        ]
+      },
+      "verification": {
+        "status": "verified",
+        "notes": [
+          "BL 32/15/19 officiel",
+          "8 passes LDC (Bundesliga.com)",
+          "Total Bayern 57 m inclut probablement la Coupe du monde des clubs (hors période)"
+        ]
+      }
+    },
+    {
+      "id": "rodri",
+      "name": "Rodri",
+      "position": "Milieu défensif",
+      "nationality": {
+        "name": "Espagne",
+        "code": "esp"
+      },
+      "club": {
+        "name": "Manchester City",
+        "slug": "manchester-city",
+        "currentClub": {
+          "name": "FC Barcelone",
+          "slug": "fc-barcelone",
+          "note": "Transféré à l'été 2026"
+        }
+      },
+      "colors": {
+        "background": "#C60B1E",
+        "text": "#FFFFFF",
+        "accent": "#FFC400"
+      },
+      "assets": {
+        "frames": "assets/players/frames/rodri/",
+        "frameCount": 72,
+        "photo": "assets/players/photos/rodri.jpg",
+        "clubLogo": "assets/clubs/manchester-city.webp",
+        "flag": "assets/flags/esp.svg"
+      },
+      "totals": {
+        "matches": 43,
+        "goals": 2,
+        "assists": 0,
+        "assistsComplete": false,
+        "goalContributions": 2,
+        "goalsPerMatch": 0.05
+      },
+      "club_competitions": [
+        {
+          "scope": "national",
+          "matches": 21,
+          "goals": 1,
+          "assists": 0,
+          "displayName": "Premier League",
+          "category": "Championnat"
+        },
+        {
+          "scope": "national",
+          "matches": 4,
+          "goals": 1,
+          "assists": null,
+          "displayName": "FA Cup",
+          "category": "Coupe nationale"
+        },
+        {
+          "scope": "national",
+          "matches": 3,
+          "goals": 0,
+          "assists": null,
+          "displayName": "EFL Cup",
+          "category": "Coupe de la Ligue"
+        },
+        {
+          "scope": "continental",
+          "matches": 5,
+          "goals": 0,
+          "assists": null,
+          "displayName": "Ligue des champions",
+          "category": "Coupe continentale"
+        }
+      ],
+      "international": [
+        {
+          "scope": "sélection",
+          "matches": 8,
+          "goals": 0,
+          "assists": 0,
+          "displayName": "Coupe du monde 2026",
+          "category": "Coupe du monde"
+        },
+        {
+          "scope": "sélection",
+          "matches": 2,
+          "goals": 0,
+          "assists": null,
+          "displayName": "Qualifications Coupe du monde (UEFA)",
+          "category": "Qualifications Coupe du monde"
+        }
+      ],
+      "trophies": {
+        "collective": [
+          {
+            "name": "FA Cup",
+            "icon": "assets/trophies/collective/fa-cup.svg"
+          },
+          {
+            "name": "EFL Cup",
+            "icon": "assets/trophies/collective/efl-cup.svg"
+          },
+          {
+            "name": "Coupe du monde",
+            "icon": "assets/trophies/collective/coupe-du-monde.svg"
+          }
+        ],
+        "individual": [
+          {
+            "type": "player",
+            "rank": 1,
+            "competition": "Coupe du monde",
+            "label": "Meilleur joueur — Coupe du monde",
+            "icon": "ball-gold"
+          }
+        ]
+      },
+      "verification": {
+        "status": "verified",
+        "notes": [
+          "PL 21 m / 1 b",
+          "Transféré au FC Barcelone à l'été 2026"
+        ]
+      }
+    },
+    {
+      "id": "yamal",
+      "name": "Lamine Yamal",
+      "position": "Ailier droit",
+      "nationality": {
+        "name": "Espagne",
+        "code": "esp"
+      },
+      "club": {
+        "name": "FC Barcelone",
+        "slug": "fc-barcelone"
+      },
+      "colors": {
+        "background": "#C60B1E",
+        "text": "#FFFFFF",
+        "accent": "#FFC400"
+      },
+      "assets": {
+        "frames": "assets/players/frames/yamal/",
+        "frameCount": 72,
+        "photo": "assets/players/photos/yamal.jpg",
+        "clubLogo": "assets/clubs/fc-barcelone.webp",
+        "flag": "assets/flags/esp.svg"
+      },
+      "totals": {
+        "matches": 55,
+        "goals": 25,
+        "assists": 16,
+        "assistsComplete": false,
+        "goalContributions": 41,
+        "goalsPerMatch": 0.45
+      },
+      "club_competitions": [
+        {
+          "scope": "national",
+          "matches": 28,
+          "goals": 16,
+          "assists": 12,
+          "displayName": "LaLiga",
+          "category": "Championnat"
+        },
+        {
+          "scope": "national",
+          "matches": 5,
+          "goals": 2,
+          "assists": null,
+          "displayName": "Copa del Rey",
+          "category": "Coupe nationale"
+        },
+        {
+          "scope": "continental",
+          "matches": 10,
+          "goals": 6,
+          "assists": 4,
+          "displayName": "Ligue des champions",
+          "category": "Coupe continentale"
+        },
+        {
+          "scope": "national",
+          "matches": 2,
+          "goals": 0,
+          "assists": null,
+          "displayName": "Supercoupe d'Espagne",
+          "category": "Supercoupes / autres"
+        }
+      ],
+      "international": [
+        {
+          "scope": "sélection",
+          "matches": 8,
+          "goals": 1,
+          "assists": 0,
+          "displayName": "Coupe du monde 2026",
+          "category": "Coupe du monde"
+        },
+        {
+          "scope": "sélection",
+          "matches": 2,
+          "goals": 0,
+          "assists": null,
+          "displayName": "Qualifications Coupe du monde (UEFA)",
+          "category": "Qualifications Coupe du monde"
+        }
+      ],
+      "trophies": {
+        "collective": [
+          {
+            "name": "Liga",
+            "icon": "assets/trophies/collective/liga.svg"
+          },
+          {
+            "name": "Supercoupe d'Espagne",
+            "icon": "assets/trophies/collective/supercoupe-espagne.svg"
+          },
+          {
+            "name": "Coupe du monde",
+            "icon": "assets/trophies/collective/coupe-du-monde.svg"
+          }
+        ],
+        "individual": [
+          {
+            "type": "player",
+            "rank": 1,
+            "competition": "Liga",
+            "label": "Meilleur joueur — Liga",
+            "icon": "ball-gold"
+          },
+          {
+            "type": "assists",
+            "rank": 1,
+            "competition": "Liga",
+            "label": "Meilleur passeur — Liga",
+            "icon": "assist-gold"
+          }
+        ]
+      },
+      "verification": {
+        "status": "verified",
+        "notes": [
+          "Liga 16 b / 12 p (LaLiga officiel)"
+        ]
+      }
+    },
+    {
+      "id": "bellingham",
+      "name": "Jude Bellingham",
+      "position": "Milieu offensif",
+      "nationality": {
+        "name": "Angleterre",
+        "code": "eng"
+      },
+      "club": {
+        "name": "Real Madrid",
+        "slug": "real-madrid"
+      },
+      "colors": {
+        "background": "#F4F1EA",
+        "text": "#0B1F4B",
+        "accent": "#CE1124"
+      },
+      "assets": {
+        "frames": "assets/players/frames/bellingham/",
+        "frameCount": 72,
+        "photo": "assets/players/photos/bellingham.jpg",
+        "clubLogo": "assets/clubs/real-madrid.webp",
+        "flag": "assets/flags/eng.svg"
+      },
+      "totals": {
+        "matches": 41,
+        "goals": 13,
+        "assists": 4,
+        "assistsComplete": false,
+        "goalContributions": 17,
+        "goalsPerMatch": 0.32
+      },
+      "club_competitions": [
+        {
+          "scope": "national",
+          "matches": 19,
+          "goals": 4,
+          "assists": 3,
+          "displayName": "LaLiga",
+          "category": "Championnat"
+        },
+        {
+          "scope": "national",
+          "matches": 1,
+          "goals": 0,
+          "assists": null,
+          "displayName": "Copa del Rey",
+          "category": "Coupe nationale"
+        },
+        {
+          "scope": "continental",
+          "matches": 9,
+          "goals": 2,
+          "assists": null,
+          "displayName": "Ligue des champions",
+          "category": "Coupe continentale"
+        },
+        {
+          "scope": "national",
+          "matches": 2,
+          "goals": 0,
+          "assists": null,
+          "displayName": "Supercoupe d'Espagne",
+          "category": "Supercoupes / autres"
+        }
+      ],
+      "international": [
+        {
+          "scope": "sélection",
+          "matches": 8,
+          "goals": 7,
+          "assists": 1,
+          "displayName": "Coupe du monde 2026",
+          "category": "Coupe du monde"
+        },
+        {
+          "scope": "sélection",
+          "matches": 2,
+          "goals": 0,
+          "assists": null,
+          "displayName": "Qualifications Coupe du monde (UEFA)",
+          "category": "Qualifications Coupe du monde"
+        }
+      ],
+      "trophies": {
+        "collective": [],
+        "individual": [
+          {
+            "type": "scorer",
+            "rank": 3,
+            "competition": "Coupe du monde",
+            "label": "3ème meilleur buteur — Coupe du monde",
+            "icon": "boot-bronze"
+          }
+        ]
+      },
+      "verification": {
+        "status": "verified-with-arbitration",
+        "notes": [
+          "Liga corrigée 19/4/3 (Soccerway) — ancien 28/6/4 incompatible avec ses blessures",
+          "LDC 9/2 plausible : 1 but confirmé (Juventus, 22/10/2025) ; absent des barrages et 8es (blessure 02/02–18/03/2026), retour en quarts vs Bayern",
+          "CdM 7 buts confirmés"
+        ]
+      }
+    },
+    {
+      "id": "kane",
+      "name": "Harry Kane",
+      "position": "Avant-centre",
+      "nationality": {
+        "name": "Angleterre",
+        "code": "eng"
+      },
+      "club": {
+        "name": "Bayern Munich",
+        "slug": "bayern-munich"
+      },
+      "colors": {
+        "background": "#F4F1EA",
+        "text": "#0B1F4B",
+        "accent": "#CE1124"
+      },
+      "assets": {
+        "frames": "assets/players/frames/kane/",
+        "frameCount": 72,
+        "photo": "assets/players/photos/kane.jpg",
+        "clubLogo": "assets/clubs/bayern-munich.webp",
+        "flag": "assets/flags/eng.svg"
+      },
+      "totals": {
+        "matches": 64,
+        "goals": 72,
+        "assists": 8,
+        "assistsComplete": false,
+        "goalContributions": 80,
+        "goalsPerMatch": 1.13
+      },
+      "club_competitions": [
+        {
+          "scope": "national",
+          "matches": 31,
+          "goals": 36,
+          "assists": 5,
+          "displayName": "Bundesliga",
+          "category": "Championnat"
+        },
+        {
+          "scope": "national",
+          "matches": 6,
+          "goals": 10,
+          "assists": 0,
+          "displayName": "Coupe d'Allemagne",
+          "category": "Coupe nationale"
+        },
+        {
+          "scope": "continental",
+          "matches": 13,
+          "goals": 14,
+          "assists": 2,
+          "displayName": "Ligue des champions",
+          "category": "Coupe continentale"
+        },
+        {
+          "scope": "national",
+          "matches": 1,
+          "goals": 1,
+          "assists": null,
+          "displayName": "Supercoupe d'Allemagne",
+          "category": "Supercoupes / autres"
+        }
+      ],
+      "international": [
+        {
+          "scope": "sélection",
+          "matches": 8,
+          "goals": 6,
+          "assists": 1,
+          "displayName": "Coupe du monde 2026",
+          "category": "Coupe du monde"
+        },
+        {
+          "scope": "sélection",
+          "matches": 5,
+          "goals": 5,
+          "assists": null,
+          "displayName": "Qualifications Coupe du monde (UEFA)",
+          "category": "Qualifications Coupe du monde"
+        }
+      ],
+      "trophies": {
+        "collective": [
+          {
+            "name": "Bundesliga",
+            "icon": "assets/trophies/collective/bundesliga.svg"
+          },
+          {
+            "name": "Coupe d'Allemagne",
+            "icon": "assets/trophies/collective/coupe-allemagne.svg"
+          },
+          {
+            "name": "Supercoupe d'Allemagne",
+            "icon": "assets/trophies/collective/supercoupe-allemagne.svg"
+          }
+        ],
+        "individual": [
+          {
+            "type": "scorer",
+            "rank": 1,
+            "competition": "Europe (5 grands championnats)",
+            "label": "Soulier d'or européen",
+            "icon": "boot-gold",
+            "special": "soulier-dor-europeen"
+          },
+          {
+            "type": "scorer",
+            "rank": 1,
+            "competition": "Bundesliga",
+            "label": "Meilleur buteur — Bundesliga",
+            "icon": "boot-gold"
+          },
+          {
+            "type": "scorer",
+            "rank": 1,
+            "competition": "Coupe d'Allemagne",
+            "label": "Meilleur buteur — Coupe d'Allemagne",
+            "icon": "boot-gold"
+          },
+          {
+            "type": "scorer",
+            "rank": 2,
+            "competition": "Ligue des champions",
+            "label": "2ème meilleur buteur — Ligue des champions",
+            "icon": "boot-silver"
+          }
+        ]
+      },
+      "verification": {
+        "status": "verified",
+        "notes": [
+          "Détail club identique à Bundesliga.com"
+        ]
+      }
+    },
+    {
+      "id": "messi",
+      "name": "Lionel Messi",
+      "position": "Ailier / Faux 9",
+      "nationality": {
+        "name": "Argentine",
+        "code": "arg"
+      },
+      "club": {
+        "name": "Inter Miami",
+        "slug": "inter-miami"
+      },
+      "colors": {
+        "background": "#6CACE4",
+        "text": "#0B1F3A",
+        "accent": "#FFFFFF"
+      },
+      "assets": {
+        "frames": "assets/players/frames/messi/",
+        "frameCount": 72,
+        "photo": "assets/players/photos/messi.jpg",
+        "clubLogo": "assets/clubs/inter-miami.webp",
+        "flag": "assets/flags/arg.svg"
+      },
+      "totals": {
+        "matches": 49,
+        "goals": 48,
+        "assists": 34,
+        "assistsComplete": false,
+        "goalContributions": 82,
+        "goalsPerMatch": 0.98
+      },
+      "club_competitions": [
+        {
+          "scope": "national",
+          "matches": 28,
+          "goals": 29,
+          "assists": 19,
+          "displayName": "MLS — saison régulière 2025",
+          "category": "Championnat"
+        },
+        {
+          "scope": "continental",
+          "matches": 2,
+          "goals": 1,
+          "assists": 0,
+          "displayName": "Coupe des champions de la CONCACAF",
+          "category": "Coupe continentale"
+        },
+        {
+          "scope": "national",
+          "matches": 6,
+          "goals": 6,
+          "assists": 9,
+          "displayName": "MLS — playoffs 2025",
+          "category": "Playoffs MLS"
+        },
+        {
+          "scope": "continental",
+          "matches": 4,
+          "goals": 2,
+          "assists": 2,
+          "displayName": "Leagues Cup",
+          "category": "Leagues Cup"
+        }
+      ],
+      "international": [
+        {
+          "scope": "sélection",
+          "matches": 8,
+          "goals": 8,
+          "assists": 4,
+          "displayName": "Coupe du monde 2026",
+          "category": "Coupe du monde"
+        },
+        {
+          "scope": "sélection",
+          "matches": 1,
+          "goals": 2,
+          "assists": null,
+          "displayName": "Qualifications Coupe du monde (CONMEBOL)",
+          "category": "Qualifications Coupe du monde"
+        }
+      ],
+      "trophies": {
+        "collective": [
+          {
+            "name": "MLS Cup",
+            "icon": "assets/trophies/collective/mls-cup.svg"
+          }
+        ],
+        "individual": [
+          {
+            "type": "player",
+            "rank": 2,
+            "competition": "Coupe du monde",
+            "label": "2ème meilleur joueur — Coupe du monde",
+            "icon": "ball-silver"
+          },
+          {
+            "type": "scorer",
+            "rank": 2,
+            "competition": "Coupe du monde",
+            "label": "2ème meilleur buteur — Coupe du monde",
+            "icon": "boot-silver"
+          },
+          {
+            "type": "player",
+            "rank": 1,
+            "competition": "MLS",
+            "label": "Meilleur joueur — MLS",
+            "icon": "ball-gold"
+          },
+          {
+            "type": "scorer",
+            "rank": 1,
+            "competition": "MLS",
+            "label": "Meilleur buteur — MLS",
+            "icon": "boot-gold"
+          },
+          {
+            "type": "assists",
+            "rank": 2,
+            "competition": "Coupe du monde",
+            "label": "2ème meilleur passeur — Coupe du monde",
+            "icon": "assist-silver"
+          },
+          {
+            "type": "player",
+            "rank": 1,
+            "competition": "Playoffs MLS",
+            "label": "Meilleur joueur — Playoffs MLS",
+            "icon": "ball-gold"
+          },
+          {
+            "type": "scorer",
+            "rank": 1,
+            "competition": "Playoffs MLS",
+            "label": "Meilleur buteur — Playoffs MLS",
+            "icon": "boot-gold"
+          },
+          {
+            "type": "assists",
+            "rank": 1,
+            "competition": "Playoffs MLS",
+            "label": "Meilleur passeur — Playoffs MLS",
+            "icon": "assist-gold"
+          }
+        ]
+      },
+      "verification": {
+        "status": "verified",
+        "notes": [
+          "MLS = saison 2025 complète (choix éditorial) : 28 m / 29 b / 19 p officiel",
+          "Playoffs 2025 : 6 b / 9 p (record)",
+          "Leagues Cup 2025 : 2 buts en demi-finale ; 2 des 4 matchs joués avant le 3 août (inclus par la règle saison complète)",
+          "CONCACAF 2026 : 2 matchs vs Nashville, 1 but (900e en carrière)"
+        ]
+      }
+    },
+    {
+      "id": "kvaratskhelia",
+      "name": "Khvicha Kvaratskhelia",
+      "position": "Ailier gauche",
+      "nationality": {
+        "name": "Géorgie",
+        "code": "geo"
+      },
+      "club": {
+        "name": "Paris Saint-Germain",
+        "slug": "paris-saint-germain"
+      },
+      "colors": {
+        "background": "#6D1A2A",
+        "text": "#FFFFFF",
+        "accent": "#0A0A0A"
+      },
+      "assets": {
+        "frames": "assets/players/frames/kvaratskhelia/",
+        "frameCount": 72,
+        "photo": "assets/players/photos/kvaratskhelia.jpg",
+        "clubLogo": "assets/clubs/paris-saint-germain.webp",
+        "flag": "assets/flags/geo.svg"
+      },
+      "totals": {
+        "matches": 54,
+        "goals": 20,
+        "assists": 10,
+        "assistsComplete": false,
+        "goalContributions": 30,
+        "goalsPerMatch": 0.37
+      },
+      "club_competitions": [
+        {
+          "scope": "national",
+          "matches": 28,
+          "goals": 7,
+          "assists": 4,
+          "displayName": "Ligue 1",
+          "category": "Championnat"
+        },
+        {
+          "scope": "national",
+          "matches": 1,
+          "goals": 0,
+          "assists": null,
+          "displayName": "Coupe de France",
+          "category": "Coupe nationale"
+        },
+        {
+          "scope": "continental",
+          "matches": 16,
+          "goals": 10,
+          "assists": 6,
+          "displayName": "Ligue des champions",
+          "category": "Coupe continentale"
+        },
+        {
+          "scope": "national",
+          "matches": 1,
+          "goals": 0,
+          "assists": null,
+          "displayName": "Trophée des champions",
+          "category": "Trophée des champions"
+        },
+        {
+          "scope": "continental",
+          "matches": 1,
+          "goals": 0,
+          "assists": null,
+          "displayName": "Supercoupe de l'UEFA",
+          "category": "Supercoupe de l'UEFA"
+        },
+        {
+          "scope": "mondial",
+          "matches": 1,
+          "goals": 1,
+          "assists": null,
+          "displayName": "Coupe intercontinentale",
+          "category": "Coupe intercontinentale"
+        }
+      ],
+      "international": [
+        {
+          "scope": "sélection",
+          "matches": 6,
+          "goals": 2,
+          "assists": null,
+          "displayName": "Qualifications Coupe du monde (UEFA)",
+          "category": "Qualifications Coupe du monde"
+        }
+      ],
+      "trophies": {
+        "collective": [
+          {
+            "name": "Ligue 1",
+            "icon": "assets/trophies/collective/ligue-1.svg"
+          },
+          {
+            "name": "Trophée des champions",
+            "icon": "assets/trophies/collective/trophee-des-champions.svg"
+          },
+          {
+            "name": "Ligue des champions",
+            "icon": "assets/trophies/collective/ligue-des-champions.svg"
+          },
+          {
+            "name": "Supercoupe de l'UEFA",
+            "icon": "assets/trophies/collective/supercoupe-uefa.svg"
+          },
+          {
+            "name": "Coupe intercontinentale",
+            "icon": "assets/trophies/collective/coupe-intercontinentale.svg"
+          }
+        ],
+        "individual": [
+          {
+            "type": "player",
+            "rank": 1,
+            "competition": "Ligue des champions",
+            "label": "Meilleur joueur — Ligue des champions",
+            "icon": "ball-gold"
+          }
+        ]
+      },
+      "verification": {
+        "status": "verified-with-arbitration",
+        "notes": [
+          "LDC 16/10/6 (UEFA officiel)",
+          "Distinction « 2ème meilleur passeur LDC » retirée (non sourcée)",
+          "Ligue 1 : 8 → 7 buts (arbitrage) — total club Foot Mercato 18 b = 10 LDC (UEFA) + 1 Intercontinentale + 7 L1 ; ses 10 passes concordent exactement"
+        ]
+      }
+    },
+    {
+      "id": "haaland",
+      "name": "Erling Haaland",
+      "position": "Avant-centre",
+      "nationality": {
+        "name": "Norvège",
+        "code": "nor"
+      },
+      "club": {
+        "name": "Manchester City",
+        "slug": "manchester-city"
+      },
+      "colors": {
+        "background": "#A6192E",
+        "text": "#FFFFFF",
+        "accent": "#00205B"
+      },
+      "assets": {
+        "frames": "assets/players/frames/haaland/",
+        "frameCount": 72,
+        "photo": "assets/players/photos/haaland.jpg",
+        "clubLogo": "assets/clubs/manchester-city.webp",
+        "flag": "assets/flags/nor.svg"
+      },
+      "totals": {
+        "matches": 62,
+        "goals": 57,
+        "assists": 9,
+        "assistsComplete": false,
+        "goalContributions": 66,
+        "goalsPerMatch": 0.92
+      },
+      "club_competitions": [
+        {
+          "scope": "national",
+          "matches": 35,
+          "goals": 27,
+          "assists": 8,
+          "displayName": "Premier League",
+          "category": "Championnat"
+        },
+        {
+          "scope": "national",
+          "matches": 4,
+          "goals": 3,
+          "assists": 1,
+          "displayName": "FA Cup",
+          "category": "Coupe nationale"
+        },
+        {
+          "scope": "national",
+          "matches": 3,
+          "goals": 0,
+          "assists": 0,
+          "displayName": "EFL Cup",
+          "category": "Coupe de la Ligue"
+        },
+        {
+          "scope": "continental",
+          "matches": 10,
+          "goals": 8,
+          "assists": 0,
+          "displayName": "Ligue des champions",
+          "category": "Coupe continentale"
+        }
+      ],
+      "international": [
+        {
+          "scope": "sélection",
+          "matches": 6,
+          "goals": 7,
+          "assists": 0,
+          "displayName": "Coupe du monde 2026",
+          "category": "Coupe du monde"
+        },
+        {
+          "scope": "sélection",
+          "matches": 4,
+          "goals": 12,
+          "assists": null,
+          "displayName": "Qualifications Coupe du monde (UEFA)",
+          "category": "Qualifications Coupe du monde"
+        }
+      ],
+      "trophies": {
+        "collective": [
+          {
+            "name": "FA Cup",
+            "icon": "assets/trophies/collective/fa-cup.svg"
+          },
+          {
+            "name": "EFL Cup",
+            "icon": "assets/trophies/collective/efl-cup.svg"
+          }
+        ],
+        "individual": [
+          {
+            "type": "scorer",
+            "rank": 1,
+            "competition": "Premier League",
+            "label": "Meilleur buteur — Premier League",
+            "icon": "boot-gold"
+          },
+          {
+            "type": "scorer",
+            "rank": 1,
+            "competition": "Coupe du monde (qualifications)",
+            "label": "Meilleur buteur — Coupe du monde (qualifications)",
+            "icon": "boot-gold"
+          }
+        ]
+      },
+      "verification": {
+        "status": "verified-with-arbitration",
+        "notes": [
+          "PL 35/27/8, LDC 10/8",
+          "Qualifs : 16 buts en 8 matchs au total, dont 12 sur la période",
+          "FA Cup conservée à 4 matchs (cohérent avec le total NBC de 52 matchs) ; +1 passe (passe décisive pour Semenyo en finale)"
+        ]
+      }
+    }
+  ]
+}

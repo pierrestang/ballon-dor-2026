@@ -1,0 +1,500 @@
+[
+  {
+    "id": "kylian-mbappe",
+    "nom": "Kylian Mbappé",
+    "poste": "BU",
+    "selection": "France",
+    "drapeau": "assets/flags/fr.svg",
+    "couleur": "#0055a4",
+    "club": "Real Madrid",
+    "stats": {
+      "matchs": 56,
+      "buts": 57,
+      "passes": 10,
+      "passesMinimum": true,
+      "contributionsParMatch": 1.2
+    },
+    "collectif": [],
+    "individuel": [
+      {
+        "titre": "Meilleur buteur — Coupe du monde",
+        "categorie": "buteur",
+        "rang": 1,
+        "competition": "Coupe du monde",
+        "icone": null,
+        "logo": "assets/competitions/world-cup-2026.webp"
+      },
+      {
+        "titre": "Meilleur buteur — Ligue des champions",
+        "categorie": "buteur",
+        "rang": 1,
+        "competition": "Ligue des champions",
+        "icone": null,
+        "logo": "assets/competitions/champions-league.svg"
+      },
+      {
+        "titre": "Meilleur buteur — Liga",
+        "categorie": "buteur",
+        "rang": 1,
+        "competition": "Liga",
+        "icone": null,
+        "logo": "assets/competitions/laliga.svg"
+      },
+      {
+        "titre": "3ème meilleur joueur — Coupe du monde",
+        "categorie": "joueur",
+        "rang": 3,
+        "competition": "Coupe du monde",
+        "icone": null,
+        "logo": "assets/competitions/world-cup-2026.webp"
+      }
+    ]
+  },
+  {
+    "id": "rodri",
+    "nom": "Rodri",
+    "poste": "MDC",
+    "selection": "Espagne",
+    "drapeau": "assets/flags/es.svg",
+    "couleur": "#f1bf00",
+    "club": "Manchester City",
+    "stats": {
+      "matchs": 43,
+      "buts": 2,
+      "passes": 0,
+      "passesMinimum": true,
+      "contributionsParMatch": 0.05
+    },
+    "collectif": [
+      {
+        "titre": "FA Cup",
+        "icone": "assets/competitions/fa-cup.webp"
+      },
+      {
+        "titre": "EFL Cup",
+        "icone": "assets/competitions/efl-cup.svg"
+      },
+      {
+        "titre": "Coupe du monde",
+        "icone": "assets/competitions/world-cup-2026.webp"
+      }
+    ],
+    "individuel": [
+      {
+        "titre": "Meilleur joueur — Coupe du monde",
+        "categorie": "joueur",
+        "rang": 1,
+        "competition": "Coupe du monde",
+        "icone": null,
+        "logo": "assets/competitions/world-cup-2026.webp"
+      }
+    ]
+  },
+  {
+    "id": "harry-kane",
+    "nom": "Harry Kane",
+    "poste": "BU",
+    "selection": "Angleterre",
+    "drapeau": "assets/flags/gb-eng.svg",
+    "couleur": "#ce1124",
+    "club": "Bayern Munich",
+    "stats": {
+      "matchs": 64,
+      "buts": 72,
+      "passes": 8,
+      "passesMinimum": true,
+      "contributionsParMatch": 1.25
+    },
+    "collectif": [
+      {
+        "titre": "Bundesliga",
+        "icone": "assets/competitions/bundesliga.svg"
+      },
+      {
+        "titre": "Coupe d'Allemagne",
+        "icone": "assets/competitions/dfb-pokal.svg"
+      },
+      {
+        "titre": "Supercoupe d'Allemagne",
+        "icone": "assets/competitions/supercoupe-allemagne.webp"
+      }
+    ],
+    "individuel": [
+      {
+        "titre": "Soulier d'or européen",
+        "categorie": "buteur",
+        "rang": 1,
+        "competition": "Europe",
+        "icone": null,
+        "logo": "assets/competitions/uefa.svg"
+      },
+      {
+        "titre": "Meilleur buteur — Bundesliga",
+        "categorie": "buteur",
+        "rang": 1,
+        "competition": "Bundesliga",
+        "icone": null,
+        "logo": "assets/competitions/bundesliga.svg"
+      },
+      {
+        "titre": "Meilleur buteur — Coupe d'Allemagne",
+        "categorie": "buteur",
+        "rang": 1,
+        "competition": "Coupe d'Allemagne",
+        "icone": null,
+        "logo": "assets/competitions/dfb-pokal.svg"
+      },
+      {
+        "titre": "2ème meilleur buteur — Ligue des champions",
+        "categorie": "buteur",
+        "rang": 2,
+        "competition": "Ligue des champions",
+        "icone": null,
+        "logo": "assets/competitions/champions-league.svg"
+      }
+    ]
+  },
+  {
+    "id": "lionel-messi",
+    "nom": "Lionel Messi",
+    "poste": "AD",
+    "selection": "Argentine",
+    "drapeau": "assets/flags/ar.svg",
+    "couleur": "#74acdf",
+    "club": "Inter Miami",
+    "stats": {
+      "matchs": 49,
+      "buts": 48,
+      "passes": 34,
+      "passesMinimum": true,
+      "contributionsParMatch": 1.67
+    },
+    "collectif": [
+      {
+        "titre": "MLS Cup",
+        "icone": "assets/competitions/mls.svg"
+      }
+    ],
+    "individuel": [
+      {
+        "titre": "Meilleur joueur — MLS",
+        "categorie": "joueur",
+        "rang": 1,
+        "competition": "MLS",
+        "icone": null,
+        "logo": "assets/competitions/mls.svg"
+      },
+      {
+        "titre": "Meilleur buteur — MLS",
+        "categorie": "buteur",
+        "rang": 1,
+        "competition": "MLS",
+        "icone": null,
+        "logo": "assets/competitions/mls.svg"
+      },
+      {
+        "titre": "Meilleur passeur — MLS",
+        "categorie": "passeur",
+        "rang": 1,
+        "competition": "MLS",
+        "icone": null,
+        "logo": "assets/competitions/mls.svg"
+      },
+      {
+        "titre": "2ème meilleur joueur — Coupe du monde",
+        "categorie": "joueur",
+        "rang": 2,
+        "competition": "Coupe du monde",
+        "icone": null,
+        "logo": "assets/competitions/world-cup-2026.webp"
+      },
+      {
+        "titre": "2ème meilleur buteur — Coupe du monde",
+        "categorie": "buteur",
+        "rang": 2,
+        "competition": "Coupe du monde",
+        "icone": null,
+        "logo": "assets/competitions/world-cup-2026.webp"
+      },
+      {
+        "titre": "2ème meilleur passeur — Coupe du monde",
+        "categorie": "passeur",
+        "rang": 2,
+        "competition": "Coupe du monde",
+        "icone": null,
+        "logo": "assets/competitions/world-cup-2026.webp"
+      }
+    ]
+  },
+  {
+    "id": "ousmane-dembele",
+    "nom": "Ousmane Dembélé",
+    "poste": "BU/AD",
+    "selection": "France",
+    "drapeau": "assets/flags/fr.svg",
+    "couleur": "#0055a4",
+    "club": "Paris Saint-Germain",
+    "stats": {
+      "matchs": 49,
+      "buts": 26,
+      "passes": 11,
+      "passesMinimum": true,
+      "contributionsParMatch": 0.76
+    },
+    "collectif": [
+      {
+        "titre": "Ligue 1",
+        "icone": "assets/competitions/ligue-1.svg"
+      },
+      {
+        "titre": "Trophée des champions",
+        "icone": "assets/competitions/trophee-des-champions.webp"
+      },
+      {
+        "titre": "Ligue des champions",
+        "icone": "assets/competitions/champions-league.svg"
+      },
+      {
+        "titre": "Supercoupe de l'UEFA",
+        "icone": "assets/competitions/uefa-badge.webp"
+      },
+      {
+        "titre": "Coupe intercontinentale",
+        "icone": "assets/competitions/club-world-cup.svg"
+      }
+    ],
+    "individuel": [
+      {
+        "titre": "Meilleur joueur — Ligue 1",
+        "categorie": "joueur",
+        "rang": 1,
+        "competition": "Ligue 1",
+        "icone": null,
+        "logo": "assets/competitions/ligue-1.svg"
+      }
+    ]
+  },
+  {
+    "id": "khvicha-kvaratskhelia",
+    "nom": "Khvicha Kvaratskhelia",
+    "poste": "AG",
+    "selection": "Géorgie",
+    "drapeau": "assets/flags/ge.svg",
+    "couleur": "#e8112d",
+    "club": "Paris Saint-Germain",
+    "stats": {
+      "matchs": 54,
+      "buts": 20,
+      "passes": 10,
+      "passesMinimum": true,
+      "contributionsParMatch": 0.56
+    },
+    "collectif": [
+      {
+        "titre": "Ligue 1",
+        "icone": "assets/competitions/ligue-1.svg"
+      },
+      {
+        "titre": "Trophée des champions",
+        "icone": "assets/competitions/trophee-des-champions.webp"
+      },
+      {
+        "titre": "Ligue des champions",
+        "icone": "assets/competitions/champions-league.svg"
+      },
+      {
+        "titre": "Supercoupe de l'UEFA",
+        "icone": "assets/competitions/uefa-badge.webp"
+      },
+      {
+        "titre": "Coupe intercontinentale",
+        "icone": "assets/competitions/club-world-cup.svg"
+      }
+    ],
+    "individuel": [
+      {
+        "titre": "Meilleur joueur — Ligue des champions",
+        "categorie": "joueur",
+        "rang": 1,
+        "competition": "Ligue des champions",
+        "icone": null,
+        "logo": "assets/competitions/champions-league.svg"
+      }
+    ]
+  },
+  {
+    "id": "lamine-yamal",
+    "nom": "Lamine Yamal",
+    "poste": "AD",
+    "selection": "Espagne",
+    "drapeau": "assets/flags/es.svg",
+    "couleur": "#f1bf00",
+    "club": "FC Barcelone",
+    "stats": {
+      "matchs": 55,
+      "buts": 25,
+      "passes": 16,
+      "passesMinimum": true,
+      "contributionsParMatch": 0.75
+    },
+    "collectif": [
+      {
+        "titre": "Liga",
+        "icone": "assets/competitions/laliga.svg"
+      },
+      {
+        "titre": "Supercoupe d'Espagne",
+        "icone": "assets/competitions/supercoupe-espagne.webp"
+      },
+      {
+        "titre": "Coupe du monde",
+        "icone": "assets/competitions/world-cup-2026.webp"
+      }
+    ],
+    "individuel": [
+      {
+        "titre": "Meilleur joueur — Liga",
+        "categorie": "joueur",
+        "rang": 1,
+        "competition": "Liga",
+        "icone": null,
+        "logo": "assets/competitions/laliga.svg"
+      },
+      {
+        "titre": "Meilleur passeur — Liga",
+        "categorie": "passeur",
+        "rang": 1,
+        "competition": "Liga",
+        "icone": null,
+        "logo": "assets/competitions/laliga.svg"
+      }
+    ]
+  },
+  {
+    "id": "erling-haaland",
+    "nom": "Erling Haaland",
+    "poste": "BU",
+    "selection": "Norvège",
+    "drapeau": "assets/flags/no.svg",
+    "couleur": "#ba0c2f",
+    "club": "Manchester City",
+    "stats": {
+      "matchs": 62,
+      "buts": 57,
+      "passes": 9,
+      "passesMinimum": true,
+      "contributionsParMatch": 1.06
+    },
+    "collectif": [
+      {
+        "titre": "FA Cup",
+        "icone": "assets/competitions/fa-cup.webp"
+      },
+      {
+        "titre": "EFL Cup",
+        "icone": "assets/competitions/efl-cup.svg"
+      }
+    ],
+    "individuel": [
+      {
+        "titre": "Meilleur buteur — Premier League",
+        "categorie": "buteur",
+        "rang": 1,
+        "competition": "Premier League",
+        "icone": null,
+        "logo": "assets/competitions/premier-league.svg"
+      }
+    ]
+  },
+  {
+    "id": "michael-olise",
+    "nom": "Michael Olise",
+    "poste": "AD",
+    "selection": "France",
+    "drapeau": "assets/flags/fr.svg",
+    "couleur": "#0055a4",
+    "club": "Bayern Munich",
+    "stats": {
+      "matchs": 65,
+      "buts": 24,
+      "passes": 35,
+      "passesMinimum": true,
+      "contributionsParMatch": 0.91
+    },
+    "collectif": [
+      {
+        "titre": "Bundesliga",
+        "icone": "assets/competitions/bundesliga.svg"
+      },
+      {
+        "titre": "Coupe d'Allemagne",
+        "icone": "assets/competitions/dfb-pokal.svg"
+      },
+      {
+        "titre": "Supercoupe d'Allemagne",
+        "icone": "assets/competitions/supercoupe-allemagne.webp"
+      }
+    ],
+    "individuel": [
+      {
+        "titre": "Meilleur passeur — Coupe du monde",
+        "categorie": "passeur",
+        "rang": 1,
+        "competition": "Coupe du monde",
+        "icone": null,
+        "logo": "assets/competitions/world-cup-2026.webp"
+      },
+      {
+        "titre": "Meilleur passeur — Ligue des champions",
+        "categorie": "passeur",
+        "rang": 1,
+        "competition": "Ligue des champions",
+        "icone": null,
+        "logo": "assets/competitions/champions-league.svg"
+      },
+      {
+        "titre": "Meilleur joueur — Bundesliga",
+        "categorie": "joueur",
+        "rang": 1,
+        "competition": "Bundesliga",
+        "icone": null,
+        "logo": "assets/competitions/bundesliga.svg"
+      },
+      {
+        "titre": "Meilleur passeur — Bundesliga",
+        "categorie": "passeur",
+        "rang": 1,
+        "competition": "Bundesliga",
+        "icone": null,
+        "logo": "assets/competitions/bundesliga.svg"
+      }
+    ]
+  },
+  {
+    "id": "jude-bellingham",
+    "nom": "Jude Bellingham",
+    "poste": "MOC",
+    "selection": "Angleterre",
+    "drapeau": "assets/flags/gb-eng.svg",
+    "couleur": "#ce1124",
+    "club": "Real Madrid",
+    "stats": {
+      "matchs": 41,
+      "buts": 13,
+      "passes": 4,
+      "passesMinimum": true,
+      "contributionsParMatch": 0.41
+    },
+    "collectif": [],
+    "individuel": [
+      {
+        "titre": "3ème meilleur buteur — Coupe du monde",
+        "categorie": "buteur",
+        "rang": 3,
+        "competition": "Coupe du monde",
+        "icone": null,
+        "logo": "assets/competitions/world-cup-2026.webp"
+      }
+    ]
+  }
+]
