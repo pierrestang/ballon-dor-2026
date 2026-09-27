@@ -152,6 +152,15 @@ Jeu : le visiteur établit son classement /10 en votant duel après duel (le vai
 - **Classement communautaire** (`src/community.js`) : Firestore en REST (fetch, pas de SDK). Un document anonyme par classement envoyé (bouton explicite, une fois par partie) : `p_<id>` = position 1 à 10 + `date` ; affichage de la position moyenne (requêtes d'agrégation). Config : `.env` (`VITE_FIREBASE_PROJECT_ID`, `VITE_FIREBASE_API_KEY`, modèle `.env.example`) ; sans config, la partie communautaire est masquée. Règles à publier dans la console : `firebase/firestore.rules` (création seule, 10 positions entières 1 à 10 toutes différentes, lecture ouverte, ni modification ni suppression).
 - **Vérification du moteur** : `node scripts/comparer_formats.mjs` vérifie aussi le moteur suisse (classement complet, jamais deux fois le même duel, un duel par joueur et par ronde, annulation). `node scripts/simuler_tournoi.mjs` : ancien moteur en poules.
 
+## Audit avant mise en ligne (28/09/2026)
+
+Parcours complet en Chrome headless (intro, Les candidats, Présentation, page du duel et tableaux, deux parties entières de Mon classement ; 1440 px, 430, 390 et 360 px) : aucune erreur console.
+- Palmarès : collectif vide affiché « AUCUN TITRE » en gris (au lieu de « / »), défile comme les autres textes (`Rolling`).
+- Tableaux : « N TITRES » en tête masqué quand le joueur n'a aucun titre collectif (un « 0 » contredisait ses distinctions individuelles juste dessous).
+- Ratio des lignes aux passes non relevées : buts par match pour toutes (supercoupes, coupes, Ligue des champions de Bellingham…), plus seulement les qualifications ; avant, « – » même avec des buts.
+- Mobile : largeurs de colonnes des tableaux fixes, prioritaires sur `has-medals-N` (« Individuel » était rogné, « Équipe » et « Tournoi » se chevauchaient) ; intitulés à 9 px sous 380 px ; lignes vides d'alignement masquées (tableaux empilés : elles faisaient un trou).
+- Mon classement : barrage en cours compté dans le total du compteur (« DUEL 28 / 28 » s'affichait au 29e duel, barre pleine avant le dernier vote).
+
 ## Animations (règles communes)
 
 - **Pages** : glissement vertical continu entre la sélection et le duel (`SLIDE`, 0,7 s, `transitions.js`) ; intro ↔ sélection : transition jouée par les gestes, dans la même scène.

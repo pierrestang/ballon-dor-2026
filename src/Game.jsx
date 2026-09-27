@@ -479,7 +479,10 @@ export default function Game({ nav, relay, onBack: leave }) {
   const screen = a.ranking ? (ceremonyDone ? 'result' : 'ceremony')
     : a.next.phase === 'ronde' && a.next.duel === 1 && ui.seenRound < a.next.round ? 'round' : 'duel'
   const setUi = (patch) => setG((x) => ({ ...x, ui: { ...x.ui, ...patch } }))
-  const { played, planned } = progress(t)
+  // Barrage en cours : compté dans le total (progress ne compte que les barrages joués), sinon
+  // le compteur plafonnait (« 28 / 28 » au 29e duel) et la barre était pleine avant le dernier vote.
+  const { played, planned: plannedDone } = progress(t)
+  const planned = plannedDone + (a.next?.phase === 'barrage' ? 1 : 0)
 
   // Nouveau duel (ou nouvel écran) : on repart du haut de la page.
   const duelKey = a.next ? `${a.next.a}|${a.next.b}|${t.history.length}` : 'fin'

@@ -223,16 +223,22 @@
   .final-tables .details-table td { font-size: 15px; }
   .final-tables .details-table td.details-result { font-size: 11px; }
   .final-tables .details-indiv img { margin: 0; }
-  .final-tables .details-team-col { width: 8%; }
-  .final-tables .details-comp-col { width: 10%; }
-  .final-tables .details-score { width: 10%; }
-  .final-tables .details-result-col { width: 18%; }
-  .final-tables .details-indiv-col { width: 24%; }
+  /* Largeurs fixes, quel que soit le nombre de médailles (.details-table : l'emporte sur les
+     règles has-medals-N, qui rognaient « Individuel ») ; chaque intitulé tient dans sa colonne. */
+  .final-tables .details-table .details-team-col { width: 10.5%; }
+  .final-tables .details-table .details-comp-col { width: 10.5%; }
+  .final-tables .details-table .details-score { width: 10.5%; }
+  .final-tables .details-table .details-result-col { width: 15%; }
+  .final-tables .details-table .details-indiv-col { width: 22%; }
   .final-table-name { font-size: 22px; }
 }
+/* Petits téléphones (360 px) : intitulés un peu plus petits pour tenir dans leurs colonnes. */
+@media (max-width: 380px) {
+  .final-tables .details-table thead th { font-size: 9px; }
+}
 @media (max-width: 820px) {
-  /* Lignes vides : jamais plus larges que le tableau. */
-  .final-tables .details-table tr.is-pad td { padding: 0; }
+  /* Lignes vides d'alignement : inutiles quand les tableaux sont empilés (un trou dans le tableau). */
+  .final-tables .details-table tr.is-pad { display: none; }
   .final-tables .details-table { table-layout: fixed; }
   .final-tables .details-table thead th { overflow: hidden; text-overflow: clip; }
 }

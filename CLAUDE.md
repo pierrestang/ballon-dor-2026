@@ -68,6 +68,10 @@ Intro → trois versions au choix (← / →, bords, glisser ; on ouvre sur **Le
 
 Traitement éditorial : en-tête avec la pièce du joueur, nom, poste et âge, et son nombre de titres de la saison en grand chiffre italique doré (`final-table-head`) ; intitulés gris, lignes séparées par l'espace et un filet très léger ; compétition remportée : ligne dorée (voile en dégradé et filet or à gauche, `is-won`), les autres lignes légèrement atténuées ; ligne Total séparée par un filet doré, chiffres plus grands.
 
+- Aucun titre collectif : pas de « 0 titre » en tête ; palmarès : « AUCUN TITRE » en gris.
+- Passes non relevées (`null`) : ratio en buts par match sur toutes ces lignes, avec infobulle (`goalsOnly`).
+- Mobile (≤ 820 px) : largeurs de colonnes fixes (pas de `has-medals-N`), lignes vides d'alignement masquées.
+
 ## Charte
 
 - Variables dans `:root` (`00-base.css`) : fond `--bg` + dégradé `--bg-center` (redéfinis par version, `data-theme` : Mon classement noir, Duel nuit bleue, Les candidats vert), texte `--text`, gris `--text-secondary` (6,9:1), or `--gold`, halo `--halo`, panneaux `--panel`, durées `--t-fast/med/slow`, courbes `--ease-out/expo`.

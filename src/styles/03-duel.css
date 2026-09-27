@@ -255,7 +255,7 @@
   border-radius: var(--radius);
   background: rgba(244, 241, 234, 0.92);
 }
-.empty { color: var(--muted); font-size: 19px; }
+.empty { color: var(--muted); }
 
 /* Mouvement réduit : pas de rotation, tout est affiché d'emblée. */
 

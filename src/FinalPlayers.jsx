@@ -354,7 +354,7 @@ export function Palmares({ player, side }) {
             ))}
           </ul>
         ) : (
-          <p className="empty" aria-label="Aucun titre">/</p>
+          <p className="empty award">{roll('Aucun titre')}</p>
         )}
       </div>
       <div className="block">

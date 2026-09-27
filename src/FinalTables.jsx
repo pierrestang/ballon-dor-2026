@@ -11,9 +11,9 @@ import { SLIDE } from './transitions'
 // « Ratio » : buts + assists par match, détaillé au survol de l'intitulé.
 const COLUMNS = ['Matches', 'Buts', 'Assists', 'Ratio']
 const HEADER_TIPS = { Ratio: 'Buts + Assists / match' }
-// Ratio : buts + assists par match. Passes non relevées (« n.r. », qualifications de la Coupe du
-// monde) : buts par match à la place, signalé en infobulle.
-const goalsOnly = (s) => s.type === 'qualifications' && s.contributionsParMatch === null && s.passes === null && s.matchs > 0
+// Ratio : buts + assists par match. Passes non relevées (« n.r. » : qualifications de la Coupe du
+// monde, supercoupes, certaines coupes) : buts par match à la place, signalé en infobulle.
+const goalsOnly = (s) => s.contributionsParMatch === null && s.passes === null && s.matchs > 0
 const ratio = (s) => (goalsOnly(s) ? s.buts / s.matchs : s.contributionsParMatch)
 const RATIO_GOALS_TIP = 'Buts / match (passes non relevées)'
 // Ratio nul (0,00) ou inconnu : « – » (27/09/2026).
@@ -112,7 +112,10 @@ function Table({ player, side, medals, sizes }) {
             {ageOf(player.id) !== null && <> · {ageOf(player.id)} ans</>}
           </span>
         </h2>
-        <span className="final-table-titles"><b>{totals(player)[4]}</b> {totals(player)[4] > 1 ? 'titres' : 'titre'}</span>
+        {/* Aucun titre collectif : rien d'affiché (un « 0 » contredirait les distinctions individuelles). */}
+        {totals(player)[4] > 0 && (
+          <span className="final-table-titles"><b>{totals(player)[4]}</b> {totals(player)[4] > 1 ? 'titres' : 'titre'}</span>
+        )}
       </m.header>
       <table className={`details-table has-medals-${medals}`}>
         {/* Colonnes de scores toutes de la même largeur. */}
