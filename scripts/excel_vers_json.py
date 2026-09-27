@@ -159,7 +159,7 @@ RESULTATS = {
     ("Espagne", "Coupe du monde"): "Vainqueur",
     ("Argentine", "Coupe du monde"): "Finale",
     ("Angleterre", "Coupe du monde"): "3ème",
-    ("France", "Coupe du monde"): "4ème",
+    ("France", "Coupe du monde"): "Demi-finale",   # 4e place : affichée comme les autres demi-finales
     ("Norvège", "Coupe du monde"): "Quarts de finale",
     ("Espagne", "Qualifications Coupe du monde"): "Qualifié",
     ("Argentine", "Qualifications Coupe du monde"): "Qualifié",

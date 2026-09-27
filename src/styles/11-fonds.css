@@ -22,10 +22,3 @@
   --panel: rgba(9, 20, 14, 0.9);
 }
 @media (prefers-reduced-motion: reduce) { :root { transition: none; } }
-
-/* Joueurs en vidéo (page du duel, Présentation), grand écran : remontés légèrement (--lift),
-   pour dégager le bas de l'écran (chevron, aide clavier) ; nom en arc compris (27/09/2026). */
-@media (min-width: 821px) {
-  .final { --lift: 3.5svh; }
-  .final .figure { translate: 0 calc(-1 * var(--lift)); }
-}

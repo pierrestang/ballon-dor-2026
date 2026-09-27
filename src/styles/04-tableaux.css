@@ -130,7 +130,6 @@
   height: 48px;
 }
 .details-table td { font-size: clamp(18px, 1.7vw, 28px); font-weight: 700; line-height: 1; }
-.details-table td.is-better { color: var(--gold); }   /* bat l'adversaire sur la même ligne : en or (page 2 : vert) */
 /* Colonne compétition : logo seul, centré (nom en infobulle). */
 .details-comp .comp { display: block; }
 .details .comp {

@@ -57,9 +57,9 @@ export function useLayout() {
     }
     // Mobile : emplacements côte à côte en haut (« VS » entre les deux), pièce dessous.
     const D = Math.round(Math.min(vw * 0.32, vh * 0.18))
-    const coinY = vh * 0.6
+    const coinY = vh * 0.52   // plus près des emplacements (moins de vide entre eux)
     const vsGap = 30
-    const G = Math.round(Math.min(vw * 0.5, vh * 0.29, (vw - 32) / 2 - vsGap))
+    const G = Math.round(Math.min(vw * 0.36, vh * 0.2, (vw - 32) / 2 - vsGap))   // emplacements en haut, sous le titre, sans se serrer
     // Sous le titre de la page (TITLE_MOBILE px).
     const slotY = Math.max(G / 2 + TITLE_MOBILE, Math.min(vh * 0.22, coinY - D / 2 - 24 - G * NAME_BELOW))
     const half = G / 2 + vsGap
@@ -78,7 +78,7 @@ export function useLayout() {
 /** Titre de la page et description dessous, de la même longueur que le titre : l'espacement des
     lettres de la description est calculé d'après les largeurs réelles (polices chargées),
     recalculé au redimensionnement. */
-export function PickTitle({ top, progress, reduced }) {
+export function PickTitle({ top, progress, reduced, hidden = false }) {
   const title = useRef(null)
   const sub = useRef(null)
   // Titre et description de la même longueur (titleFit.js).
@@ -86,7 +86,7 @@ export function PickTitle({ top, progress, reduced }) {
   // Apparition lettre par lettre, de gauche à droite (opacité, montée de 30 px, flou 8 px → 0).
   const motion = reduced ? { dist: 0, blur: 0 } : {}
   return (
-    <header className="pick-title" style={top !== undefined ? { top } : undefined}>
+    <header className="pick-title" style={top !== undefined ? { top } : undefined} aria-hidden={hidden || undefined}>
       <h1><ScrollLetters innerRef={title} text="DUEL" progress={progress} range={[0.35, 0.7]} {...motion} /></h1>
       <p><ScrollLetters innerRef={sub} text="Sélectionnez deux joueurs à comparer." progress={progress} range={[0.55, 0.8]} {...motion} /></p>
     </header>
@@ -94,7 +94,7 @@ export function PickTitle({ top, progress, reduced }) {
 }
 
 /** Point d'une courbe de Bézier quadratique. */
-export const bez = (a, c, b, t) => (1 - t) * (1 - t) * a + 2 * (1 - t) * t * c + t * t * b
+const bez = (a, c, b, t) => (1 - t) * (1 - t) * a + 2 * (1 - t) * t * c + t * t * b
 
 /** Pièce centrale : montre le joueur k. Quand k change, elle fait un tour complet dans le sens
     de la flèche (dir) et l'image change au passage de profil, comme dans l'intro. Au survol :
@@ -104,7 +104,7 @@ export function CenterCoin({ k, dir, placedSet, reduced, instant, onSelect, btnR
   // Pièce cachée (une pièce revient d'un emplacement) ou mouvement réduit : le joueur change
   // sans rotation, la pièce de face.
   const [shown, rot] = useCoinTurn(k, { dir, instant, reduced })
-  const [spin, startSpin] = useHoverSpin()
+  const [spin, startSpin] = useHoverSpin(() => players[shown].id)
   const rotateY = useTransform([rot, spin], ([a, b]) => a + b)
   const lift = useSpring(0, HOVER)
   const [floatDelay] = useState(syncFloat)   // flottement sur l'horloge commune (relais avec les candidats)
@@ -131,7 +131,7 @@ export function CenterCoin({ k, dir, placedSet, reduced, instant, onSelect, btnR
 /** Pièce posée dans un emplacement du duel : clic pour la renvoyer au centre ; flotte doucement
     (comme les pièces de l'intro et de la page 3) et tourne sur elle-même au survol. */
 export function SlotCoin({ player, landed, reduced, onRemove, label }) {
-  const [spin, startSpin] = useHoverSpin()
+  const [spin, startSpin] = useHoverSpin(player.id)
   return (
     <m.button className="pick-slot-coin" onClick={onRemove} onPointerEnter={startSpin}
               aria-label={label} disabled={!landed} aria-hidden={!landed}
@@ -147,7 +147,7 @@ export function SlotCoin({ player, landed, reduced, onRemove, label }) {
 }
 
 // Perles du cercle intérieur de la pièce fantôme (repère 100 × 100).
-export const PEARLS = Array.from({ length: 64 }, (_, i) => {
+const PEARLS = Array.from({ length: 64 }, (_, i) => {
   const t = (i / 64) * Math.PI * 2
   return [50 + 44 * Math.cos(t), 50 + 44 * Math.sin(t)]
 })

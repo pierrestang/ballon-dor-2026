@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import { animate, m, useMotionValue, useMotionValueEvent, useReducedMotion, useTransform, useIsPresent } from 'framer-motion'
 import players, { coinUrl } from './data'
-import { ARC_FONT, GlitchArc, R_BOTTOM, ScrollLetters } from './Letters'
+import { GlitchArc, R_BOTTOM, ScrollLetters } from './Letters'
 import { carouselVariants } from './transitions'
 import { COIN_AT, FLASH_MS, READY_AT, TrophyLoader, useIntroClock } from './Intro'
 import CandidatesRing, { mod as ringMod } from './SoloPick'
+import { flip, land, pick, swoosh } from './sound'
 import { gameFinished } from './storage'
 import { CenterCoin, Flight, Ghost, NameCurve, PickTitle, SPIN, SlotCoin, useLayout } from './SelectionParts'
 
@@ -184,9 +185,11 @@ export default function Carousel({ nav, pair, setPair, onOpen, onGame, onSolo, m
       if (next !== undefined) { setDir(1); setActive(next) }
     }
     if (reduced) {
+      pick(players[k].id, 0.1)
       setSlots((s) => s.map((x, j) => (j === i ? { k, landed: true, t } : x)))
       return
     }
+    flip()   // la pièce part ; elle se pose (land) à la fin du vol (endFlight)
     const to = { ...slotPlace(i), yaw: SPIN }
     setSlots((s) => s.map((x, j) => (j === i ? { k, landed: false, t } : x)))
     setFlights((fl) => [...fl, { id: `${k}-${t}`, k, i, dir: 'in', from: center, to, ctrl: ctrlFor(center, to, i) }])
@@ -197,10 +200,12 @@ export default function Carousel({ nav, pair, setPair, onOpen, onGame, onSolo, m
     const s = slots[i]
     if (returning || !s?.landed) return
     if (reduced) {
+      pick(players[s.k].id, 0.1)
       setActive(s.k)
       setSlots((sl) => sl.map((x, j) => (j === i ? null : x)))
       return
     }
+    flip()
     const from = { ...slotPlace(i), yaw: SPIN }
     const to = center
     setActive(s.k)   // la pièce centrale, cachée pendant le vol, prend ce joueur sans tourner
@@ -215,6 +220,7 @@ export default function Carousel({ nav, pair, setPair, onOpen, onGame, onSolo, m
   }
 
   const endFlight = (f) => {
+    land(players[f.k].id)
     if (f.dir === 'out') {
       setSnap(true)
       requestAnimationFrame(() => requestAnimationFrame(() => setSnap(false)))
@@ -227,7 +233,7 @@ export default function Carousel({ nav, pair, setPair, onOpen, onGame, onSolo, m
   // Gestes verticaux (molette, doigt, ↓ / ↑) : vers le bas, intro → sélection, puis, depuis la
   // sélection posée et le duel prêt, la page du duel ; vers le haut, retour à l'intro (la
   // transition se rembobine, même en cours de route).
-  const changeMode = (d) => setMode((m) => (m + d + MODES.length) % MODES.length)
+  const changeMode = (d) => { swoosh(d); setMode((m) => (m + d + MODES.length) % MODES.length) }
   // Entrer dans la version choisie : Duel → la transition vers la sélection ; Présentation et
   // Mon classement → leur page, avec le joueur affiché sur la pièce.
   const enter = () => {
@@ -244,7 +250,7 @@ export default function Carousel({ nav, pair, setPair, onOpen, onGame, onSolo, m
   }
   const down = () => {
     if (goal.current === 0) enter()
-    else if (soloDest) { if (progress.get() >= 1 && performance.now() - settledAt.current > 300) onSolo(active) }
+    else if (soloDest) { if (progress.get() >= 1 && performance.now() - settledAt.current > 300) { pick(players[active].id); onSolo(active) } }
     else if (ready && progress.get() >= 1 && performance.now() - settledAt.current > 300) onOpen({ autoplay: true })
   }
   const up = () => goTo(0)
@@ -272,7 +278,7 @@ export default function Carousel({ nav, pair, setPair, onOpen, onGame, onSolo, m
       // Les candidats : ← → changent de joueur, Entrée ouvre sa présentation, Échap revient à l'intro.
       if (soloDest) {
         if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') { e.preventDefault(); ringStep(e.key === 'ArrowRight' ? 1 : -1) }
-        else if (e.key === 'Enter') { e.preventDefault(); onSolo(active) }
+        else if (e.key === 'Enter') { e.preventDefault(); pick(players[active].id); onSolo(active) }
         else if (e.key === 'Escape' || e.key === 'Backspace') { e.preventDefault(); up() }
         return
       }
@@ -424,12 +430,12 @@ export default function Carousel({ nav, pair, setPair, onOpen, onGame, onSolo, m
       {/* Les candidats : titre, anneau des pièces, flèches et aide (SoloPick.jsx). */}
       {soloDest && (
         <CandidatesRing progress={progress} vw={lay.vw} ring={lay.ring} center={ringCenter} docked={docked}
-                        reduced={reduced} onStep={ringStep} onPick={() => onSolo(active)} />
+                        reduced={reduced} onStep={ringStep} onPick={() => { pick(players[active].id); onSolo(active) }} />
       )}
 
       {/* Titre de la sélection, frappé lettre par lettre. */}
       {duelDest && <>
-      <PickTitle top={lay.titleY} progress={progress} reduced={reduced} />
+      <PickTitle top={lay.titleY} progress={progress} reduced={reduced} hidden={intro} />
 
       {/* Emplacements du duel : vides, une pièce fantôme (la gravure seule, avant la frappe) ;
           remplis, la vraie pièce, qui flotte, et le nom du joueur dessous. */}

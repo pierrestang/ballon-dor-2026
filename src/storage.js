@@ -7,3 +7,9 @@ export const OLD_GAME_STORE = 'bo2026-classement'   // ancien format en poules, 
 export const gameFinished = () => {
   try { return !!JSON.parse(localStorage.getItem(GAME_STORE))?.done } catch { return false }
 }
+
+// Duels en cours : pas de retour au menu, ni par la flèche ni par le bouton Retour du navigateur
+// (Game.jsx pose le verrou, App.jsx le respecte).
+let menuLocked = false
+export const setMenuLocked = (v) => { menuLocked = v }
+export const isMenuLocked = () => menuLocked

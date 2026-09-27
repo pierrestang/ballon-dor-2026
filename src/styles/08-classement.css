@@ -42,14 +42,14 @@
 .game-link:disabled { opacity: 0.5; cursor: default; }
 
 /* Progression de la partie : fil doré tout en haut de l'écran. */
-.game-progress { position: fixed; top: 0; left: 0; right: 0; z-index: 6; height: 3px; background: var(--line); pointer-events: none; }
+.game-progress { position: fixed; top: 0; left: 0; right: 0; z-index: 6; height: 6px; background: var(--line); pointer-events: none; }
 .game-progress span { display: block; height: 100%; background: var(--gold); transform-origin: 0 50%; }
 
 .game-screen {
   position: relative;
 }
 .pick-title.game-heading { position: static; }
-.pick-title.game-heading p.is-gold { color: var(--gold); }   /* « VOTRE BALLON D'OR 2026 » */
+.pick-title.game-heading p.is-gold { color: var(--gold); }   /* « DUEL N SUR 5 », « VOTRE BALLON D'OR 2026 » : or uni (les lettres animées ne laissent pas passer un or découpé) */
 /* Flèche « Accueil » en haut au centre : le contenu commence dessous. */
 .game-up { z-index: 5; }
 .game-screen {
@@ -111,18 +111,9 @@
   pointer-events: none;
 }
 
-/* Duel : joueur · stats face à face (.compare de la page du duel) · joueur. */
-.game-versus {
-  flex: 1;
-  width: min(1280px, 100%);
-  display: grid;
-  grid-template-columns: 1fr minmax(0, 560px) 1fr;
-  grid-template-areas: 'a mid b';
-  align-items: center;
-  column-gap: clamp(16px, 3vw, 48px);
-}
+/* Pièce de l'annonce du Ballon d'Or : flottement. */
 .game-pick-spin { display: block; width: 100%; height: 100%; transform-style: preserve-3d; animation: coin-float 5s ease-in-out infinite; }
-.game-versus .compare { grid-area: mid; }
+
 
 /* Résultat : classement 1 à 10. */
 .game-ranking { list-style: none; margin: 0; padding: 0; width: min(620px, 100%); }
@@ -141,10 +132,182 @@
 .game-comm-block { display: flex; flex-direction: column; align-items: center; gap: 6px; }
 
 @media (max-width: 820px) {
-  .game-versus { grid-template-columns: 1fr 1fr; grid-template-areas: 'a b' 'mid mid'; row-gap: 20px; flex: 0; }
   .game-rank-comm { display: block; }
   .game-ranking li { flex-wrap: wrap; height: auto; padding: 8px 12px; }
 }
 @media (prefers-reduced-motion: reduce) { .game-pick-spin { animation: none; } }
 .game-count { pointer-events: none; font-variant-numeric: tabular-nums; }
 .game-nav > :only-child:not(.game-count) { margin-left: auto; }   /* « Nouvelle partie » seule : à droite */
+
+/* ------------------------------------------------------------------ */
+/* Mon classement : duels des manches, annonce du Ballon d'Or, résultat */
+/* (déplacé de 13-navigation.css, audit du 27/09/2026).                 */
+/* ------------------------------------------------------------------ */
+/* Résultat du jeu : tient sur un écran (27/09/2026) : le classement seul (sans pièces), centré
+   dans la hauteur restante. Hauteur des lignes et tailles des textes suivant la hauteur de
+   l'écran. */
+.game-screen.game-result { height: 100svh; min-height: 0; padding-bottom: clamp(16px, 3vh, 32px); gap: clamp(12px, 2.5vh, 28px); }
+.game-result-body { flex: 1; min-height: 0; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: clamp(12px, 2.5vh, 28px); }
+.game-result .game-ranking li { height: clamp(28px, 5.4vh, 48px); }
+.game-result .game-rank, .game-result .game-rank-name { font-size: clamp(16px, 2.8vh, 24px); }
+.game-result .game-ranking { width: min(420px, 100%); }   /* juste la place du nom le plus long */
+
+/* Annonce du Ballon d'Or (fin du jeu) : la pièce de l'intro au centre de l'écran, « BALLON D'OR
+   2026 » au-dessus, nom et place (or) dessous. */
+.game-ceremony { justify-content: center; }
+/* Bloc de la pièce (arcs compris), de la taille de la pièce : c'est lui qui glisse depuis la
+   place de la pièce de l'intro (Game.jsx, relay). */
+.game-ceremony-move { width: var(--d); height: var(--d); margin: calc(var(--d) * 0.3) 0 calc(var(--d) * 0.5); flex: none; }
+/* Mobile : chaque ligne du classement final sur une seule ligne (nom le plus long compris). */
+@media (max-width: 820px) {
+  .game-result .game-ranking li { flex-wrap: nowrap; height: clamp(28px, 5.4vh, 48px); padding: 0 10px; gap: 10px; }
+  .game-result .game-rank { width: 36px; }
+  .game-result .game-rank, .game-result .game-rank-name { font-size: 19px; }
+  .game-result .game-rank-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+}
+
+/* Duel d'une manche : la grille de la page du duel (.sticky.duel-grid.final-players, 03-duel.css)
+   telle quelle, puis les tableaux détaillés en bas de page. Différences : la grille défile avec
+   la page (pas épinglée), le titre de la manche occupe le centre de la bande du haut, et chaque
+   joueur est un bouton de vote (.game-figure-vote, soulevé de 6 px au survol). */
+.game-duel { position: relative; }
+.game .game-grid { position: relative; }
+.game-grid-head { grid-row: 1; grid-column: 3; align-self: end; justify-self: center; display: flex; flex-direction: column; align-items: center; gap: 12px; margin-bottom: 8px; }
+.game-grid .game-heading { margin: 0; }
+.game-mid { grid-area: mid; align-self: center; display: flex; flex-direction: column; align-items: center; gap: clamp(28px, 6vh, 56px); }
+.game-mid .compare { width: 100%; }
+/* Palmarès et stats : fondu quand ils changent (recréés au milieu de la rotation, Game.jsx). */
+.game-grid .game-figure .arc-name { animation: game-swap-in 0.5s var(--ease-out) both; }   /* stats, palmarès : défilement (Counter, Rolling, Flap) */
+@media (prefers-reduced-motion: reduce) { .game-grid .game-figure .arc-name { animation: none; } }
+/* Interrupteur de vote (VoteSwitch, Game.jsx) : piste à deux moitiés (‹ ›), curseur doré qui
+   glisse vers le joueur choisi (clic sur une moitié ou ← / →). */
+.game-switch {
+  --w: 200px; --h: 52px;   /* curseur : ±50 px = ¼ de la piste (Game.jsx) */
+  position: relative;
+  display: flex;
+  width: var(--w);
+  height: var(--h);
+  border: 1px solid rgba(212, 175, 55, 0.5);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--bg) 70%, transparent);
+}
+.game-switch-half {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  background: none;
+  border: 0;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: color var(--t-fast) var(--ease-out);
+}
+.game-switch-half svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.game-switch-half:not(:disabled):hover, .game-switch-half:focus-visible { color: var(--gold); outline: none; }
+.game-switch-half:disabled { cursor: default; }
+.game-switch-knob {
+  position: absolute;
+  z-index: 1;
+  top: 4px;
+  left: calc(50% - (var(--h) - 10px) / 2);
+  width: calc(var(--h) - 10px);
+  height: calc(var(--h) - 10px);
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 14px rgba(212, 175, 55, 0.45);
+}
+.game-switch.is-set .game-switch-half { color: transparent; }
+.game-grid .game-heading h1 { font-size: clamp(24px, 2.4vw, 36px); }
+.game-figure { transition: translate var(--t-med) var(--ease-out); }
+.game-figure:has(.game-figure-vote:not(:disabled):hover) { translate: 0 -6px; }
+.game-figure-vote { position: absolute; inset: 0; z-index: 2; background: none; border: 0; padding: 0; cursor: pointer; }
+.game-figure-vote:disabled { cursor: default; }
+.game-figure.is-won::before { inset: 5% -20% 0; }
+/* Joueur choisi : son nom en arc passe du blanc à l'or, lettre par lettre du centre vers les
+   bords (comme la frappe des noms de l'intro ; retards dans ArcName). */
+.game-figure .arc-name tspan { fill: var(--text); transition: fill 0.32s var(--ease-out); }
+.game-figure.is-won .arc-name tspan { fill: var(--gold); }
+/* Tous les textes blancs du joueur choisi passent à l'or en même temps que son nom : poste et
+   titres de son palmarès (les places d'honneur gardent leur argent / bronze), ses chiffres des
+   stats face à face ; léger décalage de haut en bas. */
+.game-grid :is(.palmares .poste, .palmares .award, .compare-row strong) { transition: color 0.32s var(--ease-out); }
+.game-grid.is-won-left .palmares.is-left :is(.poste, .award),
+.game-grid.is-won-right .palmares.is-right :is(.poste, .award),
+.game-grid.is-won-left .compare-row strong:first-child,
+.game-grid.is-won-right .compare-row strong:last-child { color: var(--gold); }
+/* En même temps, les textes du perdant s'assombrissent (même rythme). */
+.game-grid.is-won-right .palmares.is-left :is(.poste, .award, h3),
+.game-grid.is-won-left .palmares.is-right :is(.poste, .award, h3),
+.game-grid.is-won-right .compare-row strong:first-child,
+.game-grid.is-won-left .compare-row strong:last-child { color: #4a4843; }
+.game-grid .palmares h3 { transition: color 0.32s var(--ease-out); }
+/* Places d'honneur (2e, 3e meilleur…) du gagnant : en or comme ses autres titres, sans leur grisé. */
+.game-grid.is-won-left .palmares.is-left .block li.is-minor,
+.game-grid.is-won-right .palmares.is-right .block li.is-minor { filter: none; opacity: 1; }
+.game-grid .palmares li:nth-child(2) .award, .game-grid .compare-row:nth-child(2) strong { transition-delay: 40ms; }
+.game-grid .palmares li:nth-child(3) .award, .game-grid .compare-row:nth-child(3) strong { transition-delay: 80ms; }
+.game-grid .palmares li:nth-child(4) .award, .game-grid .compare-row:nth-child(4) strong { transition-delay: 120ms; }
+.game-grid .palmares li:nth-child(n+5) .award { transition-delay: 160ms; }
+@media (prefers-reduced-motion: reduce) { .game-figure .arc-name tspan, .game-grid :is(.palmares .poste, .palmares .award, .compare-row strong) { transition: none; } }
+.game-figure-vote:focus-visible { outline: none; }
+.game-figure::before { transition: opacity var(--t-med) var(--ease-out), inset var(--t-med) var(--ease-out); }
+.game-figure:has(.game-figure-vote:not(:disabled):hover)::before { inset: 8% -18% 4%; }
+@media (max-width: 820px) {
+  /* Mobile : titre, les deux joueurs, stats, puis les deux palmarès côte à côte. */
+  .game .game-grid { height: auto; grid-template-rows: auto auto auto auto; grid-template-areas: 'head head' 'figA figB' 'mid mid' 'palmA palmB'; padding-top: 72px; }
+  .game-grid-head { grid-area: head; margin-bottom: 36px; }
+}
+
+/* Annonce du n°1 (climax) : noir avant lui, lumière dorée qui monte derrière la pièce, pièce
+   plus grande, paillettes d'or qui tombent (Game.jsx). */
+.game-ceremony-dark { position: fixed; inset: 0; z-index: 4; background: #000; pointer-events: none; }
+.game-ceremony::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 46%, rgba(212, 175, 55, 0.28), transparent 42%);
+  opacity: 0;
+  transition: opacity 1.6s var(--ease-out);
+}
+.game-ceremony.is-winner::before { opacity: 1; }
+.game-ceremony-coin { transition: scale 1.2s var(--ease-expo); }
+.game-ceremony.is-winner .game-ceremony-coin { scale: 1.12; }
+.game-confetti { position: fixed; inset: 0; z-index: 3; overflow: hidden; pointer-events: none; }
+.game-confetti span {
+  position: absolute;
+  top: -20px;
+  border-radius: 1px;
+  background: linear-gradient(135deg, #f7e19c, var(--gold) 55%, #8f6420);
+  animation: confetti-fall linear both;
+}
+@keyframes confetti-fall {
+  from { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+  85% { opacity: 1; }
+  to { transform: translate(var(--drift), 110vh) rotate(var(--spin)); opacity: 0; }
+}
+
+/* Bouton « Partager mon classement » (résultat) : contour doré, plein au survol. */
+.game-share {
+  padding: 12px 26px;
+  border: 1px solid rgba(212, 175, 55, 0.6);
+  border-radius: 999px;
+  background: none;
+  font-family: var(--font);
+  font-weight: 700;
+  font-size: var(--fs-arrow-label);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold);
+  cursor: pointer;
+  transition: background-color var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out);
+}
+.game-share:not(:disabled):hover, .game-share:focus-visible { background: var(--gold); color: var(--bg); outline: none; }
+.game-share:disabled { opacity: 0.6; cursor: default; }
+
+/* Places du classement final en italique à empattements (touche éditoriale, 27/09/2026). */
+.game-rank { font-family: var(--serif); font-style: italic; font-weight: 600; letter-spacing: 0; }
+.game-result .game-rank { font-size: clamp(20px, 3.4vh, 30px); }
+

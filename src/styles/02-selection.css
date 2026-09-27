@@ -49,6 +49,18 @@
   mask: var(--coin) center / contain no-repeat;
 }
 .coin-layer.is-dark { background: linear-gradient(90deg, #4f370b, #8a6622 30%, #b8923f 50%, #8a6622 70%, #4f370b); }
+/* Reflet qui traverse la face quand la pièce tourne (position : Coin.jsx), découpé à la pièce. */
+.coin-sheen {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  pointer-events: none;
+  background: linear-gradient(105deg, transparent 40%, rgba(255, 246, 220, 0.32) 50%, transparent 60%) no-repeat;
+  background-size: 220% 100%;
+  -webkit-mask: var(--coin) center / contain no-repeat;
+  mask: var(--coin) center / contain no-repeat;
+}
+@media (prefers-reduced-motion: reduce) { .coin-sheen { display: none; } }
 @keyframes coin-float { 0%, 100% { translate: 0 0; } 50% { translate: 0 -2.5%; } }
 
 /* Titre de la page, en haut au centre : police des noms des joueurs (Barlow Condensed 700

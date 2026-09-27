@@ -11,7 +11,6 @@ import { SLIDE } from './transitions'
 // « Ratio » : buts + assists par match, détaillé au survol de l'intitulé.
 const COLUMNS = ['Matches', 'Buts', 'Assists', 'Ratio']
 const HEADER_TIPS = { Ratio: 'Buts + Assists / match' }
-const dash = (n, format = (x) => x) => (n === null ? '–' : format(n))   // passes non renseignées
 // Ratio : buts + assists par match. Passes non relevées (« n.r. », qualifications de la Coupe du
 // monde) : buts par match à la place, signalé en infobulle.
 const goalsOnly = (s) => s.type === 'qualifications' && s.contributionsParMatch === null && s.passes === null && s.matchs > 0
@@ -27,13 +26,6 @@ const ratioCell = (s) => {
 const cells = (s) => [s.matchs, s.buts, s.passes ?? 0,
   ratioCell(s)]
 
-// Ordre des types de compétition (TYPES dans scripts/excel_vers_json.py). Les deux tableaux
-// ont les mêmes lignes : pour chaque type, autant de lignes que le joueur qui en a le plus
-// (coupe nationale + coupe secondaire : 2), pour que les compétitions similaires se font face.
-// Nationales, puis continentales, puis mondiales.
-const TYPES = ['championnat', 'coupe-nationale',
-  'coupe-continentale', 'supercoupe-uefa',
-  'intercontinentale', 'coupe-du-monde', 'qualifications']
 // Familles alignées d'un tableau à l'autre (27/09/2026) : championnat, coupes nationales
 // (supercoupes comprises), coupes d'Europe et intercontinentales, compétitions internationales
 // (Coupe du monde et qualifications). Chaque famille prend, dans les deux tableaux, autant de
@@ -99,12 +91,8 @@ const totals = (p) => [
   p.competitions.filter((c) => c.trophee).length,
   p.competitions.flatMap((c) => c.individuel).filter((t) => t.rang === 1).length,
 ]
-const bestClass = (own, rival) => totals(own).map((v, k) => {
-  const r = totals(rival)[k]
-  return v !== null && r !== null && v > r ? 'is-best' : undefined
-})
 
-function Table({ player, rival, side, medals, sizes }) {
+function Table({ player, side, medals, sizes }) {
   // Lignes du tableau, famille par famille : ses compétitions, puis des lignes vides jusqu'à la
   // taille commune de la famille (sizes).
   const lines = GROUPS.flatMap((g, gi) => {
@@ -184,13 +172,12 @@ function Table({ player, rival, side, medals, sizes }) {
           <m.tr {...row(lines.length + 2)}>
             <th scope="row" colSpan={2} className="final-total-label">Total</th>
             {(() => {
-              const best = bestClass(player, rival)
               const t = totals(player)
               return (
                 <>
-                  {cells(player.stats).map((v, k) => <td key={k} className={best[k]}>{v}</td>)}
-                  <td className={best[4]}>{t[4]}</td>
-                  <td className={best[5]}>{t[5]}</td>
+                  {cells(player.stats).map((v, k) => <td key={k}>{v}</td>)}
+                  <td>{t[4]}</td>
+                  <td>{t[5]}</td>
                 </>
               )
             })()}
@@ -210,8 +197,8 @@ export default function FinalTables({ pair }) {
   return (
     <div className="details-grid">
       {/* key : un joueur qui change rejoue l'apparition de ses lignes. */}
-      <Table key={a.id} player={a} rival={b} side="left" medals={medals} sizes={sizes} />
-      <Table key={b.id} player={b} rival={a} side="right" medals={medals} sizes={sizes} />
+      <Table key={a.id} player={a} side="left" medals={medals} sizes={sizes} />
+      <Table key={b.id} player={b} side="right" medals={medals} sizes={sizes} />
     </div>
   )
 }
@@ -223,7 +210,7 @@ export function SingleTable({ player }) {
   const medals = Math.min(3, Math.max(0, ...player.competitions.map((c) => c.individuel.length)))
   return (
     <div className="details-grid is-single">
-      <Table key={player.id} player={player} rival={player} side="left" medals={medals} sizes={sizes} />
+      <Table key={player.id} player={player} side="left" medals={medals} sizes={sizes} />
     </div>
   )
 }

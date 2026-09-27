@@ -26,10 +26,10 @@
 .pick-arrow.is-gone {
   opacity: 0;
 }
-.pick-go:not(.is-on), .final-down:not(.is-on) { opacity: 0; }
+.pick-go:not(.is-on) { opacity: 0; }
 /* Transitions d'apparition existantes des chevrons, inchangées (+ couleur au survol). */
-.pick-go, .final-down { transition: opacity var(--t-med) var(--ease-out), visibility 0s var(--t-med), color var(--t-fast) var(--ease-out); }
-.pick-go.is-on, .final-down.is-on { transition: opacity var(--t-med) var(--ease-out), color var(--t-fast) var(--ease-out); }
+.pick-go { transition: opacity var(--t-med) var(--ease-out), visibility 0s var(--t-med), color var(--t-fast) var(--ease-out); }
+.pick-go.is-on { transition: opacity var(--t-med) var(--ease-out), color var(--t-fast) var(--ease-out); }
 /* Libellés des emplacements vides : même respiration d'opacité (25 → 35 %) que la pièce
    fantôme au-dessus, en phase avec elle. */
 .pick-slot-label .arc-l { animation: pick-ghost-breathe 6s ease-in-out infinite; }

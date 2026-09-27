@@ -8,7 +8,11 @@ import { FRAMES, frameUrl, posterUrl } from './data'
 const PARALLEL = 4
 const cache = new Map()
 let prefetched = new Set()
-const opened = new Set()
+const opened = new Set()   // joueurs ouverts, du plus ancien au plus récent (ordre d'insertion)
+// Images décodées gardées en mémoire pour KEEP joueurs au plus (une séquence décodée pèse plus
+// de 100 Mo) : au-delà, les plus anciens qui ne sont plus affichés (aucun abonné) sont libérés
+// et rechargés au besoin (depuis le cache HTTP).
+const KEEP = 6
 
 function entry(id) {
   let e = cache.get(id)
@@ -70,7 +74,16 @@ export function prefetch(ids) {
 
 /** Ouverture d'un joueur en page 2 : chargement complet de sa séquence. */
 export function open(id) {
+  opened.delete(id)
   opened.add(id)
+  for (const old of opened) {
+    if (opened.size <= KEEP) break
+    const e = cache.get(old)
+    if (old === id || prefetched.has(old) || e?.listeners.size) continue
+    stop(old)
+    e?.frames.fill(null)
+    opened.delete(old)
+  }
   return start(id)
 }
 
@@ -85,10 +98,6 @@ export function subscribe(id, fn) {
   const e = entry(id)
   e.listeners.add(fn)
   return () => e.listeners.delete(fn)
-}
-
-export function posterImage(id) {
-  return entry(id).poster
 }
 
 /** Vrai si les images from…to (incluses) de ce joueur sont chargées. */

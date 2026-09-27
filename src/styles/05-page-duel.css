@@ -6,71 +6,62 @@
 .final { position: relative; z-index: 1; background: radial-gradient(ellipse at 50% 50%, var(--bg-center) 0%, var(--bg) 70%) fixed, var(--bg); }
 .final .final-players { position: relative; top: auto; transform-origin: 50% 0; will-change: transform; }
 
-/* Grand écran : scène épinglée (GSAP). Les joueurs restent en pleine hauteur, immobiles ; les
-   tableaux, posés en bas de l'écran par-dessus l'image sur un fond noir légèrement transparent,
-   montent du bas au scroll ; le « VS » apparaît juste au-dessus d'eux. */
-.final.is-pinned .final-stage { position: relative; height: 100svh; overflow: hidden; }
-.final.is-pinned .final-band { position: absolute; inset: 0; }
-.final.is-pinned .final-tables {
-  transform: translateY(110%);   /* hors écran avant que GSAP ne prenne la main */
+/* Pages de joueurs (page du duel, Présentation) et duels de Mon classement : même mise en page
+   (27/09/2026). En haut, la grille des joueurs sur un écran (sous la flèche de retour, 56 px) ;
+   dessous, les tableaux détaillés, en simple défilement ; les joueurs s'effacent en descendant
+   (--down, playerPage.js / Game.jsx). */
+.final-band { position: relative; }
+:is(.final .final-players, .game .game-grid) { padding-top: 56px; box-sizing: border-box; }
+@media (min-width: 821px) {
+  /* Bas réservé à « Voir le tableau détaillé » (--foot) : les pieds ne le touchent jamais. */
+  :is(.final .final-players, .game .game-grid) { --foot: 72px; padding-bottom: var(--foot); --fh: min(calc(100svh - var(--band) - 60px - 56px - var(--foot)), 38vw); }
+  /* Page du duel : stats à la place qu'elles ont au-dessus du curseur de vote du jeu. */
+  .final:not(.solo) .final-players .compare { margin-bottom: calc(52px + clamp(28px, 6vh, 56px)); }
 }
-.final-veil {   /* voile sombre transparent sur les joueurs quand les tableaux montent */
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  background: color-mix(in srgb, var(--bg) 60%, transparent);
-  opacity: 0;
-  pointer-events: none;
-}
+:is(.final .final-players, .game-grid) .figure { filter: opacity(calc(1 - var(--down, 0))); }   /* filter, pas opacity : la vidéo et la photo gardent leur propre opacité */
 
-/* Mobile et mouvement réduit : pas d'épinglage. Bande des joueurs d'emblée réduite (hauteur et
-   échelle calculées dans Final.jsx), sans stats, listes de titres ni flèches ; puis les
-   tableaux en défilement classique. */
-.final.is-flow .final-band { position: relative; overflow: hidden; }
-.final.is-flow .final-players :is(.compare, .palmares .block, .figure-picker) { display: none; }
-
-/* Tableaux de la page 3, ici dans la page (pas en calque plein écran). */
-.final .final-tables.details {
+/* Tableaux détaillés : sous les joueurs, chacun dans son panneau, répartis sur la largeur. */
+:is(.game, .final) .final-tables.details {
   position: relative;
   inset: auto;
   z-index: auto;
   overflow: visible;
-  display: block;
   background: none;
-  padding: 12px var(--pad) 12px;
+  /* Un écran par tableau : centré en hauteur (sous la flèche de retour), jamais collé en haut. */
+  min-height: 100svh;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 56px var(--pad) 104px;   /* un peu plus haut que le centre */
 }
-.final.is-pinned .final-tables.details {
-  position: absolute;
-  z-index: 2;
-  top: var(--tables-top, calc(50% - var(--tables-h, 50svh) / 2));   /* centrés, sous les noms en arc (Final.jsx) */
-  bottom: auto;
-  left: 0;
-  right: 0;
-  padding: 0;
-  background: none;
-}
-/* Deux tableaux séparés, centrés entre le milieu de leur moitié d'écran (25 %) et le joueur (28 %) :
-   à 26,5 % et 73,5 % de la largeur, bien espacés, chacun dans son propre panneau. */
-.final.is-pinned .final-tables .details-grid {
-  --fc: 25vw;                                  /* centre de chaque moitié de l'écran */
-  --tw: min(44vw, 720px);                      /* largeur d'un tableau */
+:is(.game, .final) .final-tables .details-grid {
+  --tw: min(44vw, 720px);
   display: flex;
   align-items: flex-start;
-  justify-content: space-evenly;   /* écart entre les deux tableaux = marge de chaque côté */
+  justify-content: space-evenly;
   max-width: none;
   margin: 0;
   column-gap: 0;
 }
-.final.is-pinned .final-tables .details-side {
-  flex: none;
-  width: var(--tw);
-}
-/* Panneau de chaque tableau : fond sombre, peu transparent et flouté derrière, pour que chiffres
-   et icônes ressortent nettement par-dessus l'image des joueurs. */
-.final.is-pinned .final-tables .details-panel {
+:is(.game, .final) .final-tables .details-side { flex: none; width: var(--tw); }
+:is(.game, .final) .final-tables .details-panel {
   padding: 12px 18px 14px;
+  border-radius: var(--radius);
+  background: var(--panel);
+  box-shadow: 0 0 0 1px rgba(237, 234, 227, 0.08);
 }
-.final .final-tables .details-grid { margin: 0 auto; }
+@media (max-width: 820px) {
+  /* Mobile : joueurs en grand, stats dessous, puis les palmarès ; tableaux empilés. */
+  :is(.final .final-players, .game .game-grid) { height: auto; }
+  .final .final-players:not(.solo-grid) { grid-template-rows: auto auto auto; grid-template-areas: 'figA figB' 'mid mid' 'palmA palmB'; padding-top: 128px; }
+  :is(.final .final-players, .game-grid) .palmares.is-left { grid-area: palmA; }
+  :is(.final .final-players, .game-grid) .palmares.is-right { grid-area: palmB; }
+  :is(.game, .final) .final-tables .details-grid { flex-direction: column; align-items: stretch; row-gap: 32px; }
+  :is(.game, .final) .final-tables .details-side { width: auto; }
+  /* « Voir le tableau détaillé » : sous le palmarès (dans le flux), jamais par-dessus. */
+  .intro-down.tables-down { position: relative; left: auto; bottom: auto; translate: none; margin: 8px auto 0; }
+}
 
 /* Tableaux trop hauts pour leur place : textes, icônes et lignes réduits d'un même facteur
    --k (Final.jsx), sans retirer aucune ligne ni colonne. */
@@ -134,9 +125,6 @@
 }
    /* même hauteur que les logos */
 
-@media (max-width: 820px) {
-  .final .final-tables.details { padding: 12px 16px 32px; }
-}
 /* Page du duel : pas de séparateur sous la dernière ligne des tableaux. */
 /* Page du duel : chaque tableau va du début du logo d'équipe à la droite du dernier score —
    logos d'équipe calés à gauche, colonne Ratio calée à droite (intitulés compris), sans marge
@@ -160,12 +148,6 @@
 
 .final-tables .details-table tfoot th {
   padding-left: 0;
-}
-/* Les deux tableaux toujours de la même largeur : colonne et panneau de largeur fixe, le contenu
-   ne peut pas les agrandir. */
-.final.is-pinned .final-tables .details-side {
-  min-width: 0;
-  max-width: var(--tw);
 }
 .final-tables .details-panel { min-width: 0; overflow: hidden; }
 .final-tables .details-table { width: 100%; }
@@ -197,7 +179,6 @@
   border-top: 1px solid var(--line);
 }
 /* Ligne Total : le plus haut des deux joueurs en or (sauf matches). */
-.final-tables .details-table tfoot td.is-best { color: var(--gold); }
 /* « Total : » centré sous les deux premières colonnes (Équipe, Tournoi). */
 
 /* « Total : » : même police et taille que les scores de la ligne. */
@@ -229,27 +210,9 @@
   flex: none;
   font-size: 0.72em;
 }
-/* Page du duel : places d'honneur des distinctions individuelles en argent (2e) ou en bronze
-   (3e), plus en gris. */
-.final .block li.is-rank-2 .award { color: #c7ccd3; }
-.final .block li.is-rank-3 .award { color: #cd8a4f; }
 /* Colonne Individuel : médailles jamais collées au bord droit du panneau. */
 .final-tables .details-table td.details-indiv,
 .final-tables .details-table th:last-child { padding-right: 6px; }
-/* Panneaux des tableaux : même noir que le site (plus de teinte chaude). */
-.final.is-pinned .final-tables .details-panel {
-  border-radius: var(--radius);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  box-shadow: 0 0 0 1px rgba(237, 234, 227, 0.08), 0 -20px 60px rgba(0, 0, 0, 0.45);
-  background: color-mix(in srgb, var(--bg) 90%, transparent);
-}
-/* Places d'honneur (2e argent, 3e bronze) grisées pour ressortir moins que les titres de 1er :
-   couleur de la médaille gardée, mais atténuée, logo désaturé. */
-.final .block li.is-minor { opacity: 0.55; filter: grayscale(0.6); }
-/* Page du duel : flèche vers les tableaux et aide clavier (comme l'intro et la sélection). */
-.final-down { z-index: 4; opacity: 0; visibility: hidden; transition: opacity var(--t-med) var(--ease-out), visibility 0s var(--t-med); }
-.final-down.is-on { opacity: 1; visibility: visible; transition: opacity var(--t-med) var(--ease-out); }
 /* Infobulle du poste dans l'en-tête des tableaux : dans le flux du texte, sans décalage. */
 .final-table-meta .tip { vertical-align: baseline; }
 /* Mobile : tableaux lisibles dans 360 px — pas d'agrandissement (--z), textes et icônes à leur

@@ -3,7 +3,7 @@
 // longueur ; quand il est plus court (« DUEL »), les deux gardent leur espacement normal (titre
 // resserré, 27/09/2026). `title` et `sub` : les <span> du texte (display: inline-block).
 
-export function fitTitle(title, sub) {
+function fitTitle(title, sub) {
   if (!title || !sub) return
   title.style.letterSpacing = ''
   title.style.marginRight = ''

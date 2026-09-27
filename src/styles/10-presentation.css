@@ -3,7 +3,7 @@
 /* ------------------------------------------------------------------ */
 /* Grand écran : palmarès · joueur (en grand) · stats. */
 .solo .solo-grid {
-  --fh: min(calc(100svh - var(--band) - 40px - var(--lift, 0px)), 62vw);
+  --fh: min(calc(100svh - var(--band) - 40px - 56px - var(--foot, 0px)), 62vw);
   --fcol: calc(var(--fw) * 0.8);
   grid-template-columns: minmax(0, 1fr) var(--fcol) minmax(0, 1fr);
   grid-template-areas: '. . .' 'palmA figA mid';
@@ -12,15 +12,17 @@
 .solo .solo-stats { justify-self: center; align-self: start; gap: clamp(10px, 2.2vh, 22px); }   /* hauteur : Solo.jsx */
 /* Intitulé (deux mots : deux lignes) puis score dessous, centrés. */
 .solo .solo-stats .compare-row { display: flex; flex-direction: column; align-items: center; gap: 6px; }
-.solo .solo-stats .compare-row span { max-width: none; white-space: pre-line; }
+.solo .solo-stats .compare-row > span { max-width: none; white-space: pre-line; }
 .solo .solo-stats .compare-row strong { text-align: center; }
-.solo .figure-picker .arrow.is-outer-left { left: 10%; }
-.solo .figure-picker .arrow.is-outer-right { right: 10%; }
+.solo .figure-picker .arrow.is-outer-left { left: -14%; }   /* bien écartées du joueur (hors de ses bras) */
+.solo .figure-picker .arrow.is-outer-right { right: -14%; }
 /* Un seul tableau, centré. */
-.final.solo.is-pinned .final-tables .details-grid { justify-content: center; }
+.final.solo .final-tables .details-grid { justify-content: center; }
 .final.solo .final-tables .details-side { width: min(820px, 92vw); }
 @media (max-width: 820px) {
-  .solo .solo-grid { grid-template-columns: minmax(0, 1fr); grid-template-areas: '.' 'figA'; }
-  .final.solo .palmares { display: none; }   /* club, drapeau et poste : dans le tableau dessous */
+  /* Mobile : le joueur, ses stats sur une ligne, puis son palmarès (comme la page du duel). */
+  .solo .solo-grid { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto auto; grid-template-areas: 'figA' 'mid' 'palmA'; padding-top: 128px; row-gap: 20px; }
+  .solo .solo-stats { display: grid; grid-template-columns: repeat(4, 1fr); width: 100%; }
+  .solo .palmares.is-left { justify-self: stretch; width: auto; }
   .final.solo .final-tables .details-side { width: 100%; }
 }

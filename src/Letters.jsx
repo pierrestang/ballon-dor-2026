@@ -16,12 +16,12 @@ const FONT = '"Barlow Condensed"'
 export const ARC_FONT = 25
 const ARC_LS = 0.08 * ARC_FONT   // espacement des lettres (0,08 em)
 const GAP = 16
-export const R_TOP = 100 + GAP
+const R_TOP = 100 + GAP
 export const R_BOTTOM = 100 + GAP + ARC_FONT * 0.7
 
 let fontsLoaded = false
 /** Vrai une fois Barlow Condensed 700 chargée (les angles des lettres dépendent des largeurs). */
-export function useFontsReady() {
+function useFontsReady() {
   const [ok, setOk] = useState(fontsLoaded)
   useEffect(() => {
     if (ok) return

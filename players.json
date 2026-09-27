@@ -89,7 +89,7 @@
         "matchs": 8,
         "buts": 0,
         "passes": 7,
-        "resultat": "4e",
+        "resultat": "Demi-finale",
         "individuel": [
           {
             "titre": "Meilleur passeur",
@@ -698,7 +698,7 @@
         "matchs": 8,
         "buts": 10,
         "passes": 4,
-        "resultat": "4e",
+        "resultat": "Demi-finale",
         "individuel": [
           {
             "titre": "Meilleur buteur",
@@ -1003,7 +1003,7 @@
         "matchs": 8,
         "buts": 6,
         "passes": 2,
-        "resultat": "4e",
+        "resultat": "Demi-finale",
         "individuel": [],
         "contributionsParMatch": 1.0
       },

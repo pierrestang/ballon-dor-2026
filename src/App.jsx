@@ -6,6 +6,9 @@ import Carousel, { MODES } from './Carousel'
 import Final from './Final'
 import Solo from './Solo'
 import { parseRoute, routeOf } from './routes'
+import { isMenuLocked } from './storage'
+import SoundToggle from './SoundToggle'
+import Cursor from './Cursor'
 
 // Mode « Mon classement » : chargé à la demande (hors premier chargement), préchargé une fois la
 // page chargée.
@@ -38,9 +41,9 @@ export default function App() {
   // l'ancienne page de comparaison et celle des tableaux (assets-source/ancien/).
   const [final, setFinal] = useState(start.page === 'final')
   const [game, setGame] = useState(start.page === 'game')   // mode « Mon classement »
-  // Versions de l'intro (MODES, Carousel.jsx) : 0 Les candidats, 1 Duel, 2 Mon classement (par
-  // défaut) ; ouverte par un lien, celle de la page (pour que le retour y mène).
-  const [mode, setMode] = useState({ solo: 0, final: 1 }[start.page] ?? 2)
+  // Versions de l'intro (MODES, Carousel.jsx) : 0 Les candidats (par défaut : découvrir les
+  // joueurs d'abord), 1 Duel, 2 Mon classement ; ouverte par un lien, celle de la page.
+  const [mode, setMode] = useState({ solo: 0, final: 1, game: 2 }[start.page] ?? 0)
   const [solo, setSolo] = useState(start.solo ?? null)   // page Présentation : index du joueur, ou null
   const [introPlayer, setIntroPlayer] = useState(0)  // joueur de la pièce au retour à l'intro
   // Pièce de l'intro confiée à l'annonce du Ballon d'Or ({ id, x, y, size } : centre et diamètre
@@ -66,6 +69,8 @@ export default function App() {
   }, [page, pair[0], pair[1], solo])
   useEffect(() => {
     const onPop = () => {
+      // Duels en cours : le bouton Retour ne quitte pas le jeu (on remet son adresse).
+      if (isMenuLocked()) { window.history.pushState(null, '', '#classement'); return }
       const r = parseRoute(window.location.hash)
       fromHistory.current = true
       go(lastPage.current, r.page, () => {
@@ -104,12 +109,6 @@ export default function App() {
     return () => { clearTimeout(t); cancelIdle() }
   }, [loaded, final, inDuel, duo[0].id, duo[1].id])
 
-  // GSAP (page du duel) préchargé une fois la page chargée.
-  useEffect(() => {
-    if (!loaded || final) return
-    import('gsap'); import('gsap/ScrollTrigger')
-  }, [loaded, final])
-
   // Fond de la page selon la version (styles.css, data-theme) : sur l'intro, celle choisie ;
   // sinon celle de la page affichée (la sélection et la page du duel : Duel).
   const theme = solo !== null ? 'solo' : game ? 'game' : final ? 'duel' : MODES[mode].id
@@ -144,6 +143,8 @@ export default function App() {
                       }, { relay: !!rect })} />
           )}
         </AnimatePresence>
+        <SoundToggle />
+        <Cursor />
       </MotionConfig>
     </LazyMotion>
   )

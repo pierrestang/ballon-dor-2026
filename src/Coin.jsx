@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
-import { animate, m, useMotionValue, useReducedMotion, useTransform } from 'framer-motion'
-import { coinUrl } from './data'
+import { animate, m, useMotionValue, useReducedMotion, useSpring, useTransform } from 'framer-motion'
+import players, { coinUrl } from './data'
+import { clink, setCoinNotes } from './sound'
+
+setCoinNotes(players.map((p) => p.id))   // une note par joueur (sound.js)
 
 // Pièce d'or en 3D des pages 1 et 3 (Carousel.jsx, Details.jsx).
 
@@ -8,11 +11,21 @@ import { coinUrl } from './data'
 const THICK = 0.06
 const LAYERS = 12
 const HOVER_SPIN = { duration: 1.8, ease: [0.3, 0.7, 0.2, 1] }   // tour complet au survol
+const TILT = { stiffness: 180, damping: 18 }   // inclinaison au survol (LiveCoin)
 
 /** Pièce d'or en 3D : portrait sur les deux faces (le joueur regarde vers la droite quelle que
     soit la face montrée), tranche = LAYERS disques dorés, un sur deux plus sombre (stries). */
 export function Coin({ player, rotateY = 0 }) {
   const half = 50 * THICK   // demi-épaisseur, en % du diamètre
+  // Reflet (27/09/2026) : bande de lumière douce en diagonale ; au repos au milieu de la face,
+  // elle glisse d'un bord à l'autre quand la pièce tourne (t : angle de la face visible, -1 → 1).
+  const still = useMotionValue(0)
+  const rot = typeof rotateY === 'object' ? rotateY : still
+  const sheen = useTransform(rot, (v) => {
+    const t = ((((v + 90) % 180) + 180) % 180 - 90) / 90
+    return `${50 - t * 75}% 0`
+  })
+  const face = (flip) => `${flip ? 'rotateY(180deg) ' : ''}translateZ(calc(var(--d) * ${half / 100} + 0.5px)) scaleX(-1)`
   return (
     // Adresse absolue : une url() relative dans une variable CSS se résout depuis la feuille de
     // style qui l'utilise (dist/assets/), pas depuis la page (base Vite « ./ »).
@@ -25,6 +38,8 @@ export function Coin({ player, rotateY = 0 }) {
       ))}
       <img className="coin-face" src={coinUrl(player.id)} alt="" draggable="false" decoding="sync"
            style={{ transform: `rotateY(180deg) translateZ(calc(var(--d) * ${half / 100})) scaleX(-1)` }} />
+      <m.span className="coin-sheen" aria-hidden="true" style={{ transform: face(false), backgroundPosition: sheen }} />
+      <m.span className="coin-sheen" aria-hidden="true" style={{ transform: face(true), backgroundPosition: sheen }} />
     </m.span>
   )
 }
@@ -33,12 +48,14 @@ export function Coin({ player, rotateY = 0 }) {
     pour toutes les pièces : arc, pièces déjà placées comprises, et emplacements du duel. Repassée
     pendant un tour, la pièce repart pour un tour complet de plus (toujours un nombre entier de
     tours : elle finit de face) ; pas de rotation en mouvement réduit. */
-export function useHoverSpin() {
+export function useHoverSpin(id) {   // id : joueur de la pièce (sa note au survol)
   const reduced = useReducedMotion()
   const spin = useMotionValue(0)
   const target = useRef(0)
   const start = (e) => {
-    if (e.pointerType !== 'mouse' || reduced) return
+    if (e.pointerType !== 'mouse') return
+    clink(typeof id === 'function' ? id() : id)
+    if (reduced) return
     target.current += 360
     animate(spin, target.current, HOVER_SPIN)
   }
@@ -56,15 +73,26 @@ export const syncFloat = () => -((performance.now() / 1000) % 5)
     complet au passage de la souris (useHoverSpin).
     `rotateY` (facultatif) : rotation supplémentaire (valeur de mouvement), ajoutée au tour. */
 export function LiveCoin({ player, phase = 0, rotateY }) {
-  const [spin, startSpin] = useHoverSpin()
+  const [spin, startSpin] = useHoverSpin(player.id)
   const [delay] = useState(() => (phase === 'sync' ? syncFloat() : -phase))
   const turn = useTransform(() => spin.get() + (typeof rotateY === 'object' ? rotateY.get() : rotateY ?? 0))
+  // Inclinaison au survol (souris) : la pièce suit le pointeur, jusqu'à 12°, comme tenue en main.
+  const reduced = useReducedMotion()
+  const tiltX = useSpring(0, TILT), tiltY = useSpring(0, TILT)
+  const onMove = (e) => {
+    if (e.pointerType !== 'mouse' || reduced) return
+    const r = e.currentTarget.getBoundingClientRect()
+    tiltY.set(((e.clientX - r.left) / r.width - 0.5) * 24)
+    tiltX.set(-((e.clientY - r.top) / r.height - 0.5) * 24)
+  }
+  const onLeave = () => { tiltX.set(0); tiltY.set(0) }
   return (
-    <span className="coin-live" onPointerEnter={startSpin}>
+    <m.span className="coin-live" onPointerEnter={startSpin} onPointerMove={onMove} onPointerLeave={onLeave}
+            style={{ rotateX: tiltX, rotateY: tiltY }}>
       <span className="coin-live-float" style={{ animationDelay: `${delay}s` }}>
         <Coin player={player} rotateY={turn} />
       </span>
-    </span>
+    </m.span>
   )
 }
 

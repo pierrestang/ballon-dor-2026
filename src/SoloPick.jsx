@@ -26,7 +26,7 @@ const TILT = [-7, 5, -3, 8, -6, 4, -9, 6, -4, 7]
 // Changement de joueur : comme la pièce de la sélection du duel (COIN_TURN, Carousel.jsx) — même
 // durée et même courbe pour le déplacement le long de l'anneau et pour le tour complet que chaque
 // pièce fait sur elle-même, dans le sens du déplacement ; soulèvement de 6 px au survol.
-export const RING_STEP = COIN_TURN
+const RING_STEP = COIN_TURN
 const HOVER = { stiffness: 300, damping: 24 }
 export const mod = (n) => ((n % N) + N) % N
 const clamp01 = (x) => Math.min(1, Math.max(0, x))

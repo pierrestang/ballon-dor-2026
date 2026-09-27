@@ -25,8 +25,11 @@ function curve(x) {
   const k = (x - x0) / (x1 - x0)
   return y0 + (y1 - y0) * (1 - (1 - k) ** 3)   // power3.out sur chaque segment
 }
+// Visiteur qui revient (site déjà vu, fichiers en cache) : chargeur 4 fois plus court (27/09/2026).
+const SEEN_KEY = 'bo2026-vu'
+const SPEED = (() => { try { const seen = localStorage.getItem(SEEN_KEY) === '1'; localStorage.setItem(SEEN_KEY, '1'); return seen ? 4 : 1 } catch { return 1 } })()
 // Jamais plus vite que la simulation, jamais plus que le chargement réel (sauf passé MAX_MS).
-const progress = (t, real) => Math.min(curve(t / SIM_MS), Math.max(real, t / MAX_MS))
+const progress = (t, real) => Math.min(curve((t * SPEED) / SIM_MS), Math.max(real, (t * SPEED) / MAX_MS))
 
 /** Chargement réel : polices de l'intro + les 10 pièces de la page 1 (arrivée instantanée).
     Renvoie une ref dont `current` va de 0 à 1. */

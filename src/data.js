@@ -45,6 +45,15 @@ const BIRTHS = {
 }
 
 /** Âge du joueur aujourd'hui (null si date inconnue). */
+// Couleur dominante du maillot de la photo (extraite des photos face.avif, 27/09/2026) : halo de
+// lumière de scène derrière le joueur (--kit).
+const KITS = {
+  'erling-haaland': '#e10519', 'harry-kane': '#506096', 'jude-bellingham': '#4e6898',
+  'khvicha-kvaratskhelia': '#035fe2', 'kylian-mbappe': '#064edf', 'lamine-yamal': '#e1040a',
+  'lionel-messi': '#4270a3', 'michael-olise': '#064fdf', 'ousmane-dembele': '#074fde', rodri: '#da0b0f',
+}
+export const kitStyle = (id) => ({ '--kit': KITS[id] ?? '#d4af37' })
+
 export const ageOf = (id, now = new Date()) => {
   const b = BIRTHS[id] && new Date(BIRTHS[id])
   if (!b) return null

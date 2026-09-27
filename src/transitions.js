@@ -11,14 +11,6 @@ const DOWN = '100vh'
 const away = (y) => ({ y, scale: 0.94, opacity: 0.4, transition: SLIDE })
 const here = { y: 0, scale: 1, opacity: 1, transition: SLIDE }
 
-// Intro → page 1 : l'intro part par le haut et la page 1 arrive par le bas, encore vide (fond
-// noir qui défile) ; ses éléments apparaissent une fois le glissement fini (Carousel.jsx).
-export const introVariants = {
-  hidden: (nav) => (nav.from === 'carousel' ? { y: UP, scale: 0.94, opacity: 0.4 } : { y: 0 }),
-  shown: here,
-  exit: away(UP),
-}
-
 export const carouselVariants = {
   // Arrive par le bas depuis l'intro, par le haut en revenant du duel.
   hidden: (nav) => (nav.from === 'intro' ? { y: DOWN, scale: 1, opacity: 1 }
@@ -28,23 +20,6 @@ export const carouselVariants = {
   // Sort par le bas vers l'intro, par le haut vers le duel (en reculant).
   exit: (nav) => (nav.to === 'intro' ? { y: DOWN, transition: SLIDE }
     : nav.to === 'game' && nav.relay ? { opacity: 0, transition: { duration: 0 } } : away(UP)),   // l'annonce reprend la pièce
-}
-
-export const duelVariants = {
-  // Arrive par le bas depuis la page 1, par le haut en revenant de la page 3.
-  hidden: (nav) => (nav.from === 'details' ? { y: UP, scale: 0.94, opacity: 0.4 }
-    : { y: DOWN, scale: 1, opacity: 1 }),
-  shown: here,
-  // Sort par le bas vers la page 1, par le haut (en reculant) vers la page 3.
-  exit: (nav) => (nav.to === 'details' ? away(UP) : { y: DOWN, transition: SLIDE }),
-}
-
-export const detailsVariants = {
-  // Arrive par le bas depuis la page 2, par le haut en revenant de la page finale.
-  hidden: (nav) => (nav.from === 'final' ? { y: UP, scale: 0.94, opacity: 0.4 } : { y: DOWN, scale: 1, opacity: 1 }),
-  shown: here,
-  // Sort par le bas vers la page 2, par le haut (en reculant) vers la page finale.
-  exit: (nav) => (nav.to === 'final' ? away(UP) : { y: DOWN, transition: SLIDE }),
 }
 
 // Page du duel (après la sélection) : arrive par le bas, repart par le bas vers la sélection.
