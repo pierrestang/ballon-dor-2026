@@ -1,0 +1,52 @@
+:root {
+  --bg: #050505;
+  --bg-center: #0b0b0c;
+  --panel: rgba(14, 13, 11, 0.9);
+}
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+/* Le défilement pilote les animations : pas de barre de défilement visible, qui
+   décalerait la page vers la gauche (marges gauche / droite inégales). */
+html {
+  background: var(--bg);
+  scrollbar-width: none;
+}
+html::-webkit-scrollbar { display: none; }
+
+body {
+  margin: 0;
+  min-height: 100svh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-weight: 500;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+button:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; border-radius: var(--radius); }
+
+h1, h2, h3, p { margin: 0; }
+
+img { display: block; }
+
+svg path { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* Nom du joueur entre le drapeau (à gauche) et le logo du club (à droite). */
+.nameplate { display: flex; align-items: center; justify-content: center; gap: clamp(12px, 2vw, 22px); }
+.nameplate h1,
+.nameplate h2 { margin: 0; min-width: 0; }
+.flag { width: 48px; height: 32px; flex: none; object-fit: cover; border-radius: 3px; }
+.club { width: 52px; height: 52px; flex: none; object-fit: contain; }

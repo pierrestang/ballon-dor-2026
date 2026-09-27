@@ -1,0 +1,278 @@
+/* ------------------------------------------------------------------ */
+/* Page finale — joueurs réduits en haut, tableaux dessous (Final.jsx)  */
+/* ------------------------------------------------------------------ */
+/* Reprend les classes des pages 2 (.sticky.duel-grid, .figure, .palmares, .compare) et 3
+   (.details, .details-grid, .details-table) ; seules les différences sont ici, sous .final. */
+.final { position: relative; z-index: 1; background: radial-gradient(ellipse at 50% 50%, var(--bg-center) 0%, var(--bg) 70%) fixed, var(--bg); }
+.final .final-players { position: relative; top: auto; transform-origin: 50% 0; will-change: transform; }
+
+/* Grand écran : scène épinglée (GSAP). Les joueurs restent en pleine hauteur, immobiles ; les
+   tableaux, posés en bas de l'écran par-dessus l'image sur un fond noir légèrement transparent,
+   montent du bas au scroll ; le « VS » apparaît juste au-dessus d'eux. */
+.final.is-pinned .final-stage { position: relative; height: 100svh; overflow: hidden; }
+.final.is-pinned .final-band { position: absolute; inset: 0; }
+.final.is-pinned .final-tables {
+  transform: translateY(110%);   /* hors écran avant que GSAP ne prenne la main */
+}
+.final-veil {   /* voile sombre transparent sur les joueurs quand les tableaux montent */
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: color-mix(in srgb, var(--bg) 60%, transparent);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Mobile et mouvement réduit : pas d'épinglage. Bande des joueurs d'emblée réduite (hauteur et
+   échelle calculées dans Final.jsx), sans stats, listes de titres ni flèches ; puis les
+   tableaux en défilement classique. */
+.final.is-flow .final-band { position: relative; overflow: hidden; }
+.final.is-flow .final-players :is(.compare, .palmares .block, .figure-picker) { display: none; }
+
+/* Tableaux de la page 3, ici dans la page (pas en calque plein écran). */
+.final .final-tables.details {
+  position: relative;
+  inset: auto;
+  z-index: auto;
+  overflow: visible;
+  display: block;
+  background: none;
+  padding: 12px var(--pad) 12px;
+}
+.final.is-pinned .final-tables.details {
+  position: absolute;
+  z-index: 2;
+  top: var(--tables-top, calc(50% - var(--tables-h, 50svh) / 2));   /* centrés, sous les noms en arc (Final.jsx) */
+  bottom: auto;
+  left: 0;
+  right: 0;
+  padding: 0;
+  background: none;
+}
+/* Deux tableaux séparés, centrés entre le milieu de leur moitié d'écran (25 %) et le joueur (28 %) :
+   à 26,5 % et 73,5 % de la largeur, bien espacés, chacun dans son propre panneau. */
+.final.is-pinned .final-tables .details-grid {
+  --fc: 25vw;                                  /* centre de chaque moitié de l'écran */
+  --tw: min(44vw, 720px);                      /* largeur d'un tableau */
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-evenly;   /* écart entre les deux tableaux = marge de chaque côté */
+  max-width: none;
+  margin: 0;
+  column-gap: 0;
+}
+.final.is-pinned .final-tables .details-side {
+  flex: none;
+  width: var(--tw);
+}
+/* Panneau de chaque tableau : fond sombre, peu transparent et flouté derrière, pour que chiffres
+   et icônes ressortent nettement par-dessus l'image des joueurs. */
+.final.is-pinned .final-tables .details-panel {
+  padding: 12px 18px 14px;
+}
+.final .final-tables .details-grid { margin: 0 auto; }
+
+/* Tableaux trop hauts pour leur place : textes, icônes et lignes réduits d'un même facteur
+   --k (Final.jsx), sans retirer aucune ligne ni colonne. */
+.final-tables { --k: 1; --z: 1.2; }   /* --z : logos, icônes et textes agrandis de 20 % (27/09/2026) */
+/* Sans la colonne Équipe (ni pièce au-dessus, ni ligne Total) : les colonnes restantes se
+   partagent toute la largeur. */
+/* Colonnes : Équipe, Compétition, 4 scores, Résultat, Individuel. La colonne Individuel suit le
+   plus grand nombre de médailles d'une même ligne dans les deux tableaux (has-medals-N) : sans
+   ou avec peu de médailles, elle rétrécit et les autres colonnes s'élargissent d'autant. */
+.final-tables .details-team-col { width: 9%; }
+.final-tables .details-comp-col { width: 11%; }
+.final-tables .details-score { width: 11%; }
+.final-tables .details-result-col { width: 21%; }
+.final-tables .details-indiv-col { width: 15%; }
+.final-tables .has-medals-3 .details-score { width: 10%; }
+.final-tables .has-medals-3 .details-result-col { width: 19%; }
+.final-tables .has-medals-3 .details-indiv-col { width: 21%; }
+.final-tables .has-medals-1 .details-score,
+.final-tables .has-medals-0 .details-score { width: 12%; }
+.final-tables .has-medals-1 .details-indiv-col,
+.final-tables .has-medals-0 .details-indiv-col { width: 11%; }
+.final-tables .has-medals-1 .details-result-col,
+.final-tables .has-medals-0 .details-result-col { width: 21%; }
+/* Prénom et nom sur une ligne, en tête du tableau, au-dessus des intitulés. */
+.final-table-name {
+  margin: 0 0 calc(6px * var(--k) * var(--z));
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text);
+  display: flex;
+  min-width: 0;
+}
+.final-table-player { max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+.final-table-meta {
+  color: var(--text);
+  letter-spacing: 0.08em;
+}
+.final-tables .details-team .club { width: calc(28px * var(--k) * var(--z)); height: calc(28px * var(--k) * var(--z)); }
+.final-tables .details-team .flag { width: calc(27px * var(--k) * var(--z)); height: calc(18px * var(--k) * var(--z)); }
+.final-tables .details-table th,
+.final-tables .details-table td { padding: calc(4px * var(--k) * var(--z)) calc(5px * var(--k) * var(--z)); }
+.final-tables .details-table thead th {
+  font-size: calc(13px * var(--k) * var(--z));
+}   /* intitulés agrandis (27/09/2026) */
+.final-tables .details-table thead tr { height: calc(38px * var(--k) * var(--z)); }
+.final-tables .details-table tbody tr { height: calc(48px * var(--k) * var(--z)); }
+.final-tables .details-table td { font-size: calc(clamp(18px, 1.7vw, 28px) * var(--k) * var(--z)); }
+.final-tables .details-table td.details-result { font-size: calc(clamp(12px, 0.95vw, 15px) * var(--k) * var(--z)); }
+.final-tables .comp { width: calc(28px * var(--k) * var(--z)); height: calc(28px * var(--k) * var(--z)); padding: calc(4px * var(--k) * var(--z)); }
+.final-tables .details-trophy {   /* hauteur de base = logos, ajustée par --tr (FinalTables.jsx) */
+  display: block;
+  margin: 0 auto;
+  height: calc(28px * var(--k) * var(--z) * var(--tr, 1));
+  width: auto;
+  max-width: calc(34px * var(--k) * var(--z));
+  object-fit: contain;
+  /* Traitement léger et commun : ombre douce qui détache toutes les formes du fond. */
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.6));
+}
+   /* même hauteur que les logos */
+
+@media (max-width: 820px) {
+  .final .final-tables.details { padding: 12px 16px 32px; }
+}
+/* Page du duel : pas de séparateur sous la dernière ligne des tableaux. */
+/* Page du duel : chaque tableau va du début du logo d'équipe à la droite du dernier score —
+   logos d'équipe calés à gauche, colonne Ratio calée à droite (intitulés compris), sans marge
+   de cellule sur ces deux bords. */
+.final-tables .details-table th:first-child,
+.final-tables .details-table td:first-child { text-align: left; padding-left: 0; }
+/* Scores (Ratio compris) centrés dans leurs colonnes, comme les autres (27/09/2026). */
+.final-tables .details-team .club,
+.final-tables .details-team .flag { margin: 0; }
+/* Page du duel : médailles des distinctions individuelles centrées dans leur cellule, en
+   largeur et en hauteur (sans décalage de ligne de base). */
+.final-tables .details-table td.details-indiv { text-align: center; vertical-align: middle; line-height: 0; }
+.final-tables .details-indiv .tip { display: inline-flex; vertical-align: middle; }
+.final-tables .details-indiv img {
+  width: calc(28px * var(--k) * var(--z));
+  height: calc(28px * var(--k) * var(--z));
+  display: block;
+  margin: 0 1px;
+}
+/* Page du duel : ligne Total. */
+
+.final-tables .details-table tfoot th {
+  padding-left: 0;
+}
+/* Les deux tableaux toujours de la même largeur : colonne et panneau de largeur fixe, le contenu
+   ne peut pas les agrandir. */
+.final.is-pinned .final-tables .details-side {
+  min-width: 0;
+  max-width: var(--tw);
+}
+.final-tables .details-panel { min-width: 0; overflow: hidden; }
+.final-tables .details-table { width: 100%; }
+/* Intitulés longs (« Compétition ») : espace de part et d'autre, jamais collés à leurs voisins. */
+.final-tables .details-table thead th {
+  padding-left: 4px;
+  padding-right: 4px;
+  letter-spacing: 0.03em;
+}
+.final-tables .details-table thead th:first-child { padding-left: 0; }
+/* Lignes de remplissage en fin de tableau (alignement des lignes Total) : invisibles, sans trait. */
+.final-tables .details-table tbody tr:nth-last-child(1 of :not(.is-pad)) { border-bottom: 0; }
+/* Lignes vides en fin de famille : gardent le trait de séparation, pour la lisibilité. */
+.final-tables .details-table tbody tr.is-pad { border-bottom: 1px solid var(--line); }
+.final-tables .details-table tbody tr:last-child { border-bottom: 0; }
+/* « Total » : même police, taille, couleur et espacement que les intitulés de colonnes. */
+.final-tables .details-table tfoot th {
+  text-align: left;
+  color: var(--text);
+  font-size: calc(13px * var(--k) * var(--z));
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  line-height: 1.15;
+}
+/* Séparateur au-dessus de la ligne Total : même couleur que les autres séparateurs. */
+.final-tables .details-table tfoot tr {
+  height: calc(44px * var(--k) * var(--z));
+  border-top: 1px solid var(--line);
+}
+/* Ligne Total : le plus haut des deux joueurs en or (sauf matches). */
+.final-tables .details-table tfoot td.is-best { color: var(--gold); }
+/* « Total : » centré sous les deux premières colonnes (Équipe, Tournoi). */
+
+/* « Total : » : même police et taille que les scores de la ligne. */
+
+/* « TOTAL : » : même taille que le nom du joueur en tête du tableau. */
+/* « TOTAL : » : même taille et espacement que les intitulés de colonnes. */
+
+/* « TOTAL : » aligné à gauche (bord gauche des logos d'équipe). */
+.final-tables .details-table tfoot th.final-total-label {
+  padding-right: 0;
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+  font-size: calc(13px * var(--k) * var(--z));
+  letter-spacing: 0.03em;
+  text-align: left;
+  padding-left: 0;
+}
+/* Nom, poste et âge en tête du tableau, agrandis (27/09/2026). */
+.final-table-name {
+  font-family: var(--font);
+  white-space: nowrap;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.45em;
+  font-size: calc(26px * var(--k) * var(--z));
+}
+.final-table-meta {
+  flex: none;
+  font-size: 0.72em;
+}
+/* Page du duel : places d'honneur des distinctions individuelles en argent (2e) ou en bronze
+   (3e), plus en gris. */
+.final .block li.is-rank-2 .award { color: #c7ccd3; }
+.final .block li.is-rank-3 .award { color: #cd8a4f; }
+/* Colonne Individuel : médailles jamais collées au bord droit du panneau. */
+.final-tables .details-table td.details-indiv,
+.final-tables .details-table th:last-child { padding-right: 6px; }
+/* Panneaux des tableaux : même noir que le site (plus de teinte chaude). */
+.final.is-pinned .final-tables .details-panel {
+  border-radius: var(--radius);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 0 0 1px rgba(237, 234, 227, 0.08), 0 -20px 60px rgba(0, 0, 0, 0.45);
+  background: color-mix(in srgb, var(--bg) 90%, transparent);
+}
+/* Places d'honneur (2e argent, 3e bronze) grisées pour ressortir moins que les titres de 1er :
+   couleur de la médaille gardée, mais atténuée, logo désaturé. */
+.final .block li.is-minor { opacity: 0.55; filter: grayscale(0.6); }
+/* Page du duel : flèche vers les tableaux et aide clavier (comme l'intro et la sélection). */
+.final-down { z-index: 4; opacity: 0; visibility: hidden; transition: opacity var(--t-med) var(--ease-out), visibility 0s var(--t-med); }
+.final-down.is-on { opacity: 1; visibility: visible; transition: opacity var(--t-med) var(--ease-out); }
+/* Infobulle du poste dans l'en-tête des tableaux : dans le flux du texte, sans décalage. */
+.final-table-meta .tip { vertical-align: baseline; }
+/* Mobile : tableaux lisibles dans 360 px — pas d'agrandissement (--z), textes et icônes à leur
+   taille de base, intitulés abrégés par la police plus petite, médailles plus serrées. */
+@media (max-width: 820px) {
+  .final-tables { --z: 0.82; }
+  .final-tables .details-table thead th { font-size: 10px; letter-spacing: 0; padding-left: 1px; padding-right: 1px; }
+  .final-tables .details-table td { font-size: 15px; }
+  .final-tables .details-table td.details-result { font-size: 11px; }
+  .final-tables .details-indiv img { margin: 0; }
+  .final-tables .details-team-col { width: 8%; }
+  .final-tables .details-comp-col { width: 10%; }
+  .final-tables .details-score { width: 10%; }
+  .final-tables .details-result-col { width: 18%; }
+  .final-tables .details-indiv-col { width: 24%; }
+  .final-table-name { font-size: 22px; }
+}
+@media (max-width: 820px) {
+  /* Lignes vides : jamais plus larges que le tableau. */
+  .final-tables .details-table tr.is-pad td { padding: 0; }
+  .final-tables .details-table { table-layout: fixed; }
+  .final-tables .details-table thead th { overflow: hidden; text-overflow: clip; }
+}
+/* Infobulle cachée : sans largeur tant qu'elle n'est pas affichée (elle élargissait les tableaux
+   sur mobile). */
+.tip:not(:hover):not(:focus-visible)::after { content: none; }

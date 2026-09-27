@@ -89,7 +89,7 @@
         "matchs": 8,
         "buts": 0,
         "passes": 7,
-        "resultat": "4ème",
+        "resultat": "4e",
         "individuel": [
           {
             "titre": "Meilleur passeur",
@@ -237,7 +237,7 @@
         "resultat": "Demi-finale",
         "individuel": [
           {
-            "titre": "2ème meilleur buteur",
+            "titre": "2e meilleur buteur",
             "categorie": "buteur",
             "rang": 2,
             "icone": "assets/medailles/ball-silver.webp"
@@ -252,7 +252,7 @@
         "matchs": 8,
         "buts": 6,
         "passes": 1,
-        "resultat": "3ème",
+        "resultat": "3e",
         "individuel": [],
         "contributionsParMatch": 0.88
       },
@@ -308,7 +308,7 @@
         "logo": "assets/competitions/dfb-pokal.svg"
       },
       {
-        "titre": "2ème meilleur buteur — Ligue des champions",
+        "titre": "2e meilleur buteur — Ligue des champions",
         "categorie": "buteur",
         "rang": 2,
         "competition": "Ligue des champions",
@@ -528,19 +528,19 @@
         "resultat": "Finale",
         "individuel": [
           {
-            "titre": "2ème meilleur joueur",
+            "titre": "2e meilleur joueur",
             "categorie": "joueur",
             "rang": 2,
             "icone": "assets/medailles/star-silver.webp"
           },
           {
-            "titre": "2ème meilleur buteur",
+            "titre": "2e meilleur buteur",
             "categorie": "buteur",
             "rang": 2,
             "icone": "assets/medailles/ball-silver.webp"
           },
           {
-            "titre": "2ème meilleur passeur",
+            "titre": "2e meilleur passeur",
             "categorie": "passeur",
             "rang": 2,
             "icone": "assets/medailles/target-silver.webp"
@@ -592,7 +592,7 @@
         "logo": "assets/competitions/mls.svg"
       },
       {
-        "titre": "2ème meilleur joueur — Coupe du monde",
+        "titre": "2e meilleur joueur — Coupe du monde",
         "categorie": "joueur",
         "rang": 2,
         "competition": "Coupe du monde",
@@ -600,7 +600,7 @@
         "logo": "assets/competitions/world-cup-2026.webp"
       },
       {
-        "titre": "2ème meilleur buteur — Coupe du monde",
+        "titre": "2e meilleur buteur — Coupe du monde",
         "categorie": "buteur",
         "rang": 2,
         "competition": "Coupe du monde",
@@ -608,7 +608,7 @@
         "logo": "assets/competitions/world-cup-2026.webp"
       },
       {
-        "titre": "2ème meilleur passeur — Coupe du monde",
+        "titre": "2e meilleur passeur — Coupe du monde",
         "categorie": "passeur",
         "rang": 2,
         "competition": "Coupe du monde",
@@ -640,7 +640,7 @@
         "matchs": 31,
         "buts": 25,
         "passes": 5,
-        "resultat": "2ème",
+        "resultat": "2e",
         "individuel": [
           {
             "titre": "Meilleur buteur",
@@ -698,7 +698,7 @@
         "matchs": 8,
         "buts": 10,
         "passes": 4,
-        "resultat": "4ème",
+        "resultat": "4e",
         "individuel": [
           {
             "titre": "Meilleur buteur",
@@ -707,7 +707,7 @@
             "icone": "assets/medailles/ball-gold.webp"
           },
           {
-            "titre": "3ème meilleur joueur",
+            "titre": "3e meilleur joueur",
             "categorie": "joueur",
             "rang": 3,
             "icone": "assets/medailles/star-bronze.webp"
@@ -754,7 +754,7 @@
         "logo": "assets/competitions/laliga.svg"
       },
       {
-        "titre": "3ème meilleur joueur — Coupe du monde",
+        "titre": "3e meilleur joueur — Coupe du monde",
         "categorie": "joueur",
         "rang": 3,
         "competition": "Coupe du monde",
@@ -1003,7 +1003,7 @@
         "matchs": 8,
         "buts": 6,
         "passes": 2,
-        "resultat": "4ème",
+        "resultat": "4e",
         "individuel": [],
         "contributionsParMatch": 1.0
       },
@@ -1075,7 +1075,7 @@
         "matchs": 35,
         "buts": 27,
         "passes": 8,
-        "resultat": "2ème",
+        "resultat": "2e",
         "individuel": [
           {
             "titre": "Meilleur buteur",
@@ -1195,7 +1195,7 @@
         "matchs": 21,
         "buts": 1,
         "passes": 0,
-        "resultat": "2ème",
+        "resultat": "2e",
         "individuel": [],
         "contributionsParMatch": 0.05
       },
@@ -1313,7 +1313,7 @@
         "matchs": 19,
         "buts": 4,
         "passes": 3,
-        "resultat": "2ème",
+        "resultat": "2e",
         "individuel": [],
         "contributionsParMatch": 0.37
       },
@@ -1357,10 +1357,10 @@
         "matchs": 8,
         "buts": 7,
         "passes": 1,
-        "resultat": "3ème",
+        "resultat": "3e",
         "individuel": [
           {
-            "titre": "3ème meilleur buteur",
+            "titre": "3e meilleur buteur",
             "categorie": "buteur",
             "rang": 3,
             "icone": "assets/medailles/ball-bronze.webp"
@@ -1383,7 +1383,7 @@
     "collectif": [],
     "individuel": [
       {
-        "titre": "3ème meilleur buteur — Coupe du monde",
+        "titre": "3e meilleur buteur — Coupe du monde",
         "categorie": "buteur",
         "rang": 3,
         "competition": "Coupe du monde",

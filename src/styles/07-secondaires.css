@@ -1,0 +1,36 @@
+/* ------------------------------------------------------------------ */
+/* Éléments secondaires : même gris lisible partout, or au survol       */
+/* ------------------------------------------------------------------ */
+.pick-title p,
+.loader-status:not(.is-ready) { color: var(--text-secondary); }
+/* Flèches ‹ › (sélection, joueurs de la page du duel) et chevrons de défilement (intro,
+   sélection, page du duel) : gris lisible, or au survol et au focus clavier (200 ms). */
+.pick-arrow,
+.figure-picker .arrow,
+.intro-down {
+  color: var(--text-secondary);
+  opacity: 1;
+  transition: color var(--t-fast) var(--ease-out), opacity var(--t-fast) var(--ease-out), visibility 0s;
+}
+.pick-arrow:hover, .pick-arrow:focus-visible,
+.figure-picker .arrow:hover, .figure-picker .arrow:focus-visible,
+.intro-down:hover, .intro-down:focus-visible { color: var(--text-secondary-hover); opacity: 1; }
+.pick-arrow svg,
+.figure-picker .arrow svg,
+.pick-arrow:hover svg,
+.figure-picker .arrow:hover svg { filter: none; }   /* plus de lueur blanche : couleur seule */
+.pick-arrow svg path, .figure-picker .arrow svg path {
+  transition: stroke var(--t-fast) var(--ease-out);
+}
+/* Les états masqués existants restent masqués. */
+.pick-arrow.is-gone {
+  opacity: 0;
+}
+.pick-go:not(.is-on), .final-down:not(.is-on) { opacity: 0; }
+/* Transitions d'apparition existantes des chevrons, inchangées (+ couleur au survol). */
+.pick-go, .final-down { transition: opacity var(--t-med) var(--ease-out), visibility 0s var(--t-med), color var(--t-fast) var(--ease-out); }
+.pick-go.is-on, .final-down.is-on { transition: opacity var(--t-med) var(--ease-out), color var(--t-fast) var(--ease-out); }
+/* Libellés des emplacements vides : même respiration d'opacité (25 → 35 %) que la pièce
+   fantôme au-dessus, en phase avec elle. */
+.pick-slot-label .arc-l { animation: pick-ghost-breathe 6s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .pick-slot-label .arc-l { animation: none; opacity: 0.3; } }

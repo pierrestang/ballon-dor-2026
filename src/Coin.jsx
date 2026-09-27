@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { animate, m, useMotionValue, useReducedMotion, useTransform } from 'framer-motion'
 import { coinUrl } from './data'
 
@@ -14,7 +14,9 @@ const HOVER_SPIN = { duration: 1.8, ease: [0.3, 0.7, 0.2, 1] }   // tour complet
 export function Coin({ player, rotateY = 0 }) {
   const half = 50 * THICK   // demi-épaisseur, en % du diamètre
   return (
-    <m.span className="coin" style={{ rotateY, '--coin': `url(${coinUrl(player.id)})` }}>
+    // Adresse absolue : une url() relative dans une variable CSS se résout depuis la feuille de
+    // style qui l'utilise (dist/assets/), pas depuis la page (base Vite « ./ »).
+    <m.span className="coin" style={{ rotateY, '--coin': `url(${new URL(coinUrl(player.id), document.baseURI).href})` }}>
       <img className="coin-face" src={coinUrl(player.id)} alt="" draggable="false" decoding="sync"
            style={{ transform: `translateZ(calc(var(--d) * ${half / 100})) scaleX(-1)` }} />
       {Array.from({ length: LAYERS - 1 }, (_, k) => (
@@ -64,4 +66,34 @@ export function LiveCoin({ player, phase = 0, rotateY }) {
       </span>
     </span>
   )
+}
+
+export const COIN_TURN = { duration: 1.1, ease: [0.3, 0.7, 0.2, 1] }   // changement de joueur (intro, sélection, candidats, annonce)
+
+/** Changement de ce que montre une pièce : quand `value` change, elle fait un tour complet
+    (sens `dir`) et la nouvelle valeur apparaît au passage de profil (90° + n × 180°) ; toujours
+    un nombre entier de tours (elle finit de face, même interrompue). `instant` ou mouvement
+    réduit : changement direct, sans rotation. Renvoie [valeur affichée, rotation]. */
+export function useCoinTurn(value, { dir = 1, instant = false, reduced = false } = {}) {
+  const [shown, setShown] = useState(value)
+  const rot = useMotionValue(0)
+  const target = useRef(value)
+  const turning = useRef(null)
+  useEffect(() => {
+    if (value === target.current) return
+    target.current = value
+    turning.current?.stop()
+    if (reduced || instant) { rot.set(Math.round(rot.get() / 360) * 360); setShown(value); return }
+    const from = rot.get()
+    const to = Math.round(from / 360) * 360 + dir * 360
+    const edge = (v) => Math.floor((v + 90) / 180)
+    const e0 = edge(from)
+    let swapped = false
+    turning.current = animate(rot, to, {
+      ...COIN_TURN,
+      onUpdate: (v) => { if (!swapped && edge(v) !== e0) { swapped = true; setShown(target.current) } },
+    })
+    turning.current.then(() => { if (!swapped) setShown(target.current) })
+  }, [value])
+  return [shown, rot]
 }

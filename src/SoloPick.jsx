@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useRef } from 'react'
 import { animate, m, useMotionValue, useSpring, useTransform } from 'framer-motion'
 import players from './data'
-import { LiveCoin } from './Coin'
+import { COIN_TURN, LiveCoin } from './Coin'
 import { ScrollLetters } from './Letters'
 import { watchTitle } from './titleFit'
 
@@ -26,7 +26,7 @@ const TILT = [-7, 5, -3, 8, -6, 4, -9, 6, -4, 7]
 // Changement de joueur : comme la pièce de la sélection du duel (COIN_TURN, Carousel.jsx) — même
 // durée et même courbe pour le déplacement le long de l'anneau et pour le tour complet que chaque
 // pièce fait sur elle-même, dans le sens du déplacement ; soulèvement de 6 px au survol.
-export const RING_STEP = { duration: 1.1, ease: [0.3, 0.7, 0.2, 1] }
+export const RING_STEP = COIN_TURN
 const HOVER = { stiffness: 300, damping: 24 }
 export const mod = (n) => ((n % N) + N) % N
 const clamp01 = (x) => Math.min(1, Math.max(0, x))
@@ -126,18 +126,21 @@ export default function CandidatesRing({ progress, vw, ring, center, docked, red
         ))}
       </div>
       <m.div className="stage-layer" style={{ opacity: late }}>
-        {/* ‹ à gauche et › à droite de la pièce du centre (flèches de la sélection du duel). */}
+        {/* ‹ à gauche et › à droite de la pièce du centre (flèches de la sélection du duel), à
+            mi-chemin entre son bord et celui de sa voisine (voisine à 1,14 D, rayon apparent
+            0,45 D × cos 22° ; hauteur : milieu des deux centres, voir place()). Sous les pièces
+            (.sp-arrow) : elles passent dessus quand l'anneau tourne. */}
         {[-1, 1].map((d) => (
           <button key={d} className="pick-arrow sp-arrow" onClick={() => onStep(d)}
                   aria-label={d < 0 ? 'Joueur précédent' : 'Joueur suivant'}
-                  style={{ left: vw / 2 + d * (ring.D / 2 + 40), top: ring.cy }}>
+                  style={{ left: vw / 2 + d * ring.D * 0.61, top: ring.cy - ring.D * (0.05 + 0.06 * d) / 2 }}>
             <svg viewBox="0 0 24 24" aria-hidden="true">
               {d > 0 ? <path d="M9 5l7 7-7 7" /> : <path d="M15 5l-7 7 7 7" />}
             </svg>
           </button>
         ))}
-        <p className="pick-help" aria-hidden="true">← → NAVIGUER · ↵ SÉLECTIONNER · ESC RETOUR</p>
-        <button className="intro-down sp-down" onClick={onPick} aria-label="Voir la présentation">
+        <button className="intro-down sp-down" onClick={onPick}>
+          <span className="intro-down-label">Voir le joueur</span>
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9l7 7 7-7" /></svg>
         </button>
       </m.div>

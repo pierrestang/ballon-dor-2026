@@ -1,10 +1,11 @@
-import { Suspense, lazy, useEffect, useState } from 'react'
+import { Suspense, lazy, useEffect, useRef, useState } from 'react'
 import { AnimatePresence, LazyMotion, MotionConfig, domMax, useReducedMotion } from 'framer-motion'
 import players from './data'
 import { prefetch } from './sequence'
 import Carousel, { MODES } from './Carousel'
 import Final from './Final'
 import Solo from './Solo'
+import { parseRoute, routeOf } from './routes'
 
 // Mode « Mon classement » : chargé à la demande (hors premier chargement), préchargé une fois la
 // page chargée.
@@ -29,18 +30,57 @@ function useWindowLoaded() {
 }
 
 export default function App() {
+  // Page ouverte par un lien (#duel/…, #joueur/…, #classement ; routes.js), sinon l'intro.
+  const [start] = useState(() => parseRoute(window.location.hash))
   // Duel de départ (retour depuis la page du duel sans sélection) : Olise (0) contre Messi (3).
-  const [pair, setPair] = useState([0, 3])
+  const [pair, setPair] = useState(start.pair ?? [0, 3])
   // Page du duel (Final.jsx) : joueurs puis tableaux au scroll ; remplace, depuis le 26/09/2026,
   // l'ancienne page de comparaison et celle des tableaux (assets-source/ancien/).
-  const [final, setFinal] = useState(false)
-  const [game, setGame] = useState(false)   // mode « Mon classement »
-  // Versions de l'intro (MODES, Carousel.jsx) : 0 Présentation, 1 Duel, 2 Mon classement (par défaut).
-  const [mode, setMode] = useState(2)
-  const [solo, setSolo] = useState(null)             // page Présentation : index du joueur, ou null
+  const [final, setFinal] = useState(start.page === 'final')
+  const [game, setGame] = useState(start.page === 'game')   // mode « Mon classement »
+  // Versions de l'intro (MODES, Carousel.jsx) : 0 Les candidats, 1 Duel, 2 Mon classement (par
+  // défaut) ; ouverte par un lien, celle de la page (pour que le retour y mène).
+  const [mode, setMode] = useState({ solo: 0, final: 1 }[start.page] ?? 2)
+  const [solo, setSolo] = useState(start.solo ?? null)   // page Présentation : index du joueur, ou null
   const [introPlayer, setIntroPlayer] = useState(0)  // joueur de la pièce au retour à l'intro
+  // Pièce de l'intro confiée à l'annonce du Ballon d'Or ({ id, x, y, size } : centre et diamètre
+  // à l'écran), quand le classement est déjà fait (Game.jsx) ; null sinon.
+  const [gameRelay, setGameRelay] = useState(null)
   const [nav, setNav] = useState({})   // dernier passage de page, pour le sens des transitions
   const go = (from, to, apply, extra = {}) => { setNav({ from, to, ...extra }); apply() }
+
+  // Adresse de la page affichée : nouvelle entrée d'historique à chaque changement de page,
+  // simple mise à jour quand seul le joueur change ; bouton Retour du navigateur : la page de
+  // l'entrée précédente, avec la transition habituelle.
+  const page = solo !== null ? 'solo' : game ? 'game' : final ? 'final' : 'carousel'
+  const lastPage = useRef(page)
+  const fromHistory = useRef(false)
+  useEffect(() => {
+    const { hash, title } = routeOf({ page, pair, solo })
+    document.title = title
+    const url = hash || window.location.pathname + window.location.search
+    if (fromHistory.current || page === lastPage.current) window.history.replaceState(null, '', url)
+    else window.history.pushState(null, '', url)
+    fromHistory.current = false
+    lastPage.current = page
+  }, [page, pair[0], pair[1], solo])
+  useEffect(() => {
+    const onPop = () => {
+      const r = parseRoute(window.location.hash)
+      fromHistory.current = true
+      go(lastPage.current, r.page, () => {
+        if (r.pair) setPair(r.pair)
+        if (r.page === 'solo') setMode(0)
+        if (r.page === 'final') setMode(1)
+        setSolo(r.page === 'solo' ? r.solo : null)
+        setGame(r.page === 'game')
+        setFinal(r.page === 'final')
+      })
+    }
+    window.addEventListener('popstate', onPop)
+    return () => window.removeEventListener('popstate', onPop)
+  }, [])
+
   const reduced = useReducedMotion()
   const loaded = useWindowLoaded()
   const duo = pair.map((i) => players[i])
@@ -53,14 +93,16 @@ export default function App() {
     return side ? [pr[0], next] : [next, pr[1]]
   })
 
-  // Préchargement des séquences des deux joueurs affichés, une fois la page chargée
-  // et les disques immobiles depuis un instant.
+  // Préchargement des séquences des deux joueurs du duel, seulement une fois le visiteur entré
+  // dans la sélection du duel (inDuel, signalé par Carousel.jsx) : l'intro ne charge aucune
+  // séquence (règle de légèreté, audit du 27/09/2026).
+  const [inDuel, setInDuel] = useState(false)
   useEffect(() => {
-    if (!loaded || final) return
+    if (!loaded || final || !inDuel) return
     let cancelIdle = () => {}
     const t = setTimeout(() => { cancelIdle = whenIdle(() => prefetch(duo.map((p) => p.id))) }, 400)
     return () => { clearTimeout(t); cancelIdle() }
-  }, [loaded, final, duo[0].id, duo[1].id])
+  }, [loaded, final, inDuel, duo[0].id, duo[1].id])
 
   // GSAP (page du duel) préchargé une fois la page chargée.
   useEffect(() => {
@@ -87,7 +129,7 @@ export default function App() {
                   onBack={() => go('solo', 'carousel', () => { setIntroPlayer(solo); setSolo(null) })} />
           ) : game ? (
             <Suspense key="game" fallback={null}>
-              <Game nav={nav} onBack={() => go('game', 'carousel', () => setGame(false))} />
+              <Game nav={nav} relay={gameRelay} onBack={(done) => go('game', 'carousel', () => setGame(false), { relay: done })} />
             </Suspense>
           ) : final ? (
             <Final key="final" pair={duo} nav={nav} reduced={reduced} onStep={step}
@@ -95,9 +137,11 @@ export default function App() {
           ) : (
             <Carousel key="carousel" nav={nav} pair={pair} setPair={setPair}
                       onOpen={() => go('carousel', 'final', () => setFinal(true))}
-                      mode={mode} setMode={setMode} introPlayer={introPlayer}
+                      mode={mode} setMode={setMode} introPlayer={introPlayer} onDuelLive={setInDuel}
                       onSolo={(k) => go('carousel', 'solo', () => setSolo(k))}
-                      onGame={(k) => go('carousel', 'game', () => { setIntroPlayer(k); setGame(true) })} />
+                      onGame={(k, rect) => go('carousel', 'game', () => {
+                        setIntroPlayer(k); setGameRelay(rect ? { id: players[k].id, ...rect } : null); setGame(true)
+                      }, { relay: !!rect })} />
           )}
         </AnimatePresence>
       </MotionConfig>

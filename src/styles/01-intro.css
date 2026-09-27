@@ -1,0 +1,91 @@
+/* ------------------------------------------------------------------ */
+/* Intro — trophée qui se construit, puis pièce d'or et noms en arc      */
+/* ------------------------------------------------------------------ */
+
+.stage {
+  /* Variables du chargement (trophée, statut), reprises de l'ancienne page d'intro. */
+  --i-bg: var(--bg);
+  --i-bg-center: var(--bg-center);
+  --i-ink: var(--text);
+  --i-ink-2: var(--muted);
+  --i-accent: var(--gold);
+  --i-line: var(--line);
+  --i-meta: clamp(11px, 0.72vw, 13px);
+  --i-trophy: clamp(130px, 24vh, 240px);
+  --i-ease: var(--ease-out);
+  --i-expo: var(--ease-expo);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Loader : trophée en trait fin, statut et pourcentage dessous, au centre de l'écran. */
+.trophy-loader {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  translate: -50% -50%;
+  pointer-events: none;
+  transition: opacity 0.45s var(--i-expo), transform 0.45s var(--i-expo);
+}
+.trophy-loader.is-gone { opacity: 0; transform: scale(0.6); }
+.trophy { width: auto; height: var(--i-trophy); overflow: visible; }
+.trophy path {
+  fill: none;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+.trophy-base path { stroke: var(--i-line); }
+.trophy-gold path { stroke: var(--i-accent); }
+/* Flash doré (150 ms) quand le globe est complet : copie du trophée, plus épaisse et floue. */
+.trophy-flash { opacity: 0; filter: blur(3px); }
+.trophy-flash path { stroke: var(--i-accent); stroke-width: 4; }
+.trophy-loader.is-done .trophy-flash { animation: i-flash 150ms linear both; }
+@keyframes i-flash { 0%, 100% { opacity: 0; } 40% { opacity: 1; } }
+.loader-status,
+.loader-pct {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: var(--i-meta);
+  letter-spacing: 0.2em;
+  white-space: nowrap;
+}
+.loader-status { margin-top: clamp(18px, 3vh, 28px); color: var(--i-ink-2); }
+.loader-status.is-ready { color: var(--i-accent); }
+.loader-pct { margin-top: 8px; margin-right: -0.2em; color: var(--i-ink); }
+
+/* Flèche clignotante en bas de l'intro (et en bas de la page 2, .duel-down) : faire défiler. */
+.intro-down {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  bottom: clamp(12px, 4%, 40px);
+  translate: -50% 0;
+  padding: 8px;
+  color: var(--text);
+  background: none;
+  cursor: pointer;
+}
+.intro-down svg {
+  width: 40px;
+  height: 40px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  animation: blink-down 1.4s ease-in-out infinite;
+}
+@keyframes blink-down {
+  0%, 100% { opacity: 1; transform: translateY(0); }
+  50% { opacity: 0.15; transform: translateY(8px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .intro-down svg,
+  .trophy-loader.is-done .trophy-flash { animation: none; }
+  .trophy-loader.is-gone { transform: none; }
+}

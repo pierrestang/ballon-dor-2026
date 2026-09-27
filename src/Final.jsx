@@ -80,7 +80,7 @@ export default function Final({ pair, nav, reduced, onBack, onStep }) {
   const veil = useRef(null)
   // Tableaux visibles (transition au-delà de la moitié) : ← / → ne changent plus de joueur.
   const tablesShown = useRef(false)
-  const [shownView, setShownView] = useState(false)   // même état, pour l'affichage (aide, flèche)
+  const [shownView, setShownView] = useState(false)   // même état, pour l'affichage (flèches)
   // Défilement automatique vers les tableaux (↓, flèche du bas) ou vers les joueurs (↑).
   const scrollToEnd = (toTables) => {
     const end = toTables ? document.documentElement.scrollHeight - window.innerHeight : 0
@@ -157,7 +157,7 @@ export default function Final({ pair, nav, reduced, onBack, onStep }) {
   const [entered, setEntered] = useState(false)
   useEffect(() => {
     if (!pinned || !entered) return
-    let tl
+    let ctx   // gsap.context : à la sortie, revert() retire aussi les styles posés par la timeline
     let cancelled = false
     const t = setTimeout(async () => {
       let gsap, ScrollTrigger
@@ -171,7 +171,8 @@ export default function Final({ pair, nav, reduced, onBack, onStep }) {
       gsap.registerPlugin(ScrollTrigger)
       const grid = players.current
       const panel = tables.current
-      tl = gsap.timeline({
+      ctx = gsap.context(() => {
+      const tl = gsap.timeline({
         defaults: { ease: 'none' },
         scrollTrigger: {
           trigger: stage.current,
@@ -193,13 +194,13 @@ export default function Final({ pair, nav, reduced, onBack, onStep }) {
         .fromTo(panel, { y: () => (window.innerHeight + panel.offsetHeight) / 2 + 24 }, { y: 0, duration: 1 }, 0)   // tableaux centrés : moitié de l'écran + moitié du tableau
         .fromTo(veil.current, { opacity: 0 }, { opacity: 1, duration: 1 }, 0)   // voile sombre sur les joueurs
         .fromTo(grid.querySelectorAll('.figure'), { opacity: 1 }, { opacity: 0, duration: 0.8 }, 0.2)   // joueurs effacés, tableaux visibles
+      })
       ScrollTrigger.refresh()
     }, 0)
     return () => {
       cancelled = true
       clearTimeout(t)
-      tl?.scrollTrigger?.kill(true)
-      tl?.kill()
+      ctx?.revert()   // (passage en mode empilé : tableaux et joueurs sans transformation restante)
     }
   }, [pinned, entered, pair[0].id, pair[1].id])
 
@@ -298,19 +299,27 @@ export default function Final({ pair, nav, reduced, onBack, onStep }) {
           <FinalTables pair={pair} />
         </div>
         {/* Grand écran : flèche clignotante vers les tableaux (comme l'intro et la sélection),
-            masquée une fois les tableaux affichés ; aide clavier en bas, selon la vue. */}
-        {pinned && (
-          <>
-            <button className={`intro-down final-down${shownView ? '' : ' is-on'}`}
-                    onClick={() => scrollToEnd(true)} aria-label="Voir les tableaux"
-                    tabIndex={shownView ? -1 : 0} aria-hidden={shownView}>
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9l7 7 7-7" /></svg>
-            </button>
-            <p className="pick-help final-help" aria-hidden="true">
-              {shownView ? '↑ JOUEURS · ESC SÉLECTION' : '↓ TABLEAUX · ← → CHANGER DE JOUEUR · ↑ SÉLECTION'}
-            </p>
-          </>
+            avec son libellé ; tableaux affichés : flèche vers le haut, retour aux joueurs. */}
+        {/* Vue des joueurs (et toujours sur mobile) : flèche vers le haut, retour à la page
+            précédente, comme la flèche « Menu » des autres pages. */}
+        {!(pinned && shownView) && (
+          <button className="intro-down final-up page-up" onClick={back}>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 15l7-7 7 7" /></svg>
+            <span className="intro-down-label">Changer de duel</span>
+          </button>
         )}
+        {pinned && (<>
+          <button className={`intro-down final-down${shownView ? '' : ' is-on'}`}
+                  onClick={() => scrollToEnd(true)} tabIndex={shownView ? -1 : 0} aria-hidden={shownView}>
+            <span className="intro-down-label">Voir le tableau détaillé</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9l7 7 7-7" /></svg>
+          </button>
+          <button className={`intro-down final-down final-up${shownView ? ' is-on' : ''}`}
+                  onClick={() => scrollToEnd(false)} tabIndex={shownView ? 0 : -1} aria-hidden={!shownView}>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 15l7-7 7 7" /></svg>
+            <span className="intro-down-label">Voir les joueurs</span>
+          </button>
+        </>)}
       </section>
     </m.main>
   )

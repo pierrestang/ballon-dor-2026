@@ -1,0 +1,40 @@
+/* ------------------------------------------------------------------ */
+/* Les candidats (SoloPick.jsx) : état final de la scène, version Les candidats */
+/* ------------------------------------------------------------------ */
+.sp-ring { position: absolute; inset: 0; }
+.sp-slot { position: absolute; left: 0; top: 0; }
+/* Pièce : place, taille et profondeur animées ; plus sombre et floue loin du centre (--dim, --blur). */
+.sp-coin {
+  position: absolute;
+  left: 0;
+  top: 0;
+  border-radius: 50%;
+  perspective: 1400px;
+  transform-style: preserve-3d;
+  filter: brightness(var(--dim, 1)) blur(var(--blur, 0px));
+  cursor: pointer;
+}
+.sp-coin::before {
+  content: '';
+  position: absolute;
+  inset: -14%;
+  background: radial-gradient(closest-side, var(--halo), transparent);
+  pointer-events: none;
+  opacity: 0.5;
+}
+/* Pièce du centre : même halo que la pièce de la scène (.pick-item.is-active), qu'elle relaie. */
+.sp-coin.is-center::before { inset: -22%; opacity: 1; background: radial-gradient(closest-side, rgba(217, 178, 95, 0.26), transparent); }
+.sp-coin:focus-visible { outline: 1.5px solid var(--gold); outline-offset: 6px; }
+.sp-lift { display: block; width: 100%; height: 100%; transform-style: preserve-3d; }
+.sp-arrow { z-index: 5; }   /* sous les pièces de l'anneau (z-index 7 à 10) */
+.stage :is(.sp-coin, .sp-arrow) { pointer-events: auto; }   /* la couche de l'anneau ignore la souris, pas ses pièces */
+.stage:not(.is-live) :is(.sp-coin, .sp-arrow, .sp-down) { pointer-events: none; }
+.stage .sp-down { pointer-events: auto; }
+
+/* Animation commune des pièces d'or (LiveCoin, Coin.jsx) : léger flottement et tour complet au
+   survol, sur toutes les pages (sélection du duel, candidats, jeu, accueil). */
+.coin-live, .coin-live-float { display: block; width: 100%; height: 100%; transform-style: preserve-3d; }
+.coin-live-float { animation: coin-float 5s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .coin-live-float { animation: none; } }
+/* Accueil : la pièce tourne au survol, mais n'est cliquable qu'une fois sur la sélection. */
+.stage.is-intro .pick-coin { pointer-events: auto; cursor: default; }

@@ -212,10 +212,12 @@ export function NameArc({ text, animate: on, className = 'arc-name', pace = 1, r
 // ——— Titre en arc, glitch léger au changement ———
 
 // Glitch (~480 ms) : l'ancien titre puis le nouveau tremblent le long de l'arc, clignotent en
-// nuances de blanc, gris et noir, quelques lettres brouillées ; un double gris décalé les suit ;
+// nuances de blanc et de gris, quelques lettres brouillées ; un double gris décalé les suit ;
 // puis le nouveau titre se pose dans sa couleur (classe CSS). Mouvement réduit : changement direct.
-const GLITCH_MS = 480, GLITCH_TICK = 45
-const GLITCH_INKS = ['#FFFFFF', '#EDEAE3', '#9A968F', '#5A5853', '#1A1A1A', '#050505']
+// Adouci (audit du 27/09/2026) : plus de lettres quasi noires (les éclairs les plus forts) et un
+// scintillement plus lent, pour limiter l'effet de clignotement.
+const GLITCH_MS = 480, GLITCH_TICK = 70
+const GLITCH_INKS = ['#FFFFFF', '#EDEAE3', '#9A968F', '#5A5853']
 const GLITCH_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/#%&'
 const pick = (list) => list[Math.floor(Math.random() * list.length)]
 

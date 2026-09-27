@@ -1,0 +1,288 @@
+/* ------------------------------------------------------------------ */
+/* Page 1 — sélection du duel : emplacements A / B en haut, arc en bas  */
+/* ------------------------------------------------------------------ */
+
+/* Même direction artistique que l'intro et la page 2 : fond noir en léger dégradé radial,
+   encre #EDEAE3, secondaire à 45 %, or #D4AF37, noms en Barlow Condensed 700 capitales, données
+   en JetBrains Mono, halo doré derrière chaque pièce. Classes préfixées pick- : l'intro et la
+   page 2 ont déjà leurs .arc-name. */
+.carousel {
+  --p1-ink: var(--text);
+  --p1-muted: var(--muted);
+  --p1-gold: var(--gold);
+  --p1-halo: var(--halo);
+  --p1-meta: var(--fs-help);  /* textes mono de l'intro */
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  touch-action: pan-y;
+  user-select: none;
+  color: var(--p1-ink);
+  background: radial-gradient(ellipse at 50% 50%, var(--bg-center) 0%, var(--bg) 70%);
+}
+
+/* Pièces d'or en 3D (page 1 et intro) : faces détourées et tranche faite de disques empilés
+   (--d : diamètre). */
+.coin {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+}
+.coin-face,
+.coin-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+}
+/* Faces : image d'origine détourée (fond blanc retiré, rien de reconstitué). */
+.coin-face { object-fit: contain; pointer-events: none; }
+/* Tranche : disques dorés découpés à la silhouette exacte de l'image (--coin) ; un disque sur
+   deux plus sombre (.is-dark) : fines stries visibles quand la pièce tourne. */
+.coin-layer {
+  backface-visibility: visible;
+  background: linear-gradient(90deg, #6d4d12, #b58a33 30%, #e2bb5e 50%, #b58a33 70%, #6d4d12);
+  -webkit-mask: var(--coin) center / contain no-repeat;
+  mask: var(--coin) center / contain no-repeat;
+}
+.coin-layer.is-dark { background: linear-gradient(90deg, #4f370b, #8a6622 30%, #b8923f 50%, #8a6622 70%, #4f370b); }
+@keyframes coin-float { 0%, 100% { translate: 0 0; } 50% { translate: 0 -2.5%; } }
+
+/* Titre de la page, en haut au centre : police des noms des joueurs (Barlow Condensed 700
+   capitales), description dessous, plus fine et atténuée. */
+.pick-title {
+  position: absolute;
+  top: clamp(24px, 6vh, 64px);
+  left: 16px;
+  right: 16px;
+  text-align: center;
+  pointer-events: none;
+}
+.pick-title h1 {
+  margin: 0;
+  font-family: var(--font);
+  font-weight: 700;
+  font-size: clamp(28px, 3.2vw, 48px);
+  line-height: 1;
+  letter-spacing: 0.08em;
+  margin-right: -0.08em;
+  color: var(--p1-ink);
+}
+.pick-title p {
+  margin: 10px 0 0;
+  font-family: var(--font);
+  font-weight: 700;
+  font-size: var(--fs-desc);
+  text-transform: uppercase;
+  color: var(--p1-muted);
+}
+/* Mesure des largeurs (PickTitle) : le texte seul, sans la largeur du bloc. L'espacement des
+   lettres de la description est calculé pour qu'elle fasse la longueur du titre. */
+.pick-title h1 span,
+.pick-title p span { display: inline-block; white-space: nowrap; }
+
+/* Textes en arc (Letters.jsx) : une span par lettre, repère centré sur la pièce ; 1 unité =
+   rayon de la pièce / 100 (taille de police de .arc-box), lettres de ARC_FONT unités. */
+.arc-box {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  font-size: calc(var(--d) / 200);
+  pointer-events: none;
+}
+.arc-l { position: absolute; left: 0; top: 0; width: 0; height: 0; }
+.arc-g {
+  position: absolute;
+  left: 0;
+  translate: -50% 0;
+  line-height: 1;
+  white-space: pre;
+  font-family: var(--font);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0;   /* l'espacement des lettres est dans leurs angles (Letters.jsx) */
+  color: var(--text);
+}
+.arc-title .is-accent { color: var(--gold); }   /* « 2026 » */
+/* Lettres en ligne animées au scroll (titre et description de la sélection). */
+.line-l,
+.pick-title .line-l { display: inline-block; white-space: pre; }
+
+/* Emplacements du duel (taille : --d = G, Carousel.jsx). Univers numismatique : vide, une pièce
+   fantôme gravée en trait seul ; rempli, la vraie pièce, un peu plus lumineuse que celles du
+   carrousel, entourée d'un liseré doré. */
+.pick-slot { position: absolute; perspective: 1400px; }
+.pick-slot::before {   /* halo doré des pièces, une fois la pièce posée */
+  content: '';
+  position: absolute;
+  inset: -14%;
+  background: radial-gradient(closest-side, var(--p1-halo), transparent);
+  opacity: 0;
+  transition: opacity var(--t-med) var(--ease-out);
+  pointer-events: none;
+}
+.pick-slot.is-filled::before { opacity: 1; }
+
+/* Pièce fantôme : trait or de 1 px, aucun aplat ; tour lent sur elle-même (12 s) et respiration
+   de l'opacité entre 25 et 35 %. */
+.pick-ghost { position: absolute; inset: 0; transition: opacity var(--t-med) var(--ease-out); pointer-events: none; }
+.pick-ghost.is-hidden { opacity: 0; }
+.pick-ghost-breathe { width: 100%; height: 100%; opacity: 0.3; perspective: 1400px;
+                      animation: pick-ghost-breathe 6s ease-in-out infinite; }
+@keyframes pick-ghost-breathe { 0%, 100% { opacity: 0.25; } 50% { opacity: 0.35; } }
+.pick-ghost-turn { width: 100%; height: 100%; animation: pick-ghost-turn 12s linear infinite; }
+@keyframes pick-ghost-turn { from { transform: rotateY(0deg); } to { transform: rotateY(360deg); } }
+.pick-ghost-coin { display: block; width: 100%; height: 100%; overflow: visible; }
+.pick-ghost-coin circle,
+.pick-ghost-coin path {
+  fill: none;
+  stroke: var(--p1-gold);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+/* Éclat doré à l'arrivée de la pièce, qui se dissipe en 400 ms. */
+.pick-flash {
+  position: absolute;
+  inset: -30%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(255, 236, 170, 0.75), rgba(212, 175, 55, 0.25) 45%, transparent);
+  opacity: 0;
+  pointer-events: none;
+}
+.pick-flash.is-on { animation: pick-flash 0.4s ease-out; }
+@keyframes pick-flash {
+  0% { opacity: 0; transform: scale(0.7); }
+  20% { opacity: 1; }
+  100% { opacity: 0; transform: scale(1.12); }
+}
+.pick-slot-coin { position: absolute; inset: 0; border-radius: 50%; transform-style: preserve-3d; }
+.pick-slot-coin:disabled { pointer-events: none; }
+/* Flottement doux de la pièce posée, décalé entre A et B. */
+.pick-float { display: block; width: 100%; height: 100%; transform-style: preserve-3d;
+              animation: coin-float 5s ease-in-out infinite; }
+.pick-slot + .pick-slot .pick-float { animation-delay: -2.5s; }
+.pick-slot-coin .coin-face { filter: brightness(1.12); }   /* un peu plus lumineuse que l'arc */
+.pick-vs {   /* police de l'intro, or comme « 2026 » */
+  position: absolute;
+  left: 50%;
+  translate: -50% -50%;
+  font-family: var(--font);
+  font-weight: 700;
+  font-size: clamp(28px, 3.2vw, 52px);
+  letter-spacing: 0.08em;
+  margin-right: -0.08em;
+  color: var(--p1-gold);
+}
+
+/* Pièce centrale (Carousel.jsx : place et taille en ligne). */
+.pick-item {
+  position: absolute;
+  left: 0;
+  top: 0;
+  perspective: 1400px;
+  filter: brightness(calc(0.6 + 0.4 * var(--depth, 1)));
+}
+/* Halo doré derrière chaque pièce (même halo que l'intro et la page 2), plus présent derrière
+   la pièce active. */
+.pick-item::before {
+  content: '';
+  position: absolute;
+  inset: -14%;
+  background: radial-gradient(closest-side, var(--p1-halo), transparent);
+  pointer-events: none;
+  z-index: -1;
+}
+.pick-item.is-active::before { inset: -22%; background: radial-gradient(closest-side, rgba(217, 178, 95, 0.26), transparent); }
+/* Pièce déjà placée dans un emplacement : désaturée (l'opacité 30 % est animée). */
+.pick-item.is-placed { filter: grayscale(1) brightness(calc(0.6 + 0.4 * var(--depth, 1))); }
+.pick-coin { pointer-events: auto; display: block; width: 100%; height: 100%; border-radius: 50%;
+             transform-style: preserve-3d; cursor: pointer; }
+.pick-coin[aria-disabled='true'] { cursor: not-allowed; }
+/* Survol : élévation et inclinaison vers la souris (ArcCoin). */
+.pick-hover { display: block; width: 100%; height: 100%; transform-style: preserve-3d; }
+.pick-spin { display: block; width: 100%; height: 100%; transform-style: preserve-3d;
+             animation: coin-float 5s ease-in-out infinite; }
+.pick-coin:focus-visible,
+.pick-slot-coin:focus-visible { outline: 1.5px solid var(--p1-gold); outline-offset: 6px; border-radius: 50%; }
+
+/* Pièce active : repère du nom en arc (même place et même taille que la pièce). */
+.pick-active { position: absolute; pointer-events: none; z-index: 20; }
+
+/* Flèches de l'arc : style des flèches de la page 2 (blanches, légère lueur, pleines au
+   survol), de part et d'autre de la pièce active. */
+.pick-arrow {
+  position: absolute;
+  z-index: 30;
+  width: 32px;
+  height: 32px;
+  translate: -50% -50%;
+  color: #fff;
+  opacity: 0.55;
+  transition: opacity var(--t-fast) var(--ease-out);
+}
+.pick-arrow svg { width: 18px; height: 18px; margin: auto; filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.55)); }
+.pick-arrow svg path { stroke-width: 2; }
+.pick-arrow:hover,
+.pick-arrow:focus-visible { opacity: 1; }
+.pick-arrow:hover svg { filter: drop-shadow(0 0 7px rgba(255, 255, 255, 0.9)); }
+/* Duel prêt : pièce centrale et flèches effacées, inertes. */
+.pick-arrow.is-gone {
+  opacity: 0;
+  pointer-events: none;
+}
+.pick-item.is-gone { pointer-events: none; }
+.pick-item.is-gone .pick-coin { pointer-events: none; }
+
+/* Duel prêt : flèche clignotante de l'intro (.intro-down) en bas de l'écran, vers le duel. */
+.pick-go { opacity: 0; visibility: hidden; transition: opacity 0.4s, visibility 0s 0.4s; }
+.pick-go.is-on { opacity: 1; visibility: visible; transition: opacity var(--t-med) var(--ease-out); }
+
+/* Intro et sélection : une seule scène (Carousel.jsx). Couches plein écran ; la sélection ne
+   répond qu'à la fin de la transition (.is-live). */
+.stage-layer { position: absolute; inset: 0; pointer-events: none; }
+.stage-hero { will-change: transform; }
+/* Apparition de la pièce à la fin du chargement (fondu et léger agrandissement). */
+.stage-hero-in { position: absolute; inset: 0; opacity: 0; transform: scale(0.92);
+                 transition: opacity 0.6s var(--ease-out), transform 0.8s var(--ease-expo); }
+.stage-hero-in.is-on { opacity: 1; transform: none; }
+.stage-arc-top { position: absolute; pointer-events: none; }
+.stage .pick-slot,
+.stage .pick-arrow { pointer-events: auto; }
+.stage:not(.is-live) .pick-slot,
+.stage:not(.is-live) .pick-slot-coin,
+.stage:not(.is-live) .pick-arrow,
+.stage:not(.is-live) .pick-coin,
+.stage:not(.is-live) .pick-go { pointer-events: none; }
+/* Chevron de l'intro : apparaît avec la pièce, inerte dès qu'on a quitté l'intro. */
+.stage-intro-down .intro-down { pointer-events: auto; opacity: 0;
+                                transition: opacity var(--t-med) var(--ease-out), color var(--t-fast) var(--ease-out); }
+.stage.is-intro-ready .stage-intro-down .intro-down { opacity: 1; }
+.stage.is-live .stage-intro-down .intro-down { visibility: hidden; }
+@media (prefers-reduced-motion: reduce) { .stage-hero-in { transform: none; } }
+
+/* Pièce en vol entre l'arc et un emplacement. */
+.pick-flight { position: absolute; left: 0; top: 0; z-index: 50; pointer-events: none; perspective: 1400px;
+               transform-style: preserve-3d; }
+
+@media (prefers-reduced-motion: reduce) {
+  .pick-spin, .pick-ghost-turn, .pick-float { animation: none; }
+}
+/* Voile sombre des cartes de la file. */
+/* Carte style « Ultimate Team » : blason (épaules hautes incurvées, bas en pointe arrondie,
+   découpe par masque SVG) en or texturé
+   — reflets diagonaux « holographiques », grain métallique (bruit SVG), brossage fin,
+   marbrures — bord biseauté (SVG), brillance, relief (ombre portée via drop-shadow).
+   Géométrie : déborde de 6 % sur les côtés, commence à 40 % de la hauteur de l'image et
+   descend de 28 % dessous — cf. SIDE / TOP / BOTTOM (Carousel.jsx). Aucune marque. */
+/* Bord du blason : arête sombre sur le contour, liseré clair juste dedans, puis filet intérieur
+   doré (clair + ombre) qui suit la même forme — SVG étiré à la carte, traits d'épaisseur fixe. */
+/* Brillance : halo clair en haut, léger assombrissement vers la pointe. */
+/* Buste centré dans la carte, au-dessus du nom (9 % → 71 % de la carte). */
+/* Colonne de gauche : poste, drapeau, club. */
+/* Bas : nom, filet, stats. */

@@ -1,0 +1,15 @@
+/* ------------------------------------------------------------------ */
+/* Emplacements vides : « JOUEUR 1 » / « JOUEUR 2 » en arc (Carousel.jsx) */
+/* ------------------------------------------------------------------ */
+/* Même tracé, police, graisse et espacement que les noms sous les pièces ; doré atténué du
+   pointillé, plat (aucune ombre ni effet) ; s'efface quand un joueur est placé. */
+.pick-slot-label {
+  font-family: var(--font);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+/* Lettres en contour, vides au milieu (trait doré fin de 1 px, comme la pièce fantôme). */
+.pick-slot-label .arc-g { color: transparent; -webkit-text-stroke: 1px var(--p1-gold); }
+.pick-slot-label-arc { opacity: 1; transition: opacity var(--t-med) var(--ease-out); }
+.pick-slot-label-arc.is-hidden { opacity: 0; }

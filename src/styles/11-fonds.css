@@ -1,0 +1,31 @@
+/* ------------------------------------------------------------------ */
+/* Fonds par version (27/09/2026) : data-theme sur <html> (App.jsx)     */
+/* ------------------------------------------------------------------ */
+/* Mon classement : noir et or (valeurs de :root). Duel : nuit bleue. Présentation : vert
+   profond. Même dégradé radial partout (centre --bg-center → bord --bg), teinte surtout sur les
+   bords ; panneaux des tableaux et des cartes teintés pareil. Sur l'intro, le fond suit la
+   version choisie et passe d'une teinte à l'autre en 0,6 s (couleurs enregistrées avec
+   @property pour pouvoir être animées). */
+@property --bg { syntax: '<color>'; inherits: true; initial-value: #050505; }
+@property --bg-center { syntax: '<color>'; inherits: true; initial-value: #0b0b0c; }
+:root {
+  transition: --bg 0.6s var(--ease-out), --bg-center 0.6s var(--ease-out);
+}
+:root[data-theme='duel'] {
+  --bg: #04070d;
+  --bg-center: #0e1a2e;
+  --panel: rgba(9, 16, 28, 0.9);
+}
+:root[data-theme='solo'] {
+  --bg: #040806;
+  --bg-center: #0c1f16;
+  --panel: rgba(9, 20, 14, 0.9);
+}
+@media (prefers-reduced-motion: reduce) { :root { transition: none; } }
+
+/* Joueurs en vidéo (page du duel, Présentation), grand écran : remontés légèrement (--lift),
+   pour dégager le bas de l'écran (chevron, aide clavier) ; nom en arc compris (27/09/2026). */
+@media (min-width: 821px) {
+  .final { --lift: 3.5svh; }
+  .final .figure { translate: 0 calc(-1 * var(--lift)); }
+}

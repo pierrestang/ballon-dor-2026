@@ -375,7 +375,9 @@ def main():
         if x["selection"] == y["selection"] or x["couleur"] == y["couleur"]:
             sys.exit(f"ORDRE : {x['nom']} et {y['nom']} côte à côte (même sélection ou couleur)")
 
-    OUT.write_text(json.dumps(joueurs, ensure_ascii=False, indent=2) + "\n")
+    # Ordinaux à la française : « 2e », comme « 8es de finale » (et non « 2ème »).
+    texte = re.sub(r"(\d+)ème\b", r"\1e", json.dumps(joueurs, ensure_ascii=False, indent=2))
+    OUT.write_text(texte + "\n")
     print(f"{len(joueurs)} joueurs → {OUT.relative_to(ROOT)}")
     for j in joueurs:
         s = j["stats"]

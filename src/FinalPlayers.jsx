@@ -115,7 +115,7 @@ function CompareRow({ label, tip, left, right, format, compare }) {
 }
 
 /** Stats au milieu, entre les deux joueurs. */
-function Compare({ a, b }) {
+export function Compare({ a, b }) {
   const rows = [
     { label: 'Titres collectifs', get: (p) => p.collectif.length, format: same, compare: true },
     // Seuls les titres majeurs (1er) comptent ; les places d'honneur (2e, 3e) non.

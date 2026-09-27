@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { animate, m, useIsPresent } from 'framer-motion'
-import { decimal } from './data'
+import players, { decimal } from './data'
 import Tip from './Tip'
 import { ArcName, Palmares, Turn } from './FinalPlayers'
 import { SingleTable } from './FinalTables'
@@ -20,17 +20,29 @@ const BAND_FLOW = 0.36
 const MIN_K = 0.45
 const STATS_CENTER = 0.49   // milieu de la colonne des stats, en part de la hauteur de l'écran
 const round2 = (n) => Math.round(n * 100) / 100
+// value : valeur brute (comparaison) ; format : affichage. Matches : jamais en or.
 const ROWS = [
-  { label: 'Titres collectifs', get: (p) => p.collectif.length },
-  { label: 'Titres individuels', get: (p) => p.individuel.filter((t) => t.rang === 1).length },
-  { label: 'Matches', get: (p) => p.stats.matchs },
-  { label: 'Buts', get: (p) => p.stats.buts },
-  { label: 'Assists', get: (p) => p.stats.passes },
-  { label: 'Ratio', tip: 'Buts + Assists / match', get: (p) => decimal(round2(p.stats.contributionsParMatch)) },
+  { label: 'Titres collectifs', value: (p) => p.collectif.length },
+  { label: 'Titres individuels', value: (p) => p.individuel.filter((t) => t.rang === 1).length },
+  { label: 'Matches', value: (p) => p.stats.matchs, neutral: true },
+  { label: 'Buts', value: (p) => p.stats.buts },
+  { label: 'Assists', value: (p) => p.stats.passes },
+  { label: 'Ratio', tip: 'Buts + Assists / match', value: (p) => p.stats.contributionsParMatch,
+    format: (v) => decimal(round2(v)) },
 ]
 
+// Score en or (27/09/2026) : nettement au-dessus des autres candidats, c'est-à-dire supérieur de
+// plus de 2/3 à la moyenne des neuf autres (valeur > 5/3 × leur moyenne).
+const STANDOUT = 5 / 3
+const standout = (row, player) => {
+  const others = players.filter((p) => p.id !== player.id).map(row.value)
+  const mean = others.reduce((a, b) => a + b, 0) / others.length
+  return !row.neutral && row.value(player) > STANDOUT * mean
+}
+
 /** Stats de la saison, à droite du joueur : pour chaque stat, l'intitulé (style de la page du
-    duel : petites capitales grises ; deux mots : sur deux lignes) et le score dessous, centrés. */
+    duel : petites capitales grises ; deux mots : sur deux lignes) et le score dessous, centrés ;
+    en or s'il se détache des autres candidats (STANDOUT). */
 function SoloStats({ player }) {
   return (
     <div className="compare solo-stats">
@@ -39,7 +51,7 @@ function SoloStats({ player }) {
         return (
         <div key={r.label} className="compare-row">
           <span>{r.tip ? <Tip label={r.tip}>{label}</Tip> : label}</span>
-          <strong>{r.get(player)}</strong>
+          <strong className={standout(r, player) ? 'is-better' : undefined}>{(r.format ?? String)(r.value(player))}</strong>
         </div>
         )
       })}
@@ -129,7 +141,7 @@ export default function Solo({ player, nav, reduced, onBack, onStep }) {
   const [entered, setEntered] = useState(false)
   useEffect(() => {
     if (!pinned || !entered) return
-    let tl
+    let ctx   // gsap.context : à la sortie, revert() retire aussi les styles posés par la timeline
     let cancelled = false
     const t = setTimeout(async () => {
       let gsap, ScrollTrigger
@@ -143,7 +155,8 @@ export default function Solo({ player, nav, reduced, onBack, onStep }) {
       gsap.registerPlugin(ScrollTrigger)
       const grid = band.current
       const panel = tables.current
-      tl = gsap.timeline({
+      ctx = gsap.context(() => {
+      const tl = gsap.timeline({
         defaults: { ease: 'none' },
         scrollTrigger: {
           trigger: stage.current,
@@ -163,13 +176,13 @@ export default function Solo({ player, nav, reduced, onBack, onStep }) {
         .fromTo(panel, { y: () => (window.innerHeight + panel.offsetHeight) / 2 + 24 }, { y: 0, duration: 1 }, 0)
         .fromTo(veil.current, { opacity: 0 }, { opacity: 1, duration: 1 }, 0)
         .fromTo(grid.querySelectorAll('.figure'), { opacity: 1 }, { opacity: 0, duration: 0.8 }, 0.2)
+      })
       ScrollTrigger.refresh()
     }, 0)
     return () => {
       cancelled = true
       clearTimeout(t)
-      tl?.scrollTrigger?.kill(true)
-      tl?.kill()
+      ctx?.revert()   // (passage en mode empilé : tableaux et joueurs sans transformation restante)
     }
   }, [pinned, entered, player.id])
 
@@ -272,18 +285,26 @@ export default function Solo({ player, nav, reduced, onBack, onStep }) {
         <div ref={tables} className="details final-tables">
           <SingleTable player={player} />
         </div>
-        {pinned && (
-          <>
-            <button className={`intro-down final-down${shownView ? '' : ' is-on'}`}
-                    onClick={() => scrollToEnd(true)} aria-label="Voir le tableau"
-                    tabIndex={shownView ? -1 : 0} aria-hidden={shownView}>
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9l7 7 7-7" /></svg>
-            </button>
-            <p className="pick-help final-help" aria-hidden="true">
-              {shownView ? '↑ JOUEUR · ESC CHOIX DU JOUEUR' : '↓ TABLEAU · ← → CHANGER DE JOUEUR · ↑ CHOIX DU JOUEUR'}
-            </p>
-          </>
+        {/* Vue des joueurs (et toujours sur mobile) : flèche vers le haut, retour à la page
+            précédente, comme la flèche « Menu » des autres pages. */}
+        {!(pinned && shownView) && (
+          <button className="intro-down final-up page-up" onClick={back}>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 15l7-7 7 7" /></svg>
+            <span className="intro-down-label">Les candidats</span>
+          </button>
         )}
+        {pinned && (<>
+          <button className={`intro-down final-down${shownView ? '' : ' is-on'}`}
+                  onClick={() => scrollToEnd(true)} tabIndex={shownView ? -1 : 0} aria-hidden={shownView}>
+            <span className="intro-down-label">Voir le tableau détaillé</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9l7 7 7-7" /></svg>
+          </button>
+          <button className={`intro-down final-down final-up${shownView ? ' is-on' : ''}`}
+                  onClick={() => scrollToEnd(false)} tabIndex={shownView ? 0 : -1} aria-hidden={!shownView}>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 15l7-7 7 7" /></svg>
+            <span className="intro-down-label">Voir le joueur</span>
+          </button>
+        </>)}
       </section>
     </m.main>
   )

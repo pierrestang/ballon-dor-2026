@@ -1,12 +1,12 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { animate, m, useMotionValue, useMotionValueEvent, useReducedMotion, useSpring, useTransform, useIsPresent } from 'framer-motion'
+import { useEffect, useRef, useState } from 'react'
+import { animate, m, useMotionValue, useMotionValueEvent, useReducedMotion, useTransform, useIsPresent } from 'framer-motion'
 import players, { coinUrl } from './data'
-import { Coin, syncFloat, useHoverSpin } from './Coin'
-import { ARC_FONT, ArcText, GlitchArc, NameArc, R_BOTTOM, ScrollLetters } from './Letters'
+import { ARC_FONT, GlitchArc, R_BOTTOM, ScrollLetters } from './Letters'
 import { carouselVariants } from './transitions'
-import { watchTitle } from './titleFit'
-import { COIN_AT, FLASH_MS, READY_AT, TROPHY_PATHS, TrophyLoader, VIEW_H, VIEW_W, useIntroClock } from './Intro'
-import CandidatesRing, { mod as ringMod, ringLayout } from './SoloPick'
+import { COIN_AT, FLASH_MS, READY_AT, TrophyLoader, useIntroClock } from './Intro'
+import CandidatesRing, { mod as ringMod } from './SoloPick'
+import { gameFinished } from './storage'
+import { CenterCoin, Flight, Ghost, NameCurve, PickTitle, SPIN, SlotCoin, useLayout } from './SelectionParts'
 
 // Intro et sélection du duel : une seule scène (depuis le 27/09/2026). L'intro (chargement, pièce
 // du joueur, « BALLON D'OR 2026 » et son nom en arc) est l'état 0 d'une progression, la sélection
@@ -25,26 +25,16 @@ import CandidatesRing, { mod as ringMod, ringLayout } from './SoloPick'
 // emplacements remplis, la flèche clignotante en bas de l'écran ouvre la page 2.
 
 const N = players.length
-// Changement de joueur : un tour complet, courbe de l'intro ; l'image change quand la pièce est
-// vue de profil (aucun saut).
-const COIN_TURN = { duration: 1.1, ease: [0.3, 0.7, 0.2, 1] }
-const POWER3_IN_OUT = [0.65, 0, 0.35, 1]
-const FLIGHT = { duration: 0.7, ease: POWER3_IN_OUT }
-const SPIN = 540          // 1,5 tour pendant le vol
 const LABELS = ['JOUEUR A', 'JOUEUR B']   // lecteurs d'écran seulement
 const STATUS = ['SÉLECTIONNEZ DEUX JOUEURS', 'UN JOUEUR SÉLECTIONNÉ', 'DUEL PRÊT']
-const SPLIT_MIN = 820    // px : en dessous, mobile
 const DRAG_STEP = 60     // px de glissé horizontal pour changer de joueur
 const WHEEL_STEP = 30    // molette horizontale : seuil d'un changement
-const HOVER = { stiffness: 300, damping: 24 }
 const SLIDE = { duration: 0.7, ease: [0.65, 0, 0.35, 1] }   // pièces qui se rapprochent / s'écartent
-const NAME_BELOW = 0.72   // bas du nom en arc, en diamètres de la pièce sous son centre
-const BOTTOM_SPACE = 80   // px laissés en bas (grand écran) à l'aide clavier et à la flèche
-const TITLE_MOBILE = 110   // px réservés en haut (mobile) au titre « FAITES VOS JEUX ! »
 const INTRO_VMIN = 0.48   // diamètre de la pièce dans l'intro (48vmin)
 const TRANSITION = { duration: 1.6, ease: [0.33, 0, 0.25, 1] }   // intro ↔ sélection, trajet complet
 const LIVE = 0.97         // au-delà, la sélection répond (clics, clavier)
 const CYCLE_MS = 2000     // intro : un nominé toutes les 2 s
+
 // Versions du site, au choix sur l'intro (← → / glisser, en boucle) ; titre en arc sous le nom
 // du joueur, plus grand que le nom (MODE_FONT), en or, glitch léger au changement. Ordre :
 // Les candidats · Duel · Mon classement.
@@ -53,219 +43,14 @@ export const MODES = [
   { id: 'duel', title: 'Duel' },
   { id: 'game', title: 'Mon classement' },
 ]
-const MODE_FONT = 36                         // taille du titre de la version (nom : ARC_FONT = 25)
-const R_MODE = R_BOTTOM + 16 + MODE_FONT * 0.7   // ligne de base du titre : 16 unités sous le nom
+export const MODE_FONT = 36                  // taille du titre de la version (nom : ARC_FONT = 25)
+export const R_MODE = R_BOTTOM + 16 + MODE_FONT * 0.7   // ligne de base du titre : 16 unités sous le nom
 const INTRO_LIFT = 34                        // intro : bloc remonté de 34 unités d'arc
 const clamp01 = (x) => Math.min(1, Math.max(0, x))
 const seg = (p, a, b) => clamp01((p - a) / (b - a))
 const easeInOut = (x) => (x < 0.5 ? 4 * x * x * x : 1 - (-2 * x + 2) ** 3 / 2)
 
-// Géométrie de l'écran : diamètre D de la pièce centrale (centre en coinY), diamètre G des pièces
-// fantômes (et des pièces posées), centres des deux emplacements.
-function useLayout() {
-  const measure = () => {
-    const vw = window.innerWidth
-    const vh = window.innerHeight
-    const wide = vw > SPLIT_MIN
-    if (wide) {
-      // Grand écran : un seul bloc centré verticalement — titre, puis la rangée pièce A · pièce
-      // centrale · pièce B (noms en arc compris) —, en laissant le bas de l'écran à l'aide
-      // clavier et à la flèche. Emplacements aux places des joueurs en page 2 (28 % et 72 % de
-      // la largeur, --center de .duel-grid), écartés juste assez pour ne pas toucher les
-      // flèches ‹ ›.
-      const D = Math.round(Math.min(vh * 0.22, vw * 0.14))
-      // Emplacements : taille propre, indépendante de la pièce centrale.
-      const G = Math.round(Math.min(vh * 0.36, vw * 0.24))
-      // Hauteur du titre (tailles de .pick-title) et écart titre → pièces.
-      const h1 = Math.min(48, Math.max(28, vw * 0.032))
-      const sub = Math.min(20, Math.max(15, vw * 0.013))
-      const titleH = h1 + 10 + sub * 1.25
-      const gap = vh * 0.07
-      const blockH = titleH + gap + G / 2 + G * NAME_BELOW
-      const titleY = Math.max(24, Math.min((vh - blockH) / 2, vh - BOTTOM_SPACE - blockH))
-      const coinY = titleY + titleH + gap + G / 2
-      const off = Math.max(vw * 0.22, D / 2 + G / 2 + 110)   // du centre de l'écran à un emplacement
-      // Duel prêt : la pièce centrale s'efface et les deux emplacements se rapprochent, « VS »
-      // entre les deux (slotXReady).
-      const near = G / 2 + 70
-      return { vw, vh, D, G, wide, titleY, coinY, slotY: coinY, slotX: [vw / 2 - off, vw / 2 + off],
-               slotXReady: [vw / 2 - near, vw / 2 + near], ring: ringLayout(vw, vh) }
-    }
-    // Mobile : emplacements côte à côte en haut (« VS » entre les deux), pièce dessous.
-    const D = Math.round(Math.min(vw * 0.32, vh * 0.18))
-    const coinY = vh * 0.6
-    const vsGap = 30
-    const G = Math.round(Math.min(vw * 0.5, vh * 0.29, (vw - 32) / 2 - vsGap))
-    // Sous le titre de la page (TITLE_MOBILE px).
-    const slotY = Math.max(G / 2 + TITLE_MOBILE, Math.min(vh * 0.22, coinY - D / 2 - 24 - G * NAME_BELOW))
-    const half = G / 2 + vsGap
-    return { vw, vh, D, G, wide, coinY, slotY, slotX: [vw / 2 - half, vw / 2 + half],
-             slotXReady: [vw / 2 - half, vw / 2 + half], ring: ringLayout(vw, vh) }
-  }
-  const [lay, setLay] = useState(measure)
-  useEffect(() => {
-    const onResize = () => setLay(measure())
-    window.addEventListener('resize', onResize)
-    return () => window.removeEventListener('resize', onResize)
-  }, [])
-  return lay
-}
-
-/** Titre de la page et description dessous, de la même longueur que le titre : l'espacement des
-    lettres de la description est calculé d'après les largeurs réelles (polices chargées),
-    recalculé au redimensionnement. */
-function PickTitle({ top, progress, reduced }) {
-  const title = useRef(null)
-  const sub = useRef(null)
-  // Titre et description de la même longueur (titleFit.js).
-  useLayoutEffect(() => watchTitle(() => title.current, () => sub.current), [])
-  // Apparition lettre par lettre, de gauche à droite (opacité, montée de 30 px, flou 8 px → 0).
-  const motion = reduced ? { dist: 0, blur: 0 } : {}
-  return (
-    <header className="pick-title" style={top !== undefined ? { top } : undefined}>
-      <h1><ScrollLetters innerRef={title} text="DUEL" progress={progress} range={[0.35, 0.7]} {...motion} /></h1>
-      <p><ScrollLetters innerRef={sub} text="Sélectionnez deux joueurs à comparer." progress={progress} range={[0.55, 0.8]} {...motion} /></p>
-    </header>
-  )
-}
-
-/** Point d'une courbe de Bézier quadratique. */
-const bez = (a, c, b, t) => (1 - t) * (1 - t) * a + 2 * (1 - t) * t * c + t * t * b
-
-/** Pièce centrale : montre le joueur k. Quand k change, elle fait un tour complet dans le sens
-    de la flèche (dir) et l'image change au passage de profil, comme dans l'intro. Au survol :
-    tour complet sur elle-même et, si le joueur est disponible, élévation de 6 px. Un joueur déjà
-    placé reste visible, grisé et inerte (curseur interdit). */
-function CenterCoin({ k, dir, placedSet, reduced, instant, onSelect, btnRef, live = true }) {
-  const [shown, setShown] = useState(k)
-  const rot = useMotionValue(0)
-  const [spin, startSpin] = useHoverSpin()
-  const rotateY = useTransform([rot, spin], ([a, b]) => a + b)
-  const lift = useSpring(0, HOVER)
-  const [floatDelay] = useState(syncFloat)   // flottement sur l'horloge commune (relais avec les candidats)
-  const target = useRef(k)
-  const turning = useRef(null)
-  useEffect(() => {
-    if (k === target.current) return
-    target.current = k
-    turning.current?.stop()
-    // Pièce cachée (une pièce revient d'un emplacement) ou mouvement réduit : le joueur change
-    // sans rotation, la pièce de face.
-    if (reduced || instant) { rot.set(Math.round(rot.get() / 360) * 360); setShown(k); return }
-    // Toujours un nombre entier de tours (la pièce finit de face, même après une interruption) ;
-    // l'image change quand la pièce passe de profil (90° + n × 180°).
-    const from = rot.get()
-    const to = Math.round(from / 360) * 360 + dir * 360
-    const edge = (v) => Math.floor((v + 90) / 180)
-    const e0 = edge(from)
-    let swapped = false
-    turning.current = animate(rot, to, {
-      ...COIN_TURN,
-      onUpdate: (v) => {
-        if (!swapped && edge(v) !== e0) { swapped = true; setShown(target.current) }
-      },
-    })
-    turning.current.then(() => { if (!swapped) setShown(target.current) })
-  }, [k])
-  const player = players[shown]
-  const placed = placedSet.has(shown)
-  const onEnter = (e) => {
-    startSpin(e)
-    if (e.pointerType === 'mouse' && !placed && live) lift.set(-6)
-  }
-  useEffect(() => { if (placed) lift.set(0) }, [placed])
-  return (
-    <button ref={btnRef} className="pick-coin" onClick={() => { if (!placed && live) onSelect() }}
-            aria-label={`${player.nom}, ${player.club}, ${player.selection}${placed ? ' — déjà sélectionné' : ''}`}
-            aria-disabled={placed} onPointerEnter={onEnter} onPointerLeave={() => lift.set(0)}>
-      <m.span className="pick-hover" style={{ y: lift }}>
-        <span className="pick-spin" style={{ animationDelay: `${floatDelay}s` }}>
-          <Coin player={player} rotateY={rotateY} />
-        </span>
-      </m.span>
-    </button>
-  )
-}
-
-/** Pièce posée dans un emplacement du duel : clic pour la renvoyer au centre ; flotte doucement
-    (comme les pièces de l'intro et de la page 3) et tourne sur elle-même au survol. */
-function SlotCoin({ player, landed, reduced, onRemove, label }) {
-  const [spin, startSpin] = useHoverSpin()
-  return (
-    <m.button className="pick-slot-coin" onClick={onRemove} onPointerEnter={startSpin}
-              aria-label={label} disabled={!landed} aria-hidden={!landed}
-              initial={{ opacity: 0 }} animate={{ opacity: landed ? 1 : 0 }}
-              transition={{ duration: landed && reduced ? 0.3 : 0 }}>
-      <span className="pick-float">
-        <m.span className="pick-hover" style={{ rotateY: spin }}>
-          <Coin player={player} rotateY={reduced ? 0 : SPIN} />
-        </m.span>
-      </span>
-    </m.button>
-  )
-}
-
-// Perles du cercle intérieur de la pièce fantôme (repère 100 × 100).
-const PEARLS = Array.from({ length: 64 }, (_, i) => {
-  const t = (i / 64) * Math.PI * 2
-  return [50 + 44 * Math.cos(t), 50 + 44 * Math.sin(t)]
-})
-
-/** Pièce fantôme d'un emplacement vide : la gravure seule, en trait or de 1 px sans aucun aplat
-    (cercle extérieur, cercle intérieur perlé, trophée de l'intro), comme un dessin de graveur
-    avant la frappe. Tourne lentement sur elle-même (12 s par tour) et respire ; s'efface quand
-    la vraie pièce se pose dessus. */
-function Ghost({ hidden }) {
-  return (
-    <div className={`pick-ghost${hidden ? ' is-hidden' : ''}`} aria-hidden="true">
-      <div className="pick-ghost-breathe">
-        <div className="pick-ghost-turn">
-          <svg className="pick-ghost-coin" viewBox="0 0 100 100">
-            <circle cx="50" cy="50" r="49" />
-            {PEARLS.map(([x, y], i) => <circle key={i} cx={x} cy={y} r="0.55" />)}
-            <svg x="23" y="20" width="54" height="61" viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}>
-              {TROPHY_PATHS.map((d) => <path key={d} d={d} />)}
-            </svg>
-          </svg>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-/** Nom en arc sous une pièce (même tracé, même police et même frappe lettre par lettre que
-    l'intro), centré sur la pièce (Letters.jsx). */
-function NameCurve({ text, animate, className = 'pick-name', boxClass = '', dir, pace }) {
-  if (!text) return null
-  return animate === false
-    ? <ArcText text={text} side="bottom" className={`${className} ${boxClass}`} />
-    : <NameArc text={text} animate={animate} className={className} dir={dir} pace={pace} />
-}
-
-/** Pièce en vol entre le centre et un emplacement (dans un sens ou dans l'autre) : courbe de
-    Bézier, 1,5 tour sur elle-même, 700 ms. */
-function Flight({ f, D, onDone }) {
-  const t = useMotionValue(0)
-  const x = useTransform(t, (v) => bez(f.from.cx, f.ctrl.x, f.to.cx, v) - D / 2)
-  const y = useTransform(t, (v) => bez(f.from.cy, f.ctrl.y, f.to.cy, v) - D / 2)
-  // La pièce grossit un peu à mi-course, comme soulevée vers l'écran.
-  const scale = useTransform(t, (v) => f.from.scale + (f.to.scale - f.from.scale) * v + 0.18 * Math.sin(Math.PI * v))
-  const rotateY = useTransform(t, (v) => f.from.yaw + (f.to.yaw - f.from.yaw) * v)
-  useEffect(() => {
-    const ctl = animate(t, 1, FLIGHT)
-    ctl.then(onDone)
-    return () => ctl.stop()
-  }, [])
-  return (
-    <m.div className="pick-flight" aria-hidden="true"
-           style={{ width: D, height: D, x, y, scale, '--d': `${D}px` }}>
-      <Coin player={players[f.k]} rotateY={rotateY} />
-    </m.div>
-  )
-}
-
-
-export default function Carousel({ nav, pair, setPair, onOpen, onGame, onSolo, mode, setMode, introPlayer }) {
+export default function Carousel({ nav, pair, setPair, onOpen, onGame, onSolo, mode, setMode, introPlayer, onDuelLive }) {
   // Page qui sort (AnimatePresence la garde le temps du glissement) : on retire aussitôt ses
   // écouteurs de clavier, molette et tactile, pour que la page suivante soit seule à réagir.
   const isPresent = useIsPresent()
@@ -298,6 +83,8 @@ export default function Carousel({ nav, pair, setPair, onOpen, onGame, onSolo, m
   // celle de la scène (même place, même taille).
   const [docked, setDocked] = useState(settledStart)
   const soloDest = MODES[mode].id === 'solo'   // la scène mène au choix « Les candidats »
+  const gameDest = MODES[mode].id === 'game'   // la scène mène au jeu « Mon classement »
+  const duelDest = !soloDest && !gameDest
   const settledAt = useRef(0)                  // arrivée sur la sélection (geste suivant : duel)
   useMotionValueEvent(progress, 'change', (v) => {
     setLive(v > LIVE)
@@ -447,7 +234,13 @@ export default function Carousel({ nav, pair, setPair, onOpen, onGame, onSolo, m
     const id = MODES[mode].id
     if (id === 'duel') goTo(1)
     else if (id === 'solo') { setRingCenter(active); goTo(1) }   // même transition, vers les candidats
-    else if (loaded) onGame(active)
+    else if (loaded) {
+      // Mon classement terminé : la pièce de l'intro est confiée à l'annonce du Ballon d'Or
+      // (même bloc : « BALLON D'OR 2026 », pièce, nom, texte en or), qui la reprend à sa place et
+      // à sa taille à l'écran ; sinon, le jeu arrive par un glissement de page.
+      const r = gameFinished() && coinRef.current?.getBoundingClientRect()
+      onGame(active, r ? { x: r.left + r.width / 2, y: r.top + r.height / 2, size: r.width } : null)
+    }
   }
   const down = () => {
     if (goal.current === 0) enter()
@@ -605,13 +398,18 @@ export default function Carousel({ nav, pair, setPair, onOpen, onGame, onSolo, m
   const slotScale = useTransform(progress, (p) => (reduced ? 1 : 0.9 + 0.1 * seg(p, 0.65, 0.9)))
   const lateOpacity = useTransform(progress, (p) => seg(p, 0.85, 1))
   const origin = `${lay.vw / 2}px ${lay.coinY}px`
+  // Flèches ‹ › : du centre de l'écran, à égale distance de la pièce centrale et de l'emplacement
+  // (grand écran) ; mobile, emplacements en haut : à côté de la pièce.
+  const arrowX = lay.wide ? (lay.D / 2 + (lay.slotX[1] - lay.vw / 2 - lay.G / 2)) / 2 : lay.D / 2 + 40
   const coinBox = { left: lay.vw / 2 - lay.D / 2, top: lay.coinY - lay.D / 2, width: lay.D, height: lay.D }
 
   const current = players[active]
   const isPlaced = placed.has(active)
   // Dans l'intro, la pièce centrale est toujours pleine, même si son joueur est placé ou le duel
   // prêt (dans la sélection, elle serait grisée ou effacée).
-  const inSelect = !intro && !soloDest
+  const inSelect = !intro && duelDest
+  // Sélection du duel affichée : App.jsx précharge alors les séquences des deux joueurs.
+  useEffect(() => { onDuelLive?.(duelDest && live) }, [duelDest, live])
 
   return (
     <m.main className={`carousel stage${live ? ' is-live' : ''}${introReady ? ' is-intro-ready' : ''}${intro && coinOn ? ' is-intro' : ''}`}
@@ -630,7 +428,7 @@ export default function Carousel({ nav, pair, setPair, onOpen, onGame, onSolo, m
       )}
 
       {/* Titre de la sélection, frappé lettre par lettre. */}
-      {!soloDest && <>
+      {duelDest && <>
       <PickTitle top={lay.titleY} progress={progress} reduced={reduced} />
 
       {/* Emplacements du duel : vides, une pièce fantôme (la gravure seule, avant la frappe) ;
@@ -693,7 +491,7 @@ export default function Carousel({ nav, pair, setPair, onOpen, onGame, onSolo, m
                             scale: inSelect && ready ? 0.8 : 1 }}
                  transition={snap || soloDest ? { duration: 0 } : { duration: 0.4 }} aria-hidden={(inSelect && ready) || (soloDest && docked)}
                  style={coinBox}>
-            <CenterCoin k={active} dir={dir} placedSet={placed} reduced={reduced} instant={returning || (soloDest && docked)} live={live && !soloDest}
+            <CenterCoin k={active} dir={dir} placedSet={placed} reduced={reduced} instant={returning || (soloDest && docked)} live={live && duelDest}
                         btnRef={coinRef} onSelect={() => select(active)} />
           </m.div>
           {/* Titre de la version (intro), en arc sous le nom : même taille, en or ; s'efface au
@@ -714,22 +512,28 @@ export default function Carousel({ nav, pair, setPair, onOpen, onGame, onSolo, m
 
       {/* Fin de la transition : flèches ‹ › de part et d'autre de la pièce, aide clavier (masquée
           sur mobile), puis, le duel prêt, la flèche clignotante vers le duel. */}
-      {!soloDest && <m.div className="stage-layer" style={{ opacity: lateOpacity }}>
+      {duelDest && <m.div className="stage-layer" style={{ opacity: lateOpacity }}>
+        {/* Grand écran : à mi-chemin entre le bord de la pièce centrale et celui de l'emplacement. */}
         {[-1, 1].map((d) => (
           <button key={d} className={`pick-arrow${ready ? ' is-gone' : ''}`} onClick={() => turn(d)}
                   aria-label={d > 0 ? 'Joueur suivant' : 'Joueur précédent'} tabIndex={ready || !live ? -1 : 0}
-                  style={{ left: lay.vw / 2 + d * (lay.D / 2 + 40), top: lay.coinY }}>
+                  style={{ left: lay.vw / 2 + d * arrowX, top: lay.coinY }}>
             <svg viewBox="0 0 24 24" aria-hidden="true">
               {d > 0 ? <path d="M9 5l7 7-7 7" /> : <path d="M15 5l-7 7 7 7" />}
             </svg>
           </button>
         ))}
-        <p className={`pick-help${ready ? ' is-hidden' : ''}`} aria-hidden="true">
-          ← → NAVIGUER · ↵ SÉLECTIONNER · ESC RETIRER
-        </p>
         <button className={`intro-down pick-go${ready ? ' is-on' : ''}`} onClick={() => onOpen()}
                 disabled={!ready || !live} aria-hidden={!ready} aria-label="Lancer le duel">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9l7 7 7-7" /></svg>
+        </button>
+      </m.div>}
+
+      {/* Sélection du duel et Les candidats : flèche « Menu » en haut, retour à l'intro (comme ↑). */}
+      {!gameDest && <m.div className="stage-layer" style={{ opacity: lateOpacity }}>
+        <button className="intro-down final-up stage-up" onClick={up} tabIndex={live ? 0 : -1} aria-hidden={!live}>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 15l7-7 7 7" /></svg>
+          <span className="intro-down-label">Menu</span>
         </button>
       </m.div>}
 
