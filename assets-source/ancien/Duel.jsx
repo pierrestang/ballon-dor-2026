@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { animate, m, useMotionValue, useMotionValueEvent, useScroll, useTransform } from 'framer-motion'
+import { animate, m, useMotionValue, useMotionValueEvent, useScroll, useTransform, useIsPresent } from 'framer-motion'
 import { FRAMES, asset, decimal, photoUrl } from './data'
 import { ClubLogo, Flag } from './Nameplate'
-import { duelVariants } from './transitions'
+import Tip from './Tip'
+import { SLIDE, duelVariants } from './transitions'
 import { frameAt, hasFrames, open, subscribe } from './sequence'
 
 function useNarrow() {
@@ -36,8 +37,8 @@ const frameOf = (p) => Math.round(Math.max(0, Math.min(1, p)) * FRAMES * TURNS) 
 const STILL_DELAY = 120   // ms sans scroll avant d'afficher la photo
 // Textes d'un côté, pour l'animation de changement de joueur.
 const SIDE_TEXT = [
-  '.figure.is-left .arc-name, .palmares.is-left :is(.badges, h3, li, .empty), .compare-row strong:first-child',
-  '.figure.is-right .arc-name, .palmares.is-right :is(.badges, h3, li, .empty), .compare-row strong:last-child',
+  '.palmares.is-left :is(.badges, h3, li, .empty), .compare-row strong:first-child',
+  '.palmares.is-right :is(.badges, h3, li, .empty), .compare-row strong:last-child',
 ]
 const LINE_SPAN = 0.42   // s : écart entre la ligne du haut et celle du bas
 
@@ -54,7 +55,7 @@ function staggerLines(root, side, upward = false) {
   })
 }
 
-const AUTOPLAY = 3        // s : défilement automatique après une ouverture par ↓
+const AUTOPLAY = 2.5        // s : défilement automatique après une ouverture par ↓
 const SPIN_SPEED = 34     // images par seconde pendant un changement de joueur (tour ≈ 1,4 s)
 
 /** Canvas qui affiche l'image de la séquence correspondant à la progression du scroll, ou
@@ -140,34 +141,31 @@ const spread = (start, end) => (i, n) =>
   start + (n > 1 ? (i * (end - start - FADE)) / (n - 1) : 0)
 
 /** Prénom et nom en arc de cercle au-dessus de la tête du joueur. La taille des lettres
-    suit la longueur du nom pour que l'arc soit toujours rempli sans déborder. Au scroll,
-    il apparaît en fondu en descendant légèrement, comme les stats (juste avant elles). */
-function ArcName({ id, name, progress, reduced }) {
+    suit la longueur du nom pour que l'arc soit toujours rempli sans déborder. Figé : toujours
+    affiché, sans animation ; au changement de joueur, le nom change au passage de dos. */
+function ArcName({ id, name }) {
   const fontSize = Math.min(135, 880 / (name.length * 0.5))
-  const opacity = useTransform(progress, [0, 0.06], [0, 1])
-  const y = useTransform(progress, [0, 0.06], [-16, 0])
   return (
-    <m.svg className="arc-name" viewBox="0 0 1000 260" aria-hidden="true"
-           style={reduced ? undefined : { opacity, y }}>
+    <svg className="arc-name" viewBox="0 0 1000 260" aria-hidden="true">
       <path id={`arc-${id}`} d="M 80 250 A 520 520 0 0 1 920 250" />
       <text fontSize={fontSize}>
         <textPath href={`#arc-${id}`} startOffset="50%" textAnchor="middle">{name}</textPath>
       </text>
-    </m.svg>
+    </svg>
   )
 }
 
 /** Une ligne du face-à-face : valeur du joueur de gauche · libellé · valeur du joueur de
     droite. Avec `compare`, le meilleur score est en vert (aucun en cas d'égalité).
     Apparaît en fondu en descendant légèrement au fil du scroll. */
-function CompareRow({ progress, at, reduced, label, left, right, format, compare, small }) {
+function CompareRow({ progress, at, reduced, label, tip, left, right, format, compare }) {
   const opacity = useTransform(progress, [at, at + FADE], [0, 1])
-  const y = useTransform(progress, [at, at + FADE], [-16, 0])
+  const y = useTransform(progress, [at, at + FADE], [-12, 0])
   const better = (a, b) => (compare && a > b ? 'is-better' : undefined)
   return (
-    <m.div className={`compare-row${small ? ' is-small' : ''}`} style={reduced ? undefined : { opacity, y }}>
+    <m.div className="compare-row" style={reduced ? undefined : { opacity, y }}>
       <strong className={better(left, right)}>{format(left)}</strong>
-      <span>{label}</span>
+      <span>{tip ? <Tip label={tip}>{label}</Tip> : label}</span>
       <strong className={better(right, left)}>{format(right)}</strong>
     </m.div>
   )
@@ -187,14 +185,15 @@ function Compare({ a, b, progress, reduced, style, timing }) {
     { label: 'Matches', get: (p) => p.stats.matchs, format: same, compare: false },
     { label: 'Buts', get: (p) => p.stats.buts, format: same, compare: true },
     { label: 'Assists', get: (p) => p.stats.passes, format: same, compare: true },
-    { label: 'Buts + Assists\n/ MATCH', get: (p) => round2(p.stats.contributionsParMatch),
-      format: decimal, compare: true, small: true },
+    // « Ratio » : buts + assists par match, détaillé au survol (comme en page 3).
+    { label: 'Ratio', tip: 'Buts + Assists / match', get: (p) => round2(p.stats.contributionsParMatch),
+      format: decimal, compare: true },
   ]
   return (
     <m.div className="compare" style={style}>
       {rows.map((r, i) => (
         <CompareRow key={r.label} progress={progress} reduced={reduced} at={timing(i, rows.length)}
-                    label={r.label} left={r.get(a)} right={r.get(b)} format={r.format} compare={r.compare} small={r.small} />
+                    label={r.label} tip={r.tip} left={r.get(a)} right={r.get(b)} format={r.format} compare={r.compare} />
       ))}
     </m.div>
   )
@@ -205,7 +204,7 @@ function Compare({ a, b, progress, reduced, style, timing }) {
 function Reveal({ as = 'div', progress, at, reduced, max = 1, className, children, ...rest }) {
   const Tag = m[as]
   const opacity = useTransform(progress, [at, at + FADE], [0, max])
-  const y = useTransform(progress, [at, at + FADE], [-16, 0])
+  const y = useTransform(progress, [at, at + FADE], [-12, 0])
   return (
     <Tag className={className} style={reduced ? undefined : { opacity, y }} {...rest}>
       {children}
@@ -264,7 +263,10 @@ function Palmares({ player, side, progress, reduced, timing }) {
 
 /** Page 2 — le duel : palmarès · joueur · stats face à face · joueur · palmarès ; les deux
     joueurs tournent ensemble au scroll. */
-export default function Duel({ pair, reduced, onBack, onStep, autoplay = false }) {
+export default function Duel({ pair, nav, reduced, onBack, onStep, onDetails, autoplay = false, atEnd = false }) {
+  // Page qui sort (AnimatePresence la garde le temps du glissement) : on retire aussitôt ses
+  // écouteurs de clavier, molette et tactile, pour que la page suivante soit seule à réagir.
+  const isPresent = useIsPresent()
   const section = useRef(null)
   const narrow = useNarrow()
   const { scrollYProgress: scrolled } = useScroll({ target: section, offset: ['start start', 'end end'] })
@@ -286,12 +288,16 @@ export default function Duel({ pair, reduced, onBack, onStep, autoplay = false }
   const statsStyle = narrow && !reduced ? { opacity: statsFade } : undefined
 
   // En haut de page à l'ouverture seulement : changer de joueur garde la position du scroll.
-  useLayoutEffect(() => { window.scrollTo(0, 0) }, [])
+  // En revenant de la page 3, en bas de page (fin de la rotation, joueurs de face).
+  const bottom = () => document.documentElement.scrollHeight - window.innerHeight
+  const home = () => window.scrollTo(0, atEnd ? bottom() : 0)
+  useLayoutEffect(() => { home() }, [])
 
-  // Ouverture par ↓ depuis la page 1 : une fois la page arrivée, elle défile seule jusqu'en bas
-  // en AUTOPLAY secondes — les joueurs font leur tour complet (image 000 → 047 → 000) pendant
-  // que stats et palmarès apparaissent. Un geste de l'utilisateur (molette, doigt, touche)
-  // l'interrompt et reprend la main.
+  // Ouverture par ↓, molette ou glisser depuis la page 1 : une fois la page arrivée, elle défile
+  // seule jusqu'en bas en AUTOPLAY secondes — les joueurs font leur tour complet (image 000 → 047
+  // → 000) pendant que stats et palmarès apparaissent. Un nouveau geste de l'utilisateur
+  // (molette après une pause, doigt, touche) l'interrompt et reprend la main ; l'élan de la
+  // molette qui a ouvert la page, lui, ne l'interrompt pas.
   useEffect(() => {
     if (!autoplay || reduced) return
     let anim
@@ -301,15 +307,21 @@ export default function Duel({ pair, reduced, onBack, onStep, autoplay = false }
       anim = animate(window.scrollY, max, {
         duration: AUTOPLAY, ease: 'easeInOut', onUpdate: (v) => window.scrollTo(0, v),
       })
-    }, 850)   // après le glissement d'arrivée de la page
+    }, SLIDE.duration * 1000)   // dès la fin du glissement d'arrivée de la page
+    let lastWheel = performance.now()
+    const onWheel = () => {
+      const now = performance.now()
+      if (now - lastWheel > 250) stop()   // pause de 250 ms : nouveau geste
+      lastWheel = now
+    }
     const opts = { passive: true }
-    window.addEventListener('wheel', stop, opts)
+    window.addEventListener('wheel', onWheel, opts)
     window.addEventListener('touchstart', stop, opts)
     window.addEventListener('keydown', stop)
     return () => {
       clearTimeout(t)
       stop()
-      window.removeEventListener('wheel', stop, opts)
+      window.removeEventListener('wheel', onWheel, opts)
       window.removeEventListener('touchstart', stop, opts)
       window.removeEventListener('keydown', stop)
     }
@@ -328,28 +340,50 @@ export default function Duel({ pair, reduced, onBack, onStep, autoplay = false }
       last = now
       if (blocking) {
         e.preventDefault()
-        window.scrollTo(0, 0)   // annule aussi ce qui a défilé avant l'écoute
+        home()   // annule aussi ce qui a défilé avant l'écoute
       }
     }
     window.addEventListener('wheel', onWheel, { passive: false })
     return () => window.removeEventListener('wheel', onWheel)
   }, [])
 
+  // Retour à la page 1 : si la page a défilé, la rotation est d'abord rejouée à l'envers
+  // (défilement automatique jusqu'en haut, joueurs de nouveau de face, durée proportionnelle au
+  // chemin à refaire), puis la page 1 apparaît. Un seul retour à la fois.
+  const leaving = useRef(false)
+  const back = useCallback(() => {
+    if (leaving.current) return
+    leaving.current = true
+    const y = window.scrollY
+    if (reduced || y < 5) { onBack(); return }
+    animate(y, 0, {
+      duration: AUTOPLAY * Math.min(1, y / Math.max(1, bottom())),
+      ease: 'easeInOut',
+      onUpdate: (v) => window.scrollTo(0, v),
+      onComplete: onBack,
+    })
+  }, [onBack, reduced])
+
   useEffect(() => {
-    // ↑ ou Échap : retour à la page 1 (pour changer de joueurs).
+    if (!isPresent) return   // page en train de sortir (glissement) : ses gestes ne comptent plus
+    // ↑ ou Échap : retour à la page 1 (pour changer de joueurs), rotation rejouée à l'envers.
     const onKey = (e) => {
-      if (e.key === 'Escape' || e.key === 'ArrowUp') { e.preventDefault(); onBack() }
+      if (leaving.current) { e.preventDefault(); return }   // retour en cours : on attend
+      if (e.key === 'Escape' || e.key === 'ArrowUp') { e.preventDefault(); back() }
+      // ↓ en bas de page : page 3 (plus haut, ↓ fait défiler la page normalement).
+      else if (e.key === 'ArrowDown' && window.scrollY >= bottom() - 2) { e.preventDefault(); onDetails() }
       // Comme en page 1 : ← change le joueur de gauche, → celui de droite.
       else if (e.key === 'ArrowLeft') { e.preventDefault(); onStep(0, 1) }
       else if (e.key === 'ArrowRight') { e.preventDefault(); onStep(1, 1) }
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [onBack, onStep])
+  }, [back, onStep, onDetails, isPresent])
 
   // Remonter depuis le haut de la page ramène au duel de la page 1. Seul un geste commencé
   // en haut compte : l'inertie d'un scroll qui vient d'atteindre le haut est ignorée.
   useEffect(() => {
+    if (!isPresent) return   // page en train de sortir (glissement) : ses gestes ne comptent plus
     const openedAt = performance.now()
     let lastWheel = 0
     let fromTop = false
@@ -359,13 +393,13 @@ export default function Duel({ pair, reduced, onBack, onStep, autoplay = false }
       lastWheel = now
       if (fromTop && e.deltaY < -20 && now - openedAt > 800) {
         fromTop = false
-        onBack()
+        back()
       }
     }
     let touchY = null
     const onTouchStart = (e) => { touchY = window.scrollY <= 0 ? e.touches[0].clientY : null }
     const onTouchEnd = (e) => {
-      if (touchY !== null && e.changedTouches[0].clientY - touchY > 80) onBack()
+      if (touchY !== null && e.changedTouches[0].clientY - touchY > 80) back()
       touchY = null
     }
     window.addEventListener('wheel', onWheel, { passive: true })
@@ -376,7 +410,40 @@ export default function Duel({ pair, reduced, onBack, onStep, autoplay = false }
       window.removeEventListener('touchstart', onTouchStart)
       window.removeEventListener('touchend', onTouchEnd)
     }
-  }, [onBack])
+  }, [back, isPresent])
+
+  // Descendre encore depuis le bas de la page ouvre la page 3 (détails des compétitions) :
+  // comme en haut, seul un geste commencé en bas compte, pas l'élan qui vient d'y arriver.
+  useEffect(() => {
+    if (!isPresent) return   // page en train de sortir (glissement) : ses gestes ne comptent plus
+    const openedAt = performance.now()
+    const atBottom = () => window.scrollY >= bottom() - 2
+    let lastWheel = 0
+    let fromBottom = false
+    const onWheel = (e) => {
+      const now = performance.now()
+      if (now - lastWheel > 200) fromBottom = atBottom()
+      lastWheel = now
+      if (fromBottom && e.deltaY > 20 && now - openedAt > 800) {
+        fromBottom = false
+        onDetails()
+      }
+    }
+    let touchY = null
+    const onTouchStart = (e) => { touchY = atBottom() ? e.touches[0].clientY : null }
+    const onTouchEnd = (e) => {
+      if (touchY !== null && touchY - e.changedTouches[0].clientY > 80) onDetails()
+      touchY = null
+    }
+    window.addEventListener('wheel', onWheel, { passive: true })
+    window.addEventListener('touchstart', onTouchStart, { passive: true })
+    window.addEventListener('touchend', onTouchEnd, { passive: true })
+    return () => {
+      window.removeEventListener('wheel', onWheel)
+      window.removeEventListener('touchstart', onTouchStart)
+      window.removeEventListener('touchend', onTouchEnd)
+    }
+  }, [onDetails, isPresent])
 
   // Changement de joueur : le joueur affiché tourne jusqu'à être de dos, puis le nouveau
   // enchaîne, de dos, et finit son tour de face. Stats, nom et palmarès changent au passage
@@ -434,6 +501,7 @@ export default function Duel({ pair, reduced, onBack, onStep, autoplay = false }
   return (
     <m.main
       className={`duel${reduced ? ' is-static' : ''}`}
+      custom={nav}
       variants={duelVariants}
       initial="hidden"
       animate="shown"
@@ -447,7 +515,7 @@ export default function Duel({ pair, reduced, onBack, onStep, autoplay = false }
           <Palmares player={a} side="left" progress={progress} reduced={reduced} timing={palmTiming} />
           {[a, b].map((p, i) => (
             <div key={i ? 'right' : 'left'} className={`figure is-${i ? 'right' : 'left'}`}>
-              <ArcName id={p.id} name={p.nom} progress={progress} reduced={reduced} />
+              <ArcName id={p.id} name={p.nom} />
               <Rotation id={p.id} progress={progress} spin={spins[i]} reduced={reduced} />
               <m.div className="figure-picker"
                      style={reduced ? undefined : { opacity: pickerOpacity, pointerEvents: pickerEvents }}>
@@ -462,6 +530,12 @@ export default function Duel({ pair, reduced, onBack, onStep, autoplay = false }
           ))}
           <Compare a={a} b={b} progress={progress} reduced={reduced} style={statsStyle} timing={statsTiming} />
           <Palmares player={b} side="right" progress={progress} reduced={reduced} timing={palmTiming} />
+
+          {/* Fin de la rotation : flèche vers la page 3, comme celle de l'intro. */}
+          <m.button className="intro-down duel-down" onClick={onDetails} aria-label="Détails des compétitions"
+                    style={reduced ? undefined : { opacity: pickerOpacity, pointerEvents: pickerEvents }}>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9l7 7 7-7" /></svg>
+          </m.button>
 
         </div>
       </section>

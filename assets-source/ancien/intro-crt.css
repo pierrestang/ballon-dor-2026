@@ -1,0 +1,304 @@
+/* ------------------------------------------------------------------ */
+/* Intro — un moniteur cathodique dans une pièce sombre                 */
+/* ------------------------------------------------------------------ */
+
+.intro {
+  --phosphor: #4dff7c;                       /* vert phosphore de l'écran */
+  --phosphor-glow: rgba(77, 255, 124, 0.75);
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  text-align: center;
+  /* Pièce sombre, légèrement bleutée, éclairée par l'écran. */
+  background:
+    radial-gradient(ellipse 60% 50% at 50% 45%, rgba(77, 255, 124, 0.05), transparent 70%),
+    radial-gradient(ellipse at 50% 40%, #262a31 0%, #15181d 55%, #0b0b0d 100%);
+}
+
+/* Téléviseur moderne plein écran (toute la largeur, toute la hauteur) : cadre noir fin et
+   régulier, légèrement brillant (arête éclairée en haut), bas un peu plus épais avec un logo
+   centré et un voyant. L'écran, lui, garde son rendu cathodique (vert, balayage, lueur). */
+.tv {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  padding: clamp(10px, 1.4vw, 22px) clamp(10px, 1.4vw, 22px) 0;
+  background: linear-gradient(180deg, #151517 0%, #0b0b0c 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+}
+/* Bas du cadre : logo argenté centré, voyant vert à droite. */
+.tv-chin {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: clamp(26px, 4.5vh, 44px);
+}
+.tv-logo {
+  font-family: var(--mono);
+  font-size: clamp(9px, 0.8vw, 12px);
+  letter-spacing: 0.35em;
+  color: rgba(244, 241, 234, 0.45);
+}
+.tv-chin .tv-led { position: absolute; right: clamp(16px, 3vw, 48px); }
+/* Écran bombé, enfoncé dans le boîtier : coins arrondis, verre sombre, ombre intérieure, lueur
+   verte ; anneaux d'ombre autour (cadre en creux). */
+.crt-screen {
+  position: relative;
+  border-radius: 0.8% / 1.4%;   /* dalle plate, coins à peine arrondis */
+  overflow: hidden;
+  background: radial-gradient(ellipse at 50% 45%, #18231d 0%, #0d1310 65%, #050706 100%);
+  box-shadow:
+    inset 0 0 120px rgba(0, 0, 0, 0.9),
+    inset 0 0 26px rgba(77, 255, 124, 0.14),
+    0 0 0 6px #0b0b0c,
+    0 0 0 8px rgba(255, 255, 255, 0.05),
+    0 0 50px 20px rgba(77, 255, 124, 0.04);
+}
+/* Reflet de la vitre bombée, en haut à gauche. */
+.crt-screen::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  border-radius: inherit;
+  background: radial-gradient(ellipse 60% 40% at 25% 15%, rgba(255, 255, 255, 0.06), transparent 70%);
+  pointer-events: none;
+}
+/* Contenu de l'écran : c'est lui qui s'écrase à l'extinction. */
+.crt-content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* Voyant de marche, vert quand l'écran est allumé. */
+.tv-led {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--phosphor);
+  box-shadow: 0 0 8px var(--phosphor-glow);
+}
+
+/* Lignes de balayage + bande claire qui descend lentement + vignettage, dans l'écran. */
+.intro-scan {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    linear-gradient(to bottom, transparent 0, rgba(77, 255, 124, 0.05) 50%, transparent 100%) 0 -30% / 100% 30% no-repeat,
+    repeating-linear-gradient(to bottom, rgba(0, 0, 0, 0.28) 0 1px, transparent 1px 3px),
+    radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, 0.6) 100%);
+  animation: scan 7s linear infinite;
+}
+@keyframes scan { to { background-position: 0 130%, 0 0, 0 0; } }
+
+/* Barre de chargement vert phosphore au centre de l'écran (par-dessus la place du titre),
+   libellé en police de code ; elle s'efface une fois pleine. */
+.loader {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  width: min(60%, 380px);
+  font-family: var(--mono);
+  animation: boot-in 0.3s steps(3) both;
+}
+.loader.is-full { opacity: 0; transition: opacity 0.2s 0.05s; }
+.loader-track {
+  height: 8px;
+  padding: 1px;
+  border: 1px solid rgba(77, 255, 124, 0.55);
+  box-shadow: 0 0 8px rgba(77, 255, 124, 0.25);
+}
+.loader-fill {
+  height: 100%;
+  background: var(--phosphor);
+  box-shadow: 0 0 12px var(--phosphor-glow);
+}
+.loader-label {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  font-size: clamp(11px, 1vw, 14px);
+  letter-spacing: 0.2em;
+  color: var(--phosphor);
+  text-shadow: 0 0 6px var(--phosphor-glow);
+  font-variant-numeric: tabular-nums;
+}
+@keyframes boot-in { from { opacity: 0; } }
+
+/* Textes fictifs de l'écran (tirés des données du site), en vert phosphore atténué. */
+.screen-hud {
+  position: absolute;
+  inset: clamp(12px, 4%, 36px) clamp(16px, 4%, 44px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-family: var(--mono);
+  font-size: clamp(9px, 0.85vw, 12px);
+  letter-spacing: 0.14em;
+  color: var(--phosphor);
+  text-shadow: 0 0 6px var(--phosphor-glow);
+  opacity: 0.6;
+  pointer-events: none;
+  animation: boot-in 0.4s steps(3) both;
+}
+.screen-hud-row { display: flex; justify-content: space-between; gap: 16px; white-space: nowrap; }
+/* Bandeau du haut : 3 colonnes, côtés de même largeur, pour que le libellé du milieu soit
+   exactement centré dans l'écran. */
+.screen-hud-row:first-child { display: grid; grid-template-columns: 1fr auto 1fr; }
+.screen-hud-row:first-child > :first-child { justify-self: start; }
+.screen-hud-row:first-child > :last-child { justify-self: end; }
+.screen-rec { animation: cursor 1.2s steps(1) infinite; }
+/* Journal de démarrage, au-dessus de la barre de chargement. */
+.boot-log {
+  position: absolute;
+  left: 50%;
+  bottom: calc(50% + 36px);
+  translate: -50% 0;
+  width: min(70%, 560px);
+  font-family: var(--mono);
+  font-size: clamp(10px, 0.9vw, 13px);
+  line-height: 1.7;
+  letter-spacing: 0.1em;
+  text-align: left;
+  color: var(--phosphor);
+  text-shadow: 0 0 6px var(--phosphor-glow);
+  opacity: 0.75;
+}
+/* Titre et bandeau défilant, empilés au centre de l'écran. */
+.screen-center {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(18px, 4vh, 44px);
+}
+/* Bandeau d'infos défilant sous le titre (fondu sur les bords). */
+.ticker {
+  width: 84%;
+  overflow: hidden;
+  font-family: var(--mono);
+  font-size: clamp(10px, 0.95vw, 14px);
+  letter-spacing: 0.14em;
+  color: var(--phosphor);
+  text-shadow: 0 0 6px var(--phosphor-glow);
+  white-space: pre;
+  opacity: 0;
+  transition: opacity 0.5s;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
+}
+.ticker.is-on { opacity: 0.7; }
+.ticker > div { display: inline-flex; animation: ticker 60s linear infinite; }
+@keyframes ticker { to { transform: translateX(-50%); } }
+@media (max-width: 820px) {
+  .screen-hud-row span:nth-child(2):not(:last-child) { display: none; }   /* bandeau du haut allégé */
+}
+@media (prefers-reduced-motion: reduce) { .ticker > div, .screen-rec { animation: none; } }
+@keyframes cursor { 50% { opacity: 0; } }
+
+/* Titre « BALLON D'OR 2026 » : même forme que le libellé « CHARGEMENT » (police de code, graisse
+   normale, lettres espacées, vert phosphore lumineux), en plus grand. Invisible tant que le
+   chargement n'est pas terminé (place déjà réservée), puis décodé lettre par lettre. */
+.intro-title {
+  font-family: var(--mono);
+  font-size: clamp(18px, 2.4vw, 40px);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0.2em;
+  margin-right: -0.2em;   /* compense l'espacement après le dernier caractère */
+  color: var(--phosphor);
+  text-shadow: 0 0 8px var(--phosphor-glow), 0 0 22px rgba(77, 255, 124, 0.35);
+  opacity: 0;
+}
+.intro-title.is-on { opacity: 1; }
+/* Curseur bloc qui clignote au bout du titre, dans la même couleur, comme une invite de commande. */
+.title-cursor {
+  display: inline-block;
+  width: 0.55em;
+  height: 0.85em;
+  margin-left: 0.1em;
+  vertical-align: -0.08em;
+  background: currentColor;
+  box-shadow: 0 0 10px var(--phosphor-glow);
+  animation: cursor 1s steps(1) infinite;
+}
+
+/* Allumage de l'écran (CRT) : un point lumineux s'étire en ligne horizontale, tient un instant,
+   puis s'ouvre sur tout l'écran en flash qui s'éteint. Dans l'écran seulement. */
+.crt-screen.is-booting::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  background: #eafff0;
+  pointer-events: none;
+  animation: crt-on 2.15s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+@keyframes crt-on {
+  0% { transform: scale(0, 0.004); opacity: 0; }
+  8% { transform: scale(0.02, 0.004); opacity: 1; }
+  38% { transform: scale(1, 0.004); opacity: 1; }
+  55% { transform: scale(1, 0.004); opacity: 0.85; }
+  72% { transform: scale(1, 1); opacity: 0.4; }
+  100% { transform: scale(1, 1); opacity: 0; }
+}
+/* Extinction de l'écran (pour entrer) : l'image s'écrase en ligne, la ligne se réduit à un
+   point, le point s'éteint ; la lueur blanche suit le même chemin. Le boîtier reste allumé. */
+.crt-screen.is-off .crt-content { animation: screen-off 0.75s ease-in both; }
+@keyframes screen-off {
+  0% { transform: scale(1, 1); filter: brightness(1); }
+  45% { transform: scale(1, 0.004); filter: brightness(3); }
+  80% { transform: scale(0.004, 0.004); filter: brightness(3); }
+  100% { transform: scale(0, 0); filter: brightness(0); }
+}
+.crt-screen.is-off::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  background: #eafff0;
+  pointer-events: none;
+  animation: crt-off 0.75s ease-in both;
+}
+@keyframes crt-off {
+  0% { transform: scale(1, 1); opacity: 0; }
+  35% { transform: scale(1, 0.1); opacity: 0.3; }
+  45% { transform: scale(1, 0.004); opacity: 1; }
+  80% { transform: scale(0.004, 0.004); opacity: 1; }
+  100% { transform: scale(0, 0); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .intro-scan, .title-cursor, .crt-screen::after, .crt-content { animation: none !important; }
+}
+
+/* Flèche clignotante en bas de l'intro : indique de faire défiler vers le bas. */
+.intro-down {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  bottom: clamp(12px, 4%, 40px);   /* en bas de l'écran du téléviseur */
+  translate: -50% 0;
+  color: var(--phosphor);
+  filter: drop-shadow(0 0 6px var(--phosphor-glow));
+  padding: 8px;
+}
+.intro-down svg { width: 40px; height: 40px; animation: blink-down 1.4s ease-in-out infinite; }
+.intro-down svg path { stroke-width: 2.5; }
+@keyframes blink-down {
+  0%, 100% { opacity: 1; transform: translateY(0); }
+  50% { opacity: 0.15; transform: translateY(8px); }
+}
+@media (prefers-reduced-motion: reduce) { .intro-down svg { animation: none; } }

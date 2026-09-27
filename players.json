@@ -14,6 +14,101 @@
       "passesMinimum": true,
       "contributionsParMatch": 1.2
     },
+    "competitions": [
+      {
+        "nom": "Liga",
+        "type": "championnat",
+        "logo": "assets/competitions/laliga.svg",
+        "matchs": 31,
+        "buts": 25,
+        "passes": 5,
+        "resultat": "2ème",
+        "individuel": [
+          {
+            "titre": "Meilleur buteur",
+            "categorie": "buteur",
+            "rang": 1,
+            "icone": "assets/medailles/ball-gold.webp"
+          }
+        ],
+        "contributionsParMatch": 0.97
+      },
+      {
+        "nom": "Coupe du Roi",
+        "type": "coupe-nationale",
+        "logo": "assets/competitions/copa-del-rey.svg",
+        "matchs": 1,
+        "buts": 2,
+        "passes": 0,
+        "resultat": "8es de finale",
+        "individuel": [],
+        "contributionsParMatch": 2.0
+      },
+      {
+        "nom": "Supercoupe d'Espagne",
+        "type": "coupe-nationale",
+        "logo": "assets/competitions/supercoupe-espagne.webp",
+        "matchs": 1,
+        "buts": 0,
+        "passes": null,
+        "resultat": "Finale",
+        "individuel": [],
+        "contributionsParMatch": null
+      },
+      {
+        "nom": "Ligue des champions",
+        "type": "coupe-continentale",
+        "logo": "assets/competitions/champions-league.svg",
+        "matchs": 11,
+        "buts": 15,
+        "passes": 1,
+        "resultat": "Quarts de finale",
+        "individuel": [
+          {
+            "titre": "Meilleur buteur",
+            "categorie": "buteur",
+            "rang": 1,
+            "icone": "assets/medailles/ball-gold.webp"
+          }
+        ],
+        "contributionsParMatch": 1.45
+      },
+      {
+        "nom": "Coupe du monde",
+        "type": "coupe-du-monde",
+        "logo": "assets/competitions/world-cup-2026.webp",
+        "matchs": 8,
+        "buts": 10,
+        "passes": 4,
+        "resultat": "4ème",
+        "individuel": [
+          {
+            "titre": "Meilleur buteur",
+            "categorie": "buteur",
+            "rang": 1,
+            "icone": "assets/medailles/ball-gold.webp"
+          },
+          {
+            "titre": "3ème meilleur joueur",
+            "categorie": "joueur",
+            "rang": 3,
+            "icone": "assets/medailles/star-bronze.webp"
+          }
+        ],
+        "contributionsParMatch": 1.75
+      },
+      {
+        "nom": "Qualifications Coupe du monde",
+        "type": "qualifications",
+        "logo": "assets/competitions/world-cup-2026.webp",
+        "matchs": 4,
+        "buts": 5,
+        "passes": null,
+        "resultat": "Qualifié",
+        "individuel": [],
+        "contributionsParMatch": null
+      }
+    ],
     "collectif": [],
     "individuel": [
       {
@@ -65,6 +160,84 @@
       "passesMinimum": true,
       "contributionsParMatch": 0.05
     },
+    "competitions": [
+      {
+        "nom": "Premier League",
+        "type": "championnat",
+        "logo": "assets/competitions/premier-league.svg",
+        "matchs": 21,
+        "buts": 1,
+        "passes": 0,
+        "resultat": "2ème",
+        "individuel": [],
+        "contributionsParMatch": 0.05
+      },
+      {
+        "nom": "FA Cup",
+        "type": "coupe-nationale",
+        "logo": "assets/competitions/fa-cup.webp",
+        "matchs": 4,
+        "buts": 1,
+        "passes": null,
+        "resultat": "Vainqueur",
+        "trophee": "assets/trophees/fa-cup.webp",
+        "individuel": [],
+        "contributionsParMatch": null
+      },
+      {
+        "nom": "EFL Cup",
+        "type": "coupe-nationale",
+        "logo": "assets/competitions/efl-cup.svg",
+        "matchs": 3,
+        "buts": 0,
+        "passes": null,
+        "resultat": "Vainqueur",
+        "trophee": "assets/trophees/efl-cup.webp",
+        "individuel": [],
+        "contributionsParMatch": null
+      },
+      {
+        "nom": "Ligue des champions",
+        "type": "coupe-continentale",
+        "logo": "assets/competitions/champions-league.svg",
+        "matchs": 5,
+        "buts": 0,
+        "passes": null,
+        "resultat": "8es de finale",
+        "individuel": [],
+        "contributionsParMatch": null
+      },
+      {
+        "nom": "Coupe du monde",
+        "type": "coupe-du-monde",
+        "logo": "assets/competitions/world-cup-2026.webp",
+        "matchs": 8,
+        "buts": 0,
+        "passes": 0,
+        "resultat": "Vainqueur",
+        "trophee": "assets/trophees/world-cup.webp",
+        "individuel": [
+          {
+            "titre": "Meilleur joueur",
+            "categorie": "joueur",
+            "rang": 1,
+            "icone": "assets/medailles/star-gold.webp"
+          }
+        ],
+        "contributionsParMatch": 0.0
+      },
+      {
+        "nom": "Qualifications Coupe du monde",
+        "type": "qualifications",
+        "logo": "assets/competitions/world-cup-2026.webp",
+        "matchs": 2,
+        "buts": 0,
+        "passes": null,
+        "resultat": "Qualifié",
+        "individuel": [],
+        "contributionsParMatch": null
+      }
+    ],
     "collectif": [
       {
         "titre": "FA Cup",
@@ -105,6 +278,98 @@
       "passesMinimum": true,
       "contributionsParMatch": 1.25
     },
+    "competitions": [
+      {
+        "nom": "Bundesliga",
+        "type": "championnat",
+        "logo": "assets/competitions/bundesliga.svg",
+        "matchs": 31,
+        "buts": 36,
+        "passes": 5,
+        "resultat": "Vainqueur",
+        "trophee": "assets/trophees/bundesliga.webp",
+        "individuel": [
+          {
+            "titre": "Meilleur buteur",
+            "categorie": "buteur",
+            "rang": 1,
+            "icone": "assets/medailles/ball-gold.webp"
+          }
+        ],
+        "contributionsParMatch": 1.32
+      },
+      {
+        "nom": "Coupe d'Allemagne",
+        "type": "coupe-nationale",
+        "logo": "assets/competitions/dfb-pokal.svg",
+        "matchs": 6,
+        "buts": 10,
+        "passes": 0,
+        "resultat": "Vainqueur",
+        "trophee": "assets/trophees/dfb-pokal.webp",
+        "individuel": [
+          {
+            "titre": "Meilleur buteur",
+            "categorie": "buteur",
+            "rang": 1,
+            "icone": "assets/medailles/ball-gold.webp"
+          }
+        ],
+        "contributionsParMatch": 1.67
+      },
+      {
+        "nom": "Supercoupe d'Allemagne",
+        "type": "coupe-nationale",
+        "logo": "assets/competitions/supercoupe-allemagne.webp",
+        "matchs": 1,
+        "buts": 1,
+        "passes": null,
+        "resultat": "Vainqueur",
+        "trophee": "assets/trophees/dfl-supercup.webp",
+        "individuel": [],
+        "contributionsParMatch": null
+      },
+      {
+        "nom": "Ligue des champions",
+        "type": "coupe-continentale",
+        "logo": "assets/competitions/champions-league.svg",
+        "matchs": 13,
+        "buts": 14,
+        "passes": 2,
+        "resultat": "Demi-finale",
+        "individuel": [
+          {
+            "titre": "2ème meilleur buteur",
+            "categorie": "buteur",
+            "rang": 2,
+            "icone": "assets/medailles/ball-silver.webp"
+          }
+        ],
+        "contributionsParMatch": 1.23
+      },
+      {
+        "nom": "Coupe du monde",
+        "type": "coupe-du-monde",
+        "logo": "assets/competitions/world-cup-2026.webp",
+        "matchs": 8,
+        "buts": 6,
+        "passes": 1,
+        "resultat": "3ème",
+        "individuel": [],
+        "contributionsParMatch": 0.88
+      },
+      {
+        "nom": "Qualifications Coupe du monde",
+        "type": "qualifications",
+        "logo": "assets/competitions/world-cup-2026.webp",
+        "matchs": 5,
+        "buts": 5,
+        "passes": null,
+        "resultat": "Qualifié",
+        "individuel": [],
+        "contributionsParMatch": null
+      }
+    ],
     "collectif": [
       {
         "titre": "Bundesliga",
@@ -169,6 +434,102 @@
       "passesMinimum": true,
       "contributionsParMatch": 1.67
     },
+    "competitions": [
+      {
+        "nom": "MLS",
+        "type": "championnat",
+        "logo": "assets/competitions/mls.svg",
+        "matchs": 34,
+        "buts": 35,
+        "passes": 28,
+        "resultat": "Vainqueur",
+        "trophee": "assets/trophees/mls-cup.webp",
+        "individuel": [
+          {
+            "titre": "Meilleur joueur",
+            "categorie": "joueur",
+            "rang": 1,
+            "icone": "assets/medailles/star-gold.webp"
+          },
+          {
+            "titre": "Meilleur buteur",
+            "categorie": "buteur",
+            "rang": 1,
+            "icone": "assets/medailles/ball-gold.webp"
+          },
+          {
+            "titre": "Meilleur passeur",
+            "categorie": "passeur",
+            "rang": 1,
+            "icone": "assets/medailles/target-gold.webp"
+          }
+        ],
+        "contributionsParMatch": 1.85
+      },
+      {
+        "nom": "Leagues Cup",
+        "type": "coupe-nationale",
+        "logo": "assets/competitions/leagues-cup.webp",
+        "matchs": 4,
+        "buts": 2,
+        "passes": 2,
+        "resultat": "Finale",
+        "individuel": [],
+        "contributionsParMatch": 1.0
+      },
+      {
+        "nom": "CONCACAF Champions Cup",
+        "type": "coupe-continentale",
+        "logo": "assets/competitions/concacaf-champions-cup.svg",
+        "matchs": 2,
+        "buts": 1,
+        "passes": 0,
+        "resultat": "8es de finale",
+        "individuel": [],
+        "contributionsParMatch": 0.5
+      },
+      {
+        "nom": "Coupe du monde",
+        "type": "coupe-du-monde",
+        "logo": "assets/competitions/world-cup-2026.webp",
+        "matchs": 8,
+        "buts": 8,
+        "passes": 4,
+        "resultat": "Finale",
+        "individuel": [
+          {
+            "titre": "2ème meilleur joueur",
+            "categorie": "joueur",
+            "rang": 2,
+            "icone": "assets/medailles/star-silver.webp"
+          },
+          {
+            "titre": "2ème meilleur buteur",
+            "categorie": "buteur",
+            "rang": 2,
+            "icone": "assets/medailles/ball-silver.webp"
+          },
+          {
+            "titre": "2ème meilleur passeur",
+            "categorie": "passeur",
+            "rang": 2,
+            "icone": "assets/medailles/target-silver.webp"
+          }
+        ],
+        "contributionsParMatch": 1.5
+      },
+      {
+        "nom": "Qualifications Coupe du monde",
+        "type": "qualifications",
+        "logo": "assets/competitions/world-cup-2026.webp",
+        "matchs": 1,
+        "buts": 2,
+        "passes": null,
+        "resultat": "Qualifié",
+        "individuel": [],
+        "contributionsParMatch": null
+      }
+    ],
     "collectif": [
       {
         "titre": "MLS Cup",
@@ -241,6 +602,108 @@
       "passesMinimum": true,
       "contributionsParMatch": 0.76
     },
+    "competitions": [
+      {
+        "nom": "Ligue 1",
+        "type": "championnat",
+        "logo": "assets/competitions/ligue-1.svg",
+        "matchs": 22,
+        "buts": 10,
+        "passes": 7,
+        "resultat": "Vainqueur",
+        "trophee": "assets/trophees/ligue-1.webp",
+        "individuel": [
+          {
+            "titre": "Meilleur joueur",
+            "categorie": "joueur",
+            "rang": 1,
+            "icone": "assets/medailles/star-gold.webp"
+          }
+        ],
+        "contributionsParMatch": 0.77
+      },
+      {
+        "nom": "Coupe de France",
+        "type": "coupe-nationale",
+        "logo": "assets/competitions/coupe-de-france.svg",
+        "matchs": 2,
+        "buts": 1,
+        "passes": null,
+        "resultat": "16es de finale",
+        "individuel": [],
+        "contributionsParMatch": null
+      },
+      {
+        "nom": "Trophée des champions",
+        "type": "coupe-nationale",
+        "logo": "assets/competitions/trophee-des-champions.webp",
+        "matchs": 1,
+        "buts": 1,
+        "passes": null,
+        "resultat": "Vainqueur",
+        "trophee": "assets/trophees/trophee-des-champions.webp",
+        "individuel": [],
+        "contributionsParMatch": null
+      },
+      {
+        "nom": "Ligue des champions",
+        "type": "coupe-continentale",
+        "logo": "assets/competitions/champions-league.svg",
+        "matchs": 13,
+        "buts": 8,
+        "passes": 2,
+        "resultat": "Vainqueur",
+        "trophee": "assets/trophees/champions-league.webp",
+        "individuel": [],
+        "contributionsParMatch": 0.77
+      },
+      {
+        "nom": "Supercoupe de l'UEFA",
+        "type": "supercoupe-uefa",
+        "logo": "assets/competitions/uefa-badge.webp",
+        "matchs": 1,
+        "buts": 0,
+        "passes": null,
+        "resultat": "Vainqueur",
+        "trophee": "assets/trophees/uefa-super-cup.webp",
+        "individuel": [],
+        "contributionsParMatch": null
+      },
+      {
+        "nom": "Coupe intercontinentale",
+        "type": "intercontinentale",
+        "logo": "assets/competitions/club-world-cup.svg",
+        "matchs": 1,
+        "buts": 0,
+        "passes": null,
+        "resultat": "Vainqueur",
+        "trophee": "assets/trophees/intercontinental.webp",
+        "individuel": [],
+        "contributionsParMatch": null
+      },
+      {
+        "nom": "Coupe du monde",
+        "type": "coupe-du-monde",
+        "logo": "assets/competitions/world-cup-2026.webp",
+        "matchs": 8,
+        "buts": 6,
+        "passes": 2,
+        "resultat": "4ème",
+        "individuel": [],
+        "contributionsParMatch": 1.0
+      },
+      {
+        "nom": "Qualifications Coupe du monde",
+        "type": "qualifications",
+        "logo": "assets/competitions/world-cup-2026.webp",
+        "matchs": 1,
+        "buts": 0,
+        "passes": null,
+        "resultat": "Qualifié",
+        "individuel": [],
+        "contributionsParMatch": null
+      }
+    ],
     "collectif": [
       {
         "titre": "Ligue 1",
@@ -289,6 +752,97 @@
       "passesMinimum": true,
       "contributionsParMatch": 0.56
     },
+    "competitions": [
+      {
+        "nom": "Ligue 1",
+        "type": "championnat",
+        "logo": "assets/competitions/ligue-1.svg",
+        "matchs": 28,
+        "buts": 7,
+        "passes": 4,
+        "resultat": "Vainqueur",
+        "trophee": "assets/trophees/ligue-1.webp",
+        "individuel": [],
+        "contributionsParMatch": 0.39
+      },
+      {
+        "nom": "Coupe de France",
+        "type": "coupe-nationale",
+        "logo": "assets/competitions/coupe-de-france.svg",
+        "matchs": 1,
+        "buts": 0,
+        "passes": null,
+        "resultat": "16es de finale",
+        "individuel": [],
+        "contributionsParMatch": null
+      },
+      {
+        "nom": "Trophée des champions",
+        "type": "coupe-nationale",
+        "logo": "assets/competitions/trophee-des-champions.webp",
+        "matchs": 1,
+        "buts": 0,
+        "passes": null,
+        "resultat": "Vainqueur",
+        "trophee": "assets/trophees/trophee-des-champions.webp",
+        "individuel": [],
+        "contributionsParMatch": null
+      },
+      {
+        "nom": "Ligue des champions",
+        "type": "coupe-continentale",
+        "logo": "assets/competitions/champions-league.svg",
+        "matchs": 16,
+        "buts": 10,
+        "passes": 6,
+        "resultat": "Vainqueur",
+        "trophee": "assets/trophees/champions-league.webp",
+        "individuel": [
+          {
+            "titre": "Meilleur joueur",
+            "categorie": "joueur",
+            "rang": 1,
+            "icone": "assets/medailles/star-gold.webp"
+          }
+        ],
+        "contributionsParMatch": 1.0
+      },
+      {
+        "nom": "Supercoupe de l'UEFA",
+        "type": "supercoupe-uefa",
+        "logo": "assets/competitions/uefa-badge.webp",
+        "matchs": 1,
+        "buts": 0,
+        "passes": null,
+        "resultat": "Vainqueur",
+        "trophee": "assets/trophees/uefa-super-cup.webp",
+        "individuel": [],
+        "contributionsParMatch": null
+      },
+      {
+        "nom": "Coupe intercontinentale",
+        "type": "intercontinentale",
+        "logo": "assets/competitions/club-world-cup.svg",
+        "matchs": 1,
+        "buts": 1,
+        "passes": null,
+        "resultat": "Vainqueur",
+        "trophee": "assets/trophees/intercontinental.webp",
+        "individuel": [],
+        "contributionsParMatch": null
+      },
+      {
+        "nom": "Qualifications Coupe du monde",
+        "type": "qualifications",
+        "logo": "assets/competitions/world-cup-2026.webp",
+        "matchs": 6,
+        "buts": 2,
+        "passes": null,
+        "resultat": "Éliminé",
+        "individuel": [],
+        "contributionsParMatch": null
+      }
+    ],
     "collectif": [
       {
         "titre": "Ligue 1",
@@ -337,6 +891,90 @@
       "passesMinimum": true,
       "contributionsParMatch": 0.75
     },
+    "competitions": [
+      {
+        "nom": "Liga",
+        "type": "championnat",
+        "logo": "assets/competitions/laliga.svg",
+        "matchs": 28,
+        "buts": 16,
+        "passes": 12,
+        "resultat": "Vainqueur",
+        "trophee": "assets/trophees/laliga.webp",
+        "individuel": [
+          {
+            "titre": "Meilleur joueur",
+            "categorie": "joueur",
+            "rang": 1,
+            "icone": "assets/medailles/star-gold.webp"
+          },
+          {
+            "titre": "Meilleur passeur",
+            "categorie": "passeur",
+            "rang": 1,
+            "icone": "assets/medailles/target-gold.webp"
+          }
+        ],
+        "contributionsParMatch": 1.0
+      },
+      {
+        "nom": "Coupe du Roi",
+        "type": "coupe-nationale",
+        "logo": "assets/competitions/copa-del-rey.svg",
+        "matchs": 5,
+        "buts": 2,
+        "passes": null,
+        "resultat": "Demi-finale",
+        "individuel": [],
+        "contributionsParMatch": null
+      },
+      {
+        "nom": "Supercoupe d'Espagne",
+        "type": "coupe-nationale",
+        "logo": "assets/competitions/supercoupe-espagne.webp",
+        "matchs": 2,
+        "buts": 0,
+        "passes": null,
+        "resultat": "Vainqueur",
+        "trophee": "assets/trophees/supercopa.webp",
+        "individuel": [],
+        "contributionsParMatch": null
+      },
+      {
+        "nom": "Ligue des champions",
+        "type": "coupe-continentale",
+        "logo": "assets/competitions/champions-league.svg",
+        "matchs": 10,
+        "buts": 6,
+        "passes": 4,
+        "resultat": "Quarts de finale",
+        "individuel": [],
+        "contributionsParMatch": 1.0
+      },
+      {
+        "nom": "Coupe du monde",
+        "type": "coupe-du-monde",
+        "logo": "assets/competitions/world-cup-2026.webp",
+        "matchs": 8,
+        "buts": 1,
+        "passes": 0,
+        "resultat": "Vainqueur",
+        "trophee": "assets/trophees/world-cup.webp",
+        "individuel": [],
+        "contributionsParMatch": 0.12
+      },
+      {
+        "nom": "Qualifications Coupe du monde",
+        "type": "qualifications",
+        "logo": "assets/competitions/world-cup-2026.webp",
+        "matchs": 2,
+        "buts": 0,
+        "passes": null,
+        "resultat": "Qualifié",
+        "individuel": [],
+        "contributionsParMatch": null
+      }
+    ],
     "collectif": [
       {
         "titre": "Liga",
@@ -385,6 +1023,90 @@
       "passesMinimum": true,
       "contributionsParMatch": 1.06
     },
+    "competitions": [
+      {
+        "nom": "Premier League",
+        "type": "championnat",
+        "logo": "assets/competitions/premier-league.svg",
+        "matchs": 35,
+        "buts": 27,
+        "passes": 8,
+        "resultat": "2ème",
+        "individuel": [
+          {
+            "titre": "Meilleur buteur",
+            "categorie": "buteur",
+            "rang": 1,
+            "icone": "assets/medailles/ball-gold.webp"
+          }
+        ],
+        "contributionsParMatch": 1.0
+      },
+      {
+        "nom": "FA Cup",
+        "type": "coupe-nationale",
+        "logo": "assets/competitions/fa-cup.webp",
+        "matchs": 4,
+        "buts": 3,
+        "passes": 1,
+        "resultat": "Vainqueur",
+        "trophee": "assets/trophees/fa-cup.webp",
+        "individuel": [],
+        "contributionsParMatch": 1.0
+      },
+      {
+        "nom": "EFL Cup",
+        "type": "coupe-nationale",
+        "logo": "assets/competitions/efl-cup.svg",
+        "matchs": 3,
+        "buts": 0,
+        "passes": 0,
+        "resultat": "Vainqueur",
+        "trophee": "assets/trophees/efl-cup.webp",
+        "individuel": [],
+        "contributionsParMatch": 0.0
+      },
+      {
+        "nom": "Ligue des champions",
+        "type": "coupe-continentale",
+        "logo": "assets/competitions/champions-league.svg",
+        "matchs": 10,
+        "buts": 8,
+        "passes": 0,
+        "resultat": "8es de finale",
+        "individuel": [],
+        "contributionsParMatch": 0.8
+      },
+      {
+        "nom": "Coupe du monde",
+        "type": "coupe-du-monde",
+        "logo": "assets/competitions/world-cup-2026.webp",
+        "matchs": 6,
+        "buts": 7,
+        "passes": 0,
+        "resultat": "Quarts de finale",
+        "individuel": [],
+        "contributionsParMatch": 1.17
+      },
+      {
+        "nom": "Qualifications Coupe du monde",
+        "type": "qualifications",
+        "logo": "assets/competitions/world-cup-2026.webp",
+        "matchs": 4,
+        "buts": 12,
+        "passes": null,
+        "resultat": "Qualifié",
+        "individuel": [
+          {
+            "titre": "Meilleur buteur",
+            "categorie": "buteur",
+            "rang": 1,
+            "icone": "assets/medailles/ball-gold.webp"
+          }
+        ],
+        "contributionsParMatch": null
+      }
+    ],
     "collectif": [
       {
         "titre": "FA Cup",
@@ -421,6 +1143,104 @@
       "passesMinimum": true,
       "contributionsParMatch": 0.91
     },
+    "competitions": [
+      {
+        "nom": "Bundesliga",
+        "type": "championnat",
+        "logo": "assets/competitions/bundesliga.svg",
+        "matchs": 32,
+        "buts": 15,
+        "passes": 19,
+        "resultat": "Vainqueur",
+        "trophee": "assets/trophees/bundesliga.webp",
+        "individuel": [
+          {
+            "titre": "Meilleur joueur",
+            "categorie": "joueur",
+            "rang": 1,
+            "icone": "assets/medailles/star-gold.webp"
+          },
+          {
+            "titre": "Meilleur passeur",
+            "categorie": "passeur",
+            "rang": 1,
+            "icone": "assets/medailles/target-gold.webp"
+          }
+        ],
+        "contributionsParMatch": 1.06
+      },
+      {
+        "nom": "Coupe d'Allemagne",
+        "type": "coupe-nationale",
+        "logo": "assets/competitions/dfb-pokal.svg",
+        "matchs": 6,
+        "buts": 2,
+        "passes": 1,
+        "resultat": "Vainqueur",
+        "trophee": "assets/trophees/dfb-pokal.webp",
+        "individuel": [],
+        "contributionsParMatch": 0.5
+      },
+      {
+        "nom": "Supercoupe d'Allemagne",
+        "type": "coupe-nationale",
+        "logo": "assets/competitions/supercoupe-allemagne.webp",
+        "matchs": 1,
+        "buts": 0,
+        "passes": null,
+        "resultat": "Vainqueur",
+        "trophee": "assets/trophees/dfl-supercup.webp",
+        "individuel": [],
+        "contributionsParMatch": null
+      },
+      {
+        "nom": "Ligue des champions",
+        "type": "coupe-continentale",
+        "logo": "assets/competitions/champions-league.svg",
+        "matchs": 13,
+        "buts": 5,
+        "passes": 8,
+        "resultat": "Demi-finale",
+        "individuel": [
+          {
+            "titre": "Meilleur passeur",
+            "categorie": "passeur",
+            "rang": 1,
+            "icone": "assets/medailles/target-gold.webp"
+          }
+        ],
+        "contributionsParMatch": 1.0
+      },
+      {
+        "nom": "Coupe du monde",
+        "type": "coupe-du-monde",
+        "logo": "assets/competitions/world-cup-2026.webp",
+        "matchs": 8,
+        "buts": 0,
+        "passes": 7,
+        "resultat": "4ème",
+        "individuel": [
+          {
+            "titre": "Meilleur passeur",
+            "categorie": "passeur",
+            "rang": 1,
+            "icone": "assets/medailles/target-gold.webp"
+          }
+        ],
+        "contributionsParMatch": 0.88
+      },
+      {
+        "nom": "Qualifications Coupe du monde",
+        "type": "qualifications",
+        "logo": "assets/competitions/world-cup-2026.webp",
+        "matchs": 5,
+        "buts": 2,
+        "passes": null,
+        "resultat": "Qualifié",
+        "individuel": [],
+        "contributionsParMatch": null
+      }
+    ],
     "collectif": [
       {
         "titre": "Bundesliga",
@@ -485,6 +1305,81 @@
       "passesMinimum": true,
       "contributionsParMatch": 0.41
     },
+    "competitions": [
+      {
+        "nom": "Liga",
+        "type": "championnat",
+        "logo": "assets/competitions/laliga.svg",
+        "matchs": 19,
+        "buts": 4,
+        "passes": 3,
+        "resultat": "2ème",
+        "individuel": [],
+        "contributionsParMatch": 0.37
+      },
+      {
+        "nom": "Coupe du Roi",
+        "type": "coupe-nationale",
+        "logo": "assets/competitions/copa-del-rey.svg",
+        "matchs": 1,
+        "buts": 0,
+        "passes": null,
+        "resultat": "8es de finale",
+        "individuel": [],
+        "contributionsParMatch": null
+      },
+      {
+        "nom": "Supercoupe d'Espagne",
+        "type": "coupe-nationale",
+        "logo": "assets/competitions/supercoupe-espagne.webp",
+        "matchs": 2,
+        "buts": 0,
+        "passes": null,
+        "resultat": "Finale",
+        "individuel": [],
+        "contributionsParMatch": null
+      },
+      {
+        "nom": "Ligue des champions",
+        "type": "coupe-continentale",
+        "logo": "assets/competitions/champions-league.svg",
+        "matchs": 9,
+        "buts": 2,
+        "passes": null,
+        "resultat": "Quarts de finale",
+        "individuel": [],
+        "contributionsParMatch": null
+      },
+      {
+        "nom": "Coupe du monde",
+        "type": "coupe-du-monde",
+        "logo": "assets/competitions/world-cup-2026.webp",
+        "matchs": 8,
+        "buts": 7,
+        "passes": 1,
+        "resultat": "3ème",
+        "individuel": [
+          {
+            "titre": "3ème meilleur buteur",
+            "categorie": "buteur",
+            "rang": 3,
+            "icone": "assets/medailles/ball-bronze.webp"
+          }
+        ],
+        "contributionsParMatch": 1.0
+      },
+      {
+        "nom": "Qualifications Coupe du monde",
+        "type": "qualifications",
+        "logo": "assets/competitions/world-cup-2026.webp",
+        "matchs": 2,
+        "buts": 0,
+        "passes": null,
+        "resultat": "Qualifié",
+        "individuel": [],
+        "contributionsParMatch": null
+      }
+    ],
     "collectif": [],
     "individuel": [
       {

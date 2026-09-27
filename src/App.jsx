@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { AnimatePresence, LazyMotion, MotionConfig, domMax, useReducedMotion } from 'framer-motion'
 import players from './data'
 import { prefetch } from './sequence'
 import Carousel from './Carousel'
 import Intro from './Intro'
-import Duel from './Duel'
+import Final from './Final'
 
 // requestIdleCallback n'existe pas sur Safari : repli sur un délai.
 const whenIdle = (fn) =>
@@ -28,14 +28,19 @@ export default function App() {
   // 6 joueurs visibles (2 × centre + voisins) soient tous différents.
   const [pair, setPair] = useState([0, 3])
   const [intro, setIntro] = useState(true)
-  const [open, setOpen] = useState(false)
+  // Page du duel (Final.jsx) : joueurs puis tableaux au scroll ; remplace, depuis le 26/09/2026,
+  // l'ancienne page de comparaison et celle des tableaux (assets-source/ancien/).
+  const [final, setFinal] = useState(false)
   const [nav, setNav] = useState({})   // dernier passage de page, pour le sens des transitions
   const go = (from, to, apply, extra = {}) => { setNav({ from, to, ...extra }); apply() }
   const reduced = useReducedMotion()
+  const enterCarousel = useCallback(() => {
+    go('intro', 'carousel', () => setIntro(false))
+  }, [])
   const loaded = useWindowLoaded()
   const duo = pair.map((i) => players[i])
 
-  // Page 2 : changer le joueur d'un côté (0 = gauche, 1 = droite), en sautant celui d'en face.
+  // Page du duel : changer le joueur d'un côté (0 = gauche, 1 = droite), en sautant celui d'en face.
   const step = (side, delta) => setPair((pr) => {
     const n = players.length
     let next = (((pr[side] + delta) % n) + n) % n
@@ -46,25 +51,30 @@ export default function App() {
   // Préchargement des séquences des deux joueurs affichés, une fois la page chargée
   // et les disques immobiles depuis un instant.
   useEffect(() => {
-    if (!loaded || open) return
+    if (!loaded || final) return
     let cancelIdle = () => {}
     const t = setTimeout(() => { cancelIdle = whenIdle(() => prefetch(duo.map((p) => p.id))) }, 400)
     return () => { clearTimeout(t); cancelIdle() }
-  }, [loaded, open, duo[0].id, duo[1].id])
+  }, [loaded, final, duo[0].id, duo[1].id])
+
+  // GSAP (page du duel) préchargé dès que la page de sélection est affichée.
+  useEffect(() => {
+    if (intro || final) return
+    import('gsap'); import('gsap/ScrollTrigger')
+  }, [intro, final])
 
   return (
     <LazyMotion features={domMax} strict>
       <MotionConfig reducedMotion="user">
         <AnimatePresence custom={nav}>
           {intro ? (
-            <Intro key="intro" nav={nav} onEnter={() => go('intro', 'carousel', () => setIntro(false))} />
-          ) : open ? (
-            <Duel key="duel" pair={duo} reduced={reduced} onStep={step} autoplay={!!nav.autoplay}
-                  onBack={() => go('player', 'carousel', () => setOpen(false))} />
+            <Intro key="intro" nav={nav} onEnter={enterCarousel} />
+          ) : final ? (
+            <Final key="final" pair={duo} nav={nav} reduced={reduced} onStep={step}
+                   onBack={() => go('final', 'carousel', () => setFinal(false))} />
           ) : (
             <Carousel key="carousel" nav={nav} pair={pair} setPair={setPair}
-                      onOpen={(opts) => go('carousel', 'player', () => setOpen(true),
-                                           { autoplay: !!opts?.autoplay })}
+                      onOpen={() => go('carousel', 'final', () => setFinal(true))}
                       onIntro={() => go('carousel', 'intro', () => setIntro(true))} />
           )}
         </AnimatePresence>

@@ -1,12 +1,32 @@
+
 :root {
-  --bg: #0b0b0d;
-  --text: #f4f1ea;
-  --muted: #8e8a82;
-  --line: rgba(244, 241, 234, 0.12);
-  --gold: #d9b25f;
+  /* Charte commune à toutes les pages (harmonisée le 27/09/2026) : un seul noir, un seul blanc
+     cassé, un seul gris (blanc à 45 %), un seul or, un seul trait. */
+  --bg: #050505;
+  --bg-center: #0b0b0c;                        /* centre du léger dégradé radial des fonds */
+  --text: #edeae3;
+  --muted: rgba(237, 234, 227, 0.45);
+  --line: rgba(237, 234, 227, 0.1);
+  --gold: #d4af37;
+  --halo: rgba(217, 178, 95, 0.14);           /* halo doré derrière pièces et joueurs */
+  --panel: rgba(14, 13, 11, 0.9);             /* panneaux (tableaux) */
+  --radius: 6px;                              /* arrondi des panneaux, infobulles, focus */
+  /* Tailles : intitulés en petites capitales (libellés de stats, titres de listes, en-têtes de
+     tableaux, statuts) — une seule taille. */
+  --fs-label: clamp(12px, 0.95vw, 15px);
+  /* Mouvements : deux courbes et trois durées pour tout le site. */
+  --ease-out: cubic-bezier(0.215, 0.61, 0.355, 1);   /* power3.out : apparitions, survols */
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);        /* expo.out : déplacements */
+  --t-fast: 0.2s;
+  --t-med: 0.4s;
+  --t-slow: 0.7s;
   --gold-soft: rgba(217, 178, 95, 0.22);
-  --better: #3ecf74;   /* meilleur score du duel */
+  /* Texture dorée des textes en or : reflets métalliques + grain fin. */
+  --gold-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.3 0 0 0 0 0.2 0 0 0 0 0.05 0 0 0 0.35 0'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
+  --gold-metal: linear-gradient(180deg, #fff1c1 0%, #f0cf78 18%, #c9983a 40%, #8f6420 50%, #e9c46e 62%, #fbe3a0 74%, #b5842e 88%, #7a5316 100%);
+  --better: var(--gold);   /* meilleur score du duel : en or, comme les totaux des tableaux */
   --font: 'Barlow Condensed', 'Arial Narrow', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;   /* intro : police de code */
   color-scheme: dark;
 }
 
@@ -41,7 +61,7 @@ button {
   cursor: pointer;
 }
 
-button:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; border-radius: 6px; }
+button:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; border-radius: var(--radius); }
 
 h1, h2, h3, p { margin: 0; }
 
@@ -57,232 +77,443 @@ svg path { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: ro
 .club { width: 52px; height: 52px; flex: none; object-fit: contain; }
 
 /* ------------------------------------------------------------------ */
-/* Intro — « BALLON D'OR » (adapté de Hero Shutter Text, 21st.dev)     */
+/* Intro — trophée qui se construit, puis pièce d'or et noms en arc      */
 /* ------------------------------------------------------------------ */
 
 .intro {
+  --i-bg: var(--bg);
+  --i-bg-center: var(--bg-center);
+  --i-ink: var(--text);
+  --i-ink-2: var(--muted);
+  --i-accent: var(--gold);
+  --i-line: var(--line);
+  --i-meta: clamp(11px, 0.72vw, 13px);
+  --i-trophy: clamp(130px, 24vh, 240px);
+  --i-ease: var(--ease-out);
+  --i-expo: var(--ease-expo);
+  /* Diamètre de la pièce : 42 % de la hauteur (arcs compris, il reste de la place). */
+  --d: min(42vh, 58vw);
+
   position: fixed;
   inset: 0;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: clamp(8px, 2vh, 20px);
-  padding: 0 16px;
   overflow: hidden;
   text-align: center;
+  color: var(--i-ink);
+  background: radial-gradient(ellipse at 50% 50%, var(--i-bg-center) 0%, var(--i-bg) 70%);
+  font-variant-numeric: tabular-nums;
 }
-.intro-grid {
+
+/* Pièce d'or au centre (IntroCoin.jsx), avec le visuel de la page 1 : classes .coin,
+   .coin-face, .coin-layer partagées ; halo doré derrière, flottement doux. */
+.intro-coin {
+  position: relative;
+  width: var(--d);
+  height: var(--d);
+  opacity: 0;
+  transform: scale(0.92);
+  transition: opacity 0.6s var(--i-ease), transform 0.8s var(--i-expo);
+}
+.intro-coin.is-on { opacity: 1; transform: none; }
+.intro-coin-item { position: absolute; inset: 0; perspective: 1400px; }
+.intro-coin-item::before {   /* source de lumière, comme .row-item::before en page 1 */
+  content: '';
   position: absolute;
-  inset: 0;
-  opacity: 0.1;
-  background-image:
-    linear-gradient(to right, #888 1px, transparent 1px),
-    linear-gradient(to bottom, #888 1px, transparent 1px);
-  background-size: clamp(20px, 5vw, 60px) clamp(20px, 5vw, 60px);
-  -webkit-mask-image: radial-gradient(closest-side, #000, transparent);
-  mask-image: radial-gradient(closest-side, #000, transparent);
+  inset: -14%;
+  background: radial-gradient(closest-side, var(--halo), transparent);
   pointer-events: none;
 }
-.intro-corner { position: absolute; width: 48px; height: 48px; border-color: rgba(217, 178, 95, 0.4); border-style: solid; }
-.intro-corner.is-tl { top: 32px; left: 32px; border-width: 1px 0 0 1px; }
-.intro-corner.is-br { bottom: 32px; right: 32px; border-width: 0 1px 1px 0; }
-
-.shutter {
-  position: relative;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  font-size: clamp(64px, 17vw, 260px);
-  font-weight: 700;
-  line-height: 0.9;
-  letter-spacing: -0.01em;
-}
-.shutter-char { position: relative; overflow: hidden; padding: 0 0.01em; }
-.shutter-char > span { display: inline-block; }
-.shutter-slice { position: absolute; inset: 0; pointer-events: none; }
-.shutter-slice.is-gold { color: var(--gold); }
-.shutter-slice.is-light { color: #fff7e0; }
-
-.intro-year {
-  color: var(--gold);
-  font-size: clamp(36px, 6vw, 88px);
-  font-weight: 700;
-  line-height: 1;
-  letter-spacing: 0.3em;
-  margin-right: -0.3em;   /* compense l'espacement après le dernier chiffre */
-}
-/* Flèche clignotante en bas de l'intro : indique de faire défiler vers le bas. */
-.intro-down {
+.intro-coin-float { width: 100%; height: 100%; transform-style: preserve-3d; animation: coin-float 5s ease-in-out infinite; }
+/* Titre et nom en arc (police des noms de la page 3 : Barlow Condensed 700 capitales). */
+.intro-arcs {
   position: absolute;
   left: 50%;
-  bottom: clamp(24px, 6vh, 56px);
-  translate: -50% 0;
-  color: var(--gold);
-  padding: 8px;
+  top: 50%;
+  width: 180%;
+  height: 180%;
+  translate: -50% -50%;
+  overflow: visible;
+  pointer-events: none;
 }
-.intro-down svg { width: 40px; height: 40px; animation: blink-down 1.4s ease-in-out infinite; }
-.intro-down svg path { stroke-width: 2.5; }
+.intro-arcs path { fill: none; stroke: none; }
+.intro-arcs text {
+  font-family: var(--font);
+  font-weight: 700;
+  text-transform: uppercase;
+  fill: var(--i-ink);
+}
+.arc-title,
+.arc-name { letter-spacing: 0.08em; }   /* taille : ARC_FONT (IntroCoin.jsx) */
+.arc-year { fill: var(--i-accent); }
+@media (prefers-reduced-motion: reduce) {
+  .intro-coin-float { animation: none; }
+  .intro-coin { transform: none; }
+}
+
+/* Loader : trophée en trait fin, statut et pourcentage dessous, au centre de l'écran. */
+.trophy-loader {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  translate: -50% -50%;
+  pointer-events: none;
+  transition: opacity 0.45s var(--i-expo), transform 0.45s var(--i-expo);
+}
+.trophy-loader.is-gone { opacity: 0; transform: scale(0.6); }
+.trophy { width: auto; height: var(--i-trophy); overflow: visible; }
+.trophy path {
+  fill: none;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+.trophy-base path { stroke: var(--i-line); }
+.trophy-gold path { stroke: var(--i-accent); }
+/* Flash doré (150 ms) quand le globe est complet : copie du trophée, plus épaisse et floue. */
+.trophy-flash { opacity: 0; filter: blur(3px); }
+.trophy-flash path { stroke: var(--i-accent); stroke-width: 4; }
+.trophy-loader.is-done .trophy-flash { animation: i-flash 150ms linear both; }
+@keyframes i-flash { 0%, 100% { opacity: 0; } 40% { opacity: 1; } }
+.loader-status,
+.loader-pct {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: var(--i-meta);
+  letter-spacing: 0.2em;
+  white-space: nowrap;
+}
+.loader-status { margin-top: clamp(18px, 3vh, 28px); color: var(--i-ink-2); }
+.loader-status.is-ready { color: var(--i-accent); }
+.loader-pct { margin-top: 8px; margin-right: -0.2em; color: var(--i-ink); }
+
+/* Flèche clignotante en bas de l'intro (et en bas de la page 2, .duel-down) : faire défiler. */
+.intro-down {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  bottom: clamp(12px, 4%, 40px);
+  translate: -50% 0;
+  padding: 8px;
+  color: var(--text);
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+.intro-down svg { width: 40px; height: 40px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; animation: blink-down 1.4s ease-in-out infinite; }
 @keyframes blink-down {
   0%, 100% { opacity: 1; transform: translateY(0); }
   50% { opacity: 0.15; transform: translateY(8px); }
 }
-@media (prefers-reduced-motion: reduce) { .intro-down svg { animation: none; } }
+.intro .intro-down { opacity: 0; transition: opacity var(--t-med) var(--ease-out); }
+.intro.is-ready .intro-down { opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .intro-down svg,
+  .trophy-loader.is-done .trophy-flash { animation: none; }
+  .trophy-loader.is-gone { transform: none; }
+}
 
 /* ------------------------------------------------------------------ */
-/* Page 1 — le duel : rangée fixe, 2 cartes du duel au centre            */
+/* Page 1 — sélection du duel : emplacements A / B en haut, arc en bas  */
 /* ------------------------------------------------------------------ */
 
+/* Même direction artistique que l'intro et la page 2 : fond noir en léger dégradé radial,
+   encre #EDEAE3, secondaire à 45 %, or #D4AF37, noms en Barlow Condensed 700 capitales, données
+   en JetBrains Mono, halo doré derrière chaque pièce. Classes préfixées pick- : l'intro et la
+   page 2 ont déjà leurs .arc-name. */
 .carousel {
+  --p1-ink: var(--text);
+  --p1-muted: var(--muted);
+  --p1-gold: var(--gold);
+  --p1-halo: var(--halo);
+  --p1-meta: clamp(11px, 0.72vw, 13px);  /* textes mono de l'intro */
   position: fixed;
   inset: 0;
   overflow: hidden;
   touch-action: pan-y;
   user-select: none;
+  color: var(--p1-ink);
+  background: radial-gradient(ellipse at 50% 50%, var(--bg-center) 0%, var(--bg) 70%);
 }
 
-/* Rangée fixe des 10 cartes, positionnées en x (Carousel.jsx) ; les deux du duel au centre,
-   les autres assombries de part et d'autre. */
-.row { list-style: none; margin: 0; padding: 0; position: absolute; inset: 0; }
-.row-item { position: absolute; left: 0; transition: z-index 0s; perspective: 1200px; }
-.swipe { width: 100%; height: 100%; cursor: grab; touch-action: pan-y; }
-.swipe:active { cursor: grabbing; }
-/* Arrivée au duel : premier plan seulement une fois la carte arrivée (elle passe sous la
-   carte principale qu'elle enjambe) ; ses flèches apparaissent ensuite. */
-.row-item.is-duel { transition: z-index 0s 0.45s; }
-.row-item.is-duel .picker { animation: picker-in 0.3s 0.4s both; }
-@keyframes picker-in { from { opacity: 0; } to { opacity: 1; } }
+/* Pièces d'or en 3D (page 1 et intro) : faces détourées et tranche faite de disques empilés
+   (--d : diamètre). */
+.coin {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+}
+.coin-face,
+.coin-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+}
+/* Faces : image d'origine détourée (fond blanc retiré, rien de reconstitué). */
+.coin-face { object-fit: contain; pointer-events: none; }
+/* Tranche : disques dorés découpés à la silhouette exacte de l'image (--coin) ; un disque sur
+   deux plus sombre (.is-dark) : fines stries visibles quand la pièce tourne. */
+.coin-layer {
+  backface-visibility: visible;
+  background: linear-gradient(90deg, #6d4d12, #b58a33 30%, #e2bb5e 50%, #b58a33 70%, #6d4d12);
+  -webkit-mask: var(--coin) center / contain no-repeat;
+  mask: var(--coin) center / contain no-repeat;
+}
+.coin-layer.is-dark { background: linear-gradient(90deg, #4f370b, #8a6622 30%, #b8923f 50%, #8a6622 70%, #4f370b); }
+@keyframes coin-float { 0%, 100% { translate: 0 0; } 50% { translate: 0 -2.5%; } }
 
-.slot { position: relative; display: block; width: 100%; height: 100%; }
-.slot img { position: relative; width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
-/* Voile sombre des cartes de la file. */
-.slot.is-dim::after {
+/* Arrivée sur la page : la page glisse d'abord, vide, puis ses éléments apparaissent dans
+   l'ordre (Carousel.jsx, .is-revealed) — titre et description (entrée des textes du site :
+   fondu et descente de 12 px, comme les lignes des pages 2 et 3), emplacements, pièce centrale
+   (fondu et léger agrandissement, comme la pièce de l'intro), aide clavier. */
+.pick-in {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.6s cubic-bezier(0.215, 0.61, 0.355, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.pick-in-slots { transition-delay: 0.12s; }
+.pick-in-coin { transform: scale(0.94); transition-delay: 0.24s; }
+.carousel.is-revealed .pick-in { opacity: 1; transform: none; }
+.pick-in .pick-slot,
+.pick-in .pick-arrow { pointer-events: auto; }
+.pick-title h1,
+.pick-title p { opacity: 0; translate: 0 -12px; transition: opacity var(--t-med) var(--ease-out), translate var(--t-med) var(--ease-out); }
+.pick-title p { transition-delay: 0.05s; }
+.carousel.is-revealed .pick-title h1,
+.carousel.is-revealed .pick-title p { opacity: 1; translate: 0 0; }
+.carousel .pick-help { opacity: 0; transition: opacity 0.4s ease-out 0.4s; }
+.carousel.is-revealed .pick-help:not(.is-hidden) { opacity: 1; }
+
+/* Titre de la page, en haut au centre : police des noms des joueurs (Barlow Condensed 700
+   capitales), description dessous, plus fine et atténuée. */
+.pick-title {
+  position: absolute;
+  top: clamp(24px, 6vh, 64px);
+  left: 16px;
+  right: 16px;
+  text-align: center;
+  pointer-events: none;
+}
+.pick-title h1 {
+  margin: 0;
+  font-family: var(--font);
+  font-weight: 700;
+  font-size: clamp(28px, 3.2vw, 48px);
+  line-height: 1;
+  letter-spacing: 0.08em;
+  margin-right: -0.08em;
+  color: var(--p1-ink);
+}
+.pick-title p {
+  margin: 10px 0 0;
+  font-family: var(--font);
+  font-weight: 700;
+  font-size: clamp(15px, 1.3vw, 20px);
+  text-transform: uppercase;
+  color: var(--p1-muted);
+}
+/* Mesure des largeurs (PickTitle) : le texte seul, sans la largeur du bloc. L'espacement des
+   lettres de la description est calculé pour qu'elle fasse la longueur du titre. */
+.pick-title h1 span,
+.pick-title p span { display: inline-block; white-space: nowrap; }
+
+/* Nom en arc sous une pièce (NameCurve) : tracé et police de l'intro. */
+.pick-curve {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 180%;
+  height: 180%;
+  translate: -50% -50%;
+  overflow: visible;
+  pointer-events: none;
+}
+.pick-curve path { fill: none; stroke: none; }
+.pick-name {
+  font-family: var(--font);   /* noms sous les pièces : police de l'intro partout */
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  fill: var(--p1-ink);
+}
+
+/* Emplacements du duel (taille : --d = G, Carousel.jsx). Univers numismatique : vide, une pièce
+   fantôme gravée en trait seul ; rempli, la vraie pièce, un peu plus lumineuse que celles du
+   carrousel, entourée d'un liseré doré. */
+.pick-slot { position: absolute; perspective: 1400px; }
+.pick-slot::before {   /* halo doré des pièces, une fois la pièce posée */
   content: '';
   position: absolute;
-  inset: 40% -6% -28% -6%;   /* même géométrie que .card */
-  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 157' preserveAspectRatio='none'%3E%3Cpath d='M10 0 L90 0 Q92 6 100 7 L100 128 Q100 134 94 137 L56 154 Q50 157 44 154 L6 137 Q0 134 0 128 L0 7 Q8 6 10 0 Z' fill='black'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
-  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 157' preserveAspectRatio='none'%3E%3Cpath d='M10 0 L90 0 Q92 6 100 7 L100 128 Q100 134 94 137 L56 154 Q50 157 44 154 L6 137 Q0 134 0 128 L0 7 Q8 6 10 0 Z' fill='black'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
-  background: #050506;
-  opacity: 0.55;
+  inset: -14%;
+  background: radial-gradient(closest-side, var(--p1-halo), transparent);
+  opacity: 0;
+  transition: opacity var(--t-med) var(--ease-out);
   pointer-events: none;
-  transition: opacity 0.2s;
 }
-.slot.is-dim:hover::after { opacity: 0.45; }
+.pick-slot.is-filled::before { opacity: 1; }
+
+/* Pièce fantôme : trait or de 1 px, aucun aplat ; tour lent sur elle-même (12 s) et respiration
+   de l'opacité entre 25 et 35 %. */
+.pick-ghost { position: absolute; inset: 0; transition: opacity var(--t-med) var(--ease-out); pointer-events: none; }
+.pick-ghost.is-hidden { opacity: 0; }
+.pick-ghost-breathe { width: 100%; height: 100%; opacity: 0.3; perspective: 1400px;
+                      animation: pick-ghost-breathe 6s ease-in-out infinite; }
+@keyframes pick-ghost-breathe { 0%, 100% { opacity: 0.25; } 50% { opacity: 0.35; } }
+.pick-ghost-turn { width: 100%; height: 100%; animation: pick-ghost-turn 12s linear infinite; }
+@keyframes pick-ghost-turn { from { transform: rotateY(0deg); } to { transform: rotateY(360deg); } }
+.pick-ghost-coin { display: block; width: 100%; height: 100%; overflow: visible; }
+.pick-ghost-coin circle,
+.pick-ghost-coin path {
+  fill: none;
+  stroke: var(--p1-gold);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+/* Éclat doré à l'arrivée de la pièce, qui se dissipe en 400 ms. */
+.pick-flash {
+  position: absolute;
+  inset: -30%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(255, 236, 170, 0.75), rgba(212, 175, 55, 0.25) 45%, transparent);
+  opacity: 0;
+  pointer-events: none;
+}
+.pick-flash.is-on { animation: pick-flash 0.4s ease-out; }
+@keyframes pick-flash {
+  0% { opacity: 0; transform: scale(0.7); }
+  20% { opacity: 1; }
+  100% { opacity: 0; transform: scale(1.12); }
+}
+.pick-slot-coin { position: absolute; inset: 0; border-radius: 50%; transform-style: preserve-3d; }
+.pick-slot-coin:disabled { pointer-events: none; }
+/* Flottement doux de la pièce posée, décalé entre A et B. */
+.pick-float { display: block; width: 100%; height: 100%; transform-style: preserve-3d;
+              animation: coin-float 5s ease-in-out infinite; }
+.pick-slot + .pick-slot .pick-float { animation-delay: -2.5s; }
+.pick-slot-coin .coin-face { filter: brightness(1.12); }   /* un peu plus lumineuse que l'arc */
+.pick-vs {   /* police de l'intro, or comme « 2026 » */
+  position: absolute;
+  left: 50%;
+  translate: -50% -50%;
+  font-family: var(--font);
+  font-weight: 700;
+  font-size: clamp(28px, 3.2vw, 52px);
+  letter-spacing: 0.08em;
+  margin-right: -0.08em;
+  color: var(--p1-gold);
+}
+
+/* Pièce centrale (Carousel.jsx : place et taille en ligne). */
+.pick-item {
+  position: absolute;
+  left: 0;
+  top: 0;
+  perspective: 1400px;
+  filter: brightness(calc(0.6 + 0.4 * var(--depth, 1)));
+}
+/* Halo doré derrière chaque pièce (même halo que l'intro et la page 2), plus présent derrière
+   la pièce active. */
+.pick-item::before {
+  content: '';
+  position: absolute;
+  inset: -14%;
+  background: radial-gradient(closest-side, var(--p1-halo), transparent);
+  pointer-events: none;
+  z-index: -1;
+}
+.pick-item.is-active::before { inset: -22%; background: radial-gradient(closest-side, rgba(217, 178, 95, 0.26), transparent); }
+/* Pièce déjà placée dans un emplacement : désaturée (l'opacité 30 % est animée). */
+.pick-item.is-placed { filter: grayscale(1) brightness(calc(0.6 + 0.4 * var(--depth, 1))); }
+.pick-coin { pointer-events: auto; display: block; width: 100%; height: 100%; border-radius: 50%;
+             transform-style: preserve-3d; cursor: pointer; }
+.pick-coin[aria-disabled='true'] { cursor: not-allowed; }
+/* Survol : élévation et inclinaison vers la souris (ArcCoin). */
+.pick-hover { display: block; width: 100%; height: 100%; transform-style: preserve-3d; }
+.pick-spin { display: block; width: 100%; height: 100%; transform-style: preserve-3d;
+             animation: coin-float 5s ease-in-out infinite; }
+.pick-coin:focus-visible,
+.pick-slot-coin:focus-visible { outline: 1.5px solid var(--p1-gold); outline-offset: 6px; border-radius: 50%; }
+
+/* Pièce active : repère du nom en arc (même place et même taille que la pièce). */
+.pick-active { position: absolute; pointer-events: none; z-index: 20; }
+
+/* Flèches de l'arc : style des flèches de la page 2 (blanches, légère lueur, pleines au
+   survol), de part et d'autre de la pièce active. */
+.pick-arrow {
+  position: absolute;
+  z-index: 30;
+  width: 32px;
+  height: 32px;
+  translate: -50% -50%;
+  color: #fff;
+  opacity: 0.55;
+  transition: opacity var(--t-fast) var(--ease-out);
+}
+.pick-arrow svg { width: 18px; height: 18px; margin: auto; filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.55)); }
+.pick-arrow svg path { stroke-width: 2; }
+.pick-arrow:hover,
+.pick-arrow:focus-visible { opacity: 1; }
+.pick-arrow:hover svg { filter: drop-shadow(0 0 7px rgba(255, 255, 255, 0.9)); }
+/* Duel prêt : pièce centrale et flèches effacées, inertes. */
+.pick-arrow.is-gone { opacity: 0; pointer-events: none; }
+.pick-item.is-gone { pointer-events: none; }
+.pick-item.is-gone .pick-coin { pointer-events: none; }
+
+/* Bas de l'écran : aide clavier (masquée sur mobile et écrans tactiles), remplacée par la
+   flèche clignotante de l'intro (.intro-down) quand le duel est prêt. */
+.pick-help {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 18px;
+  margin: 0;
+  text-align: center;
+  font-family: var(--mono);
+  font-size: var(--p1-meta);
+  letter-spacing: 0.2em;
+  color: var(--muted)   /* même gris que le reste du site, plus lisible */;
+  pointer-events: none;
+  transition: opacity var(--t-med) var(--ease-out);
+}
+@media (max-width: 820px), (hover: none) { .pick-help { display: none; } }
+.pick-help.is-hidden { opacity: 0; }
+/* Duel prêt : flèche clignotante de l'intro (.intro-down) en bas de l'écran, vers le duel. */
+.pick-go { opacity: 0; visibility: hidden; transition: opacity 0.4s, visibility 0s 0.4s; }
+.pick-go.is-on { opacity: 1; visibility: visible; transition: opacity var(--t-med) var(--ease-out); }
+
+/* Pièce en vol entre l'arc et un emplacement. */
+.pick-flight { position: absolute; left: 0; top: 0; z-index: 50; pointer-events: none; perspective: 1400px;
+               transform-style: preserve-3d; }
+
+@media (prefers-reduced-motion: reduce) {
+  .pick-spin, .pick-ghost-turn, .pick-float { animation: none; }
+}
+/* Voile sombre des cartes de la file. */
 /* Carte style « Ultimate Team » : blason (épaules hautes incurvées, bas en pointe arrondie,
    découpe par masque SVG) en or texturé
    — reflets diagonaux « holographiques », grain métallique (bruit SVG), brossage fin,
    marbrures — bord biseauté (SVG), brillance, relief (ombre portée via drop-shadow).
    Géométrie : déborde de 6 % sur les côtés, commence à 40 % de la hauteur de l'image et
    descend de 28 % dessous — cf. SIDE / TOP / BOTTOM (Carousel.jsx). Aucune marque. */
-.slot { filter: drop-shadow(10px 14px 18px rgba(0, 0, 0, 0.6)) drop-shadow(-4px -4px 10px rgba(255, 235, 180, 0.06)); }
-.card {
-  position: absolute;
-  inset: 40% -6% -28% -6%;
-  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 157' preserveAspectRatio='none'%3E%3Cpath d='M10 0 L90 0 Q92 6 100 7 L100 128 Q100 134 94 137 L56 154 Q50 157 44 154 L6 137 Q0 134 0 128 L0 7 Q8 6 10 0 Z' fill='black'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
-  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 157' preserveAspectRatio='none'%3E%3Cpath d='M10 0 L90 0 Q92 6 100 7 L100 128 Q100 134 94 137 L56 154 Q50 157 44 154 L6 137 Q0 134 0 128 L0 7 Q8 6 10 0 Z' fill='black'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
-  overflow: hidden;
-  background:
-    repeating-linear-gradient(125deg, rgba(255, 250, 225, 0.0) 0 22px, rgba(255, 250, 225, 0.16) 22px 26px, rgba(255, 250, 225, 0.0) 26px 60px),
-    linear-gradient(115deg, transparent 28%, rgba(255, 248, 220, 0.4) 42%, transparent 56%),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.4 0 0 0 0 0.2 0 0 0 0.55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
-    repeating-linear-gradient(90deg, rgba(255, 245, 210, 0.07) 0 1px, rgba(70, 45, 10, 0.07) 1px 3px),
-    radial-gradient(60% 40% at 75% 20%, rgba(255, 230, 160, 0.35), transparent 70%),
-    radial-gradient(70% 50% at 20% 85%, rgba(90, 60, 15, 0.35), transparent 70%),
-    linear-gradient(160deg, #f4dc97 0%, #d4a84e 38%, #b3852f 66%, #7a571c 100%);
-  background-size: auto, auto, 160px 160px, auto, auto, auto, auto;
-  background-blend-mode: soft-light, screen, overlay, soft-light, screen, multiply, normal;
-  color: #2a1c06;
-}
 /* Bord du blason : arête sombre sur le contour, liseré clair juste dedans, puis filet intérieur
    doré (clair + ombre) qui suit la même forme — SVG étiré à la carte, traits d'épaisseur fixe. */
-.card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 157' preserveAspectRatio='none'%3E%3Cpath d='M10 0 L90 0 Q92 6 100 7 L100 128 Q100 134 94 137 L56 154 Q50 157 44 154 L6 137 Q0 134 0 128 L0 7 Q8 6 10 0 Z' fill='none' stroke='rgb%2890%2C60%2C15%29' stroke-opacity='0.55' stroke-width='3' vector-effect='non-scaling-stroke'/%3E%3Cpath d='M10 0 L90 0 Q92 6 100 7 L100 128 Q100 134 94 137 L56 154 Q50 157 44 154 L6 137 Q0 134 0 128 L0 7 Q8 6 10 0 Z' fill='none' stroke='rgb%28255%2C242%2C200%29' stroke-opacity='0.55' stroke-width='1.5' vector-effect='non-scaling-stroke' transform='translate%2850 78.5%29 scale%280.985 0.99%29 translate%28-50 -78.5%29'/%3E%3Cpath d='M10 0 L90 0 Q92 6 100 7 L100 128 Q100 134 94 137 L56 154 Q50 157 44 154 L6 137 Q0 134 0 128 L0 7 Q8 6 10 0 Z' fill='none' stroke='rgb%28255%2C244%2C205%29' stroke-opacity='0.7' stroke-width='1.5' vector-effect='non-scaling-stroke' transform='translate%2850 78.5%29 scale%280.9 0.935%29 translate%28-50 -78.5%29'/%3E%3Cpath d='M10 0 L90 0 Q92 6 100 7 L100 128 Q100 134 94 137 L56 154 Q50 157 44 154 L6 137 Q0 134 0 128 L0 7 Q8 6 10 0 Z' fill='none' stroke='rgb%28110%2C78%2C22%29' stroke-opacity='0.4' stroke-width='1' vector-effect='non-scaling-stroke' transform='translate%2850 78.5%29 scale%280.89 0.928%29 translate%28-50 -78.5%29'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
-  pointer-events: none;
-  z-index: 2;
-}
 /* Brillance : halo clair en haut, léger assombrissement vers la pointe. */
-.card::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(90% 35% at 50% 0%, rgba(255, 250, 230, 0.35), transparent 70%),
-    linear-gradient(to bottom, transparent 70%, rgba(70, 45, 10, 0.22));
-  pointer-events: none;
-  z-index: 1;
-}
 /* Buste centré dans la carte, au-dessus du nom (9 % → 71 % de la carte). */
-.slot .card .card-photo {   /* plus précis que .slot img */
-  position: absolute;
-  left: 7%;    /* marges égales : buste centré dans la carte */
-  top: 9.1%;   /* carte moins haute : mêmes tailles qu'avant (buste 0,545 × h) */
-  height: 61.9%;
-  width: 86%;  /* largeur explicite : une image ne s'étire pas avec left + right */
-  object-fit: contain;
-  object-position: 50% 100%;
-  /* Bas du buste en fondu vers l'or (pas de coupe nette au-dessus du nom). */
-  -webkit-mask-image: linear-gradient(to bottom, #000 72%, transparent 100%);
-  mask-image: linear-gradient(to bottom, #000 72%, transparent 100%);
-}
 /* Colonne de gauche : poste, drapeau, club. */
-.card-side {
-  position: absolute;
-  left: 9%;
-  top: 11.4%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.55em;
-}
-.card-pos { font-size: 1.6em; font-weight: 700; line-height: 1; letter-spacing: 0.02em; }
-.card-side, .card-bottom { z-index: 3; text-shadow: 0 1px 0 rgba(255, 244, 210, 0.55); }
-.card .card-photo { z-index: 1; }
-.card .card-flag { width: 1.9em !important; height: 1.27em !important; object-fit: cover; border-radius: 2px;
-                    box-shadow: 0 0 0 1px rgba(60, 40, 10, 0.25); }
-.card .card-club { width: 1.9em !important; height: 1.9em !important; object-fit: contain; }
 /* Bas : nom, filet, stats. */
-.card-bottom {
-  position: absolute;
-  left: 10%;
-  right: 10%;
-  top: 68.5%;   /* stats au-dessus du filet intérieur de la pointe */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-.card-name {
-  width: 100%;
-  font-size: 1.45em;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-  line-height: 1.1;
-  padding-bottom: 0.3em;
-  border-bottom: 1px solid rgba(60, 40, 10, 0.35);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.card-stats { display: flex; justify-content: center; gap: 1.1em; margin-top: 0.45em; font-size: 0.95em; }
-.card-stats span { display: flex; align-items: baseline; gap: 0.25em; font-weight: 500; letter-spacing: 0.04em; }
-.card-stats b { font-size: 1.25em; font-weight: 700; }
-
-.picker {
-  position: absolute;
-  left: 50%;
-  top: calc(128% + 16px);   /* sous la carte (qui déborde de 28 % sous l'image) */
-  translate: -50% 0;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 16px;
-}
-.picker .arrow { width: 36px; height: 36px; }
-.counter { color: var(--gold); font-size: 16px; font-variant-numeric: tabular-nums; }
 
 /* ------------------------------------------------------------------ */
 /* Page 2 — le duel : palmarès · joueur · stats face à face · joueur · palmarès */
@@ -306,8 +537,6 @@ svg path { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: ro
 }
 .back svg { width: 18px; height: 18px; }
 .back:hover { color: var(--gold); box-shadow: inset 0 0 0 1px var(--gold); }
-
-.player-scroll { height: 250vh; position: relative; }
 /* Pendant le glissement page 1 ↔ duel, les deux pages se superposent : fond opaque pour
    que le duel recouvre la page 1 en montant. */
 .duel { position: relative; z-index: 1; background: var(--bg); }
@@ -351,26 +580,14 @@ svg path { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: ro
    vers le haut, entrée du haut vers le bas ; le retard --d de chaque élément est calculé
    d'après sa hauteur (Duel.jsx, staggerLines). `translate` et `filter` : ne se mélangent pas au `transform` / à
    l'opacité des apparitions au scroll. */
-.figure .arc-name,
 .palmares .badges,
 .palmares h3,
 .palmares li,
 .palmares .empty,
 .compare-row strong {
-  transition: translate 0.25s ease, filter 0.25s ease;
+  transition: translate var(--t-fast) var(--ease-out), filter var(--t-fast) var(--ease-out);
   transition-delay: var(--d, 0s);
 }
-.is-swapping-left .figure.is-left .arc-name,
-.is-swapping-left .palmares.is-left :is(.badges, h3, li, .empty),
-.is-swapping-left .compare-row strong:first-child,
-.is-swapping-right .figure.is-right .arc-name,
-.is-swapping-right .palmares.is-right :is(.badges, h3, li, .empty),
-.is-swapping-right .compare-row strong:last-child {
-  translate: 0 -18px;
-  filter: opacity(0);
-}
-.is-swapping-left .palmares.is-left li.is-minor,
-.is-swapping-right .palmares.is-right li.is-minor { filter: grayscale(0.7) opacity(0); }
 
 .sr-only {
   position: absolute;
@@ -414,8 +631,8 @@ svg path { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: ro
 .figure::before {
   content: '';
   position: absolute;
-  inset: 5% -30% 0;
-  background: radial-gradient(closest-side, var(--gold-soft), transparent);
+  inset: 15% -8% 10%;   /* halo réduit, resserré sur le joueur */
+  background: radial-gradient(closest-side, var(--halo), transparent);
   z-index: -1;
 }
 .rotation { width: 100%; height: 100%; display: block; object-fit: contain; }
@@ -440,7 +657,7 @@ svg path { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: ro
   background: none;
   box-shadow: none;   /* pas de cercle : la flèche seule, avec une légère lueur blanche */
   opacity: 0.55;      /* légèrement transparente, pleine au survol */
-  transition: opacity 0.2s;
+  transition: opacity var(--t-fast) var(--ease-out);
 }
 .figure-picker .arrow svg { width: 18px; height: 18px; filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.55)); }
 .figure-picker .arrow:hover,
@@ -449,7 +666,7 @@ svg path { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: ro
 .figure-picker .arrow.is-outer-left { left: 4%; }     /* joueur de gauche : flèche côté bord */
 .figure-picker .arrow.is-outer-right { right: 4%; }   /* joueur de droite : flèche côté bord */
 .rotation,
-.still { transition: opacity 0.25s ease; }
+.still { transition: opacity var(--t-fast) var(--ease-out); }
 .rotation.is-hidden { opacity: 0; }
 .still {
   position: absolute;
@@ -486,12 +703,11 @@ svg path { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: ro
   font-variant-numeric: tabular-nums;
 }
 .compare-row strong:first-child { text-align: right; }
-.compare-row.is-small span { max-width: none; white-space: pre; }   /* « Buts + Assists » / « / MATCH » : 2 lignes */
 /* Meilleur score en vert (sauf matchs). */
 .compare-row strong.is-better { color: var(--better); }
 .compare-row span {
   color: var(--muted);
-  font-size: 13px;
+  font-size: var(--fs-label);
   font-weight: 700;
   text-align: center;
   justify-self: center;   /* centré dans la colonne du libellé (sinon calé à gauche) */
@@ -538,7 +754,7 @@ svg path { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: ro
 }
 .block + .block { margin-top: 18px; }
 .block h3 {
-  font-size: 16px;
+  font-size: var(--fs-label);
   font-weight: 700;
   color: var(--muted);
   text-transform: uppercase;
@@ -557,12 +773,10 @@ svg path { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: ro
   font-size: 17px;
   line-height: 1.1;
 }
-.block .icon { width: 36px; height: 36px; object-fit: contain; flex: none; }
 .block li span { flex: 1; }
 /* Places d'honneur (2e, 3e) grisées : elles ne comptent pas dans le score. */
 .block li.is-minor { filter: grayscale(0.7) opacity(1); }   /* opacité 0,6 : dans Reveal (Duel.jsx) ;
    même liste de filtres qu'à l'état effacé, pour que le changement de joueur les fonde */
-.is-static .block li.is-minor { opacity: 0.6; }
 /* Titres du palmarès. */
 .award { font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; color: var(--text); }
 .block .comp {
@@ -571,15 +785,12 @@ svg path { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: ro
   padding: 4px;
   object-fit: contain;
   flex: none;
-  border-radius: 6px;
+  border-radius: var(--radius);
   background: rgba(244, 241, 234, 0.92);
 }
 .empty { color: var(--muted); font-size: 19px; }
 
-
 /* Mouvement réduit : pas de rotation, tout est affiché d'emblée. */
-.is-static .player-scroll { height: auto; }
-.is-static .sticky { position: relative; min-height: 100svh; height: auto; }
 
 /* Mobile : les deux joueurs côte à côte, leurs stats dessous ; en fin de rotation, les
    palmarès prennent la place des stats. */
@@ -595,7 +806,6 @@ svg path { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: ro
   }
   .figure { height: min(52svh, calc((50vw - 18px) * 1.7778)); width: auto; justify-self: center; }
   .arc-name { left: -5%; width: 110%; }
-  .versus span { width: 36px; height: 36px; font-size: 14px; }
 
   .compare { align-self: start; gap: 8px; padding: 0 8px; }
 
@@ -618,11 +828,402 @@ svg path { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: ro
   .block h3 { font-size: 11px; }
   .block li { font-size: 13px; gap: 6px; }
   .block .comp { width: 24px; height: 24px; padding: 2px; }
-
-  .is-static .sticky {
-    grid-template-rows: clamp(60px, 10vh, 100px) 55svh auto auto;
-    grid-template-areas: '. .' 'figA figB' 'mid mid' 'palmA palmB';
-  }
-  .is-static .palmares.is-left { grid-area: palmA; max-height: none; }
-  .is-static .palmares.is-right { grid-area: palmB; max-height: none; }
 }
+
+/* ------------------------------------------------------------------ */
+/* Page 3 — détails des compétitions : un tableau par joueur           */
+/* ------------------------------------------------------------------ */
+/* Au-dessus du duel pendant le glissement, défilement propre (mobile : tableaux empilés). */
+.details {
+  --pad: clamp(16px, 2.5vw, 48px);
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  overflow-y: auto;
+  scrollbar-width: none;
+  background: #000;   /* fond noir uni */
+  padding: clamp(20px, 4vh, 48px) var(--pad);
+  /* Tableaux centrés dans la page, verticalement aussi (marges auto : s'ils dépassent de
+     l'écran, ils partent du haut et la page défile, rien n'est coupé). */
+  display: flex;
+  flex-direction: column;
+}
+.details::-webkit-scrollbar { display: none; }
+.details-grid { position: relative; z-index: 1; }
+.details-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  --gap: clamp(72px, 9vw, 150px);   /* écart entre les tableaux, où sont les flèches */
+  column-gap: var(--gap);
+  row-gap: 48px;
+  align-items: start;
+  max-width: 1320px;   /* largeur des tableaux */
+  width: 100%;
+  margin: auto;
+}
+/* Pièce du joueur centrée au-dessus de son tableau, nom en arc dessous (qui descend d'environ
+   0,2 diamètre sous la pièce : marge du bas en conséquence). */
+/* Flèches de changement de joueur, à côté de la pièce, à mi-hauteur : ‹ à gauche de la pièce
+   de gauche, › à droite de la pièce de droite. Même style qu'en page 2 (sans cercle, légère
+   lueur blanche, pleines au survol). */
+.details-side { position: relative; }
+
+.details-table {
+  width: 100%;
+  table-layout: fixed;   /* largeurs imposées par <colgroup> */
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+.details-table th,
+.details-table td { padding: 4px 5px; text-align: center; }   /* tout centré dans sa colonne… */
+.details-table tfoot th { text-align: left; }   /* …sauf « Total » */
+/* Colonne Équipe : logo du club ou drapeau de la sélection. */
+.details-team-col { width: 10%; }
+.details-team .club { display: block; width: 28px; height: 28px; margin: 0 auto; object-fit: contain; }
+.details-team .flag { display: block; width: 27px; height: 18px; margin: 0 auto; object-fit: cover; border-radius: 2px; }
+.details-table thead th {
+  color: var(--text);   /* intitulés des colonnes en blanc */
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  line-height: 1.15;
+  vertical-align: bottom;
+  border-bottom: 1px solid var(--line);
+}
+.details-table tbody tr { border-bottom: 1px solid var(--line); transition: background-color var(--t-fast) var(--ease-out); }
+/* Ligne survolée (et celle d'en face, dans l'autre tableau) : surbrillance. */
+/* Les deux tableaux ont exactement les mêmes dimensions : mêmes colonnes (largeurs en % de
+   la même largeur de tableau), lignes de hauteur fixe dont le texte est limité en nombre de
+   lignes (.clamp) pour ne jamais les agrandir. Les 4 colonnes de scores ont la même largeur ;
+   la compétition prend le reste. */
+.details-score { width: 11%; }
+.details-comp-col { width: 14%; }
+.details-result-col { width: 16%; }
+.details-indiv-col { width: 16%; }
+.details-table thead tr { height: 38px; }   /* intitulés sur une ligne */
+.details-table tfoot tr { height: 44px; }
+.clamp {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}
+/* Résultat de l'équipe (« Vainqueur », « Demi-finale », « 2ème »…), sur 2 lignes au plus. */
+.details-table td.details-result {
+  font-size: clamp(12px, 0.95vw, 15px);   /* comme les noms de compétition */
+  font-weight: 700;
+  line-height: 1.1;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--text);
+}
+/* Distinctions individuelles : icônes côte à côte (3 au plus), intitulé au survol. */
+.details-table td.details-indiv { font-size: 0; white-space: nowrap; }
+.details-indiv img { display: inline-block; width: 22px; height: 22px; margin: 0 2px; vertical-align: middle; }
+.details-trophy { width: auto; height: 36px; margin: 0 auto; }
+/* Infobulle des icônes (trophées, distinctions) : intitulé au-dessus, dès le survol. */
+.tip { position: relative; display: inline-block; vertical-align: middle; outline: none; }
+.tip::after {
+  content: attr(data-tip);
+  position: absolute;
+  z-index: 5;
+  left: 50%;
+  bottom: calc(100% + 8px);
+  translate: -50% 4px;
+  padding: 6px 10px;
+  border-radius: var(--radius);
+  /* Infobulle sombre, comme les panneaux des tableaux, avec un liseré. */
+  background: rgba(5, 5, 5, 0.94);
+  color: var(--text);
+  box-shadow: 0 0 0 1px rgba(237, 234, 227, 0.18), 0 8px 24px rgba(0, 0, 0, 0.5);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--t-fast) var(--ease-out), translate var(--t-fast) var(--ease-out);
+}
+.tip:is(:hover, :focus-visible)::after { opacity: 1; translate: -50% 0; }   /* titre remporté : le trophée */
+/* Hauteur fixe (nom de compétition ou résultat sur 2 lignes au plus) : les lignes des deux tableaux
+   restent alignées, y compris les lignes vides (type joué seulement par l'adversaire). */
+.details-table tbody tr { height: 48px; }
+.details-table td { font-size: clamp(18px, 1.7vw, 28px); font-weight: 700; line-height: 1; }
+.details-table td.is-better { color: var(--gold); }   /* bat l'adversaire sur la même ligne : en or (page 2 : vert) */
+/* Colonne compétition : logo seul, centré (nom en infobulle). */
+.details-comp .comp { display: block; }
+.details .comp {
+  width: 28px;
+  height: 28px;
+  padding: 4px;
+  object-fit: contain;
+  flex: none;
+  border-radius: var(--radius);
+  background: rgba(244, 241, 234, 0.92);
+}
+/* Total de la saison (mêmes chiffres qu'en page 2). */
+.details-table tfoot tr { border-top: 1px solid var(--line); }
+.details-table tfoot th {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* Flèche vers la page 3, en bas de la page 2 (même style que celle de l'intro). */
+
+@media (max-width: 820px) {
+  .details { padding: 28px 16px; }
+  .details-grid { grid-template-columns: minmax(0, 1fr); }   /* empilés : alignement inutile */
+  .details-table th, .details-table td { padding: 6px 3px; }
+  .details-table td { font-size: 17px; }
+  .details-table thead th { font-size: 10px; }
+}
+
+/* ------------------------------------------------------------------ */
+/* Page finale — joueurs réduits en haut, tableaux dessous (Final.jsx)  */
+/* ------------------------------------------------------------------ */
+/* Reprend les classes des pages 2 (.sticky.duel-grid, .figure, .palmares, .compare) et 3
+   (.details, .details-grid, .details-table) ; seules les différences sont ici, sous .final. */
+.final { position: relative; z-index: 1; background: radial-gradient(ellipse at 50% 50%, var(--bg-center) 0%, var(--bg) 70%) fixed, var(--bg); }
+.final .final-players { position: relative; top: auto; transform-origin: 50% 0; will-change: transform; }
+
+/* Grand écran : scène épinglée (GSAP). Les joueurs restent en pleine hauteur, immobiles ; les
+   tableaux, posés en bas de l'écran par-dessus l'image sur un fond noir légèrement transparent,
+   montent du bas au scroll ; le « VS » apparaît juste au-dessus d'eux. */
+.final.is-pinned .final-stage { position: relative; height: 100svh; overflow: hidden; }
+.final.is-pinned .final-band { position: absolute; inset: 0; }
+.final.is-pinned .final-tables {
+  transform: translateY(110%);   /* hors écran avant que GSAP ne prenne la main */
+}
+.final-veil {   /* voile sombre transparent sur les joueurs quand les tableaux montent */
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: rgba(5, 5, 5, 0.6);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Mobile et mouvement réduit : pas d'épinglage. Bande des joueurs d'emblée réduite (hauteur et
+   échelle calculées dans Final.jsx), sans stats, listes de titres ni flèches ; puis les
+   tableaux en défilement classique. */
+.final.is-flow .final-band { position: relative; overflow: hidden; }
+.final.is-flow .final-players :is(.compare, .palmares .block, .figure-picker) { display: none; }
+
+/* Tableaux de la page 3, ici dans la page (pas en calque plein écran). */
+.final .final-tables.details {
+  position: relative;
+  inset: auto;
+  z-index: auto;
+  overflow: visible;
+  display: block;
+  background: none;
+  padding: 12px var(--pad) 12px;
+}
+.final.is-pinned .final-tables.details {
+  position: absolute;
+  z-index: 2;
+  top: var(--tables-top, calc(50% - var(--tables-h, 50svh) / 2));   /* centrés, sous les noms en arc (Final.jsx) */
+  bottom: auto;
+  left: 0;
+  right: 0;
+  padding: 0;
+  background: none;
+}
+/* Deux tableaux séparés, centrés entre le milieu de leur moitié d'écran (25 %) et le joueur (28 %) :
+   à 26,5 % et 73,5 % de la largeur, bien espacés, chacun dans son propre panneau. */
+.final.is-pinned .final-tables .details-grid {
+  --fc: 25vw;                                  /* centre de chaque moitié de l'écran */
+  --tw: min(44vw, 720px);                      /* largeur d'un tableau */
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-evenly;   /* écart entre les deux tableaux = marge de chaque côté */
+  max-width: none;
+  margin: 0;
+  column-gap: 0;
+}
+.final.is-pinned .final-tables .details-side { flex: none; width: var(--tw); }
+/* Panneau de chaque tableau : fond sombre, peu transparent et flouté derrière, pour que chiffres
+   et icônes ressortent nettement par-dessus l'image des joueurs. */
+.final.is-pinned .final-tables .details-panel {
+  padding: 12px 18px 14px;
+  border-radius: var(--radius);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 0 0 1px rgba(237, 234, 227, 0.08), 0 -20px 60px rgba(0, 0, 0, 0.45);
+}
+.final .final-tables .details-grid { margin: 0 auto; }
+
+/* Tableaux trop hauts pour leur place : textes, icônes et lignes réduits d'un même facteur
+   --k (Final.jsx), sans retirer aucune ligne ni colonne. */
+.final-tables { --k: 1; --z: 1.2; }   /* --z : logos, icônes et textes agrandis de 20 % (27/09/2026) */
+/* Sans la colonne Équipe (ni pièce au-dessus, ni ligne Total) : les colonnes restantes se
+   partagent toute la largeur. */
+/* Colonnes : Équipe, Compétition, 4 scores, Résultat, Individuel. La colonne Individuel suit le
+   plus grand nombre de médailles d'une même ligne dans les deux tableaux (has-medals-N) : sans
+   ou avec peu de médailles, elle rétrécit et les autres colonnes s'élargissent d'autant. */
+.final-tables .details-team-col { width: 9%; }
+.final-tables .details-comp-col { width: 11%; }
+.final-tables .details-score { width: 11%; }
+.final-tables .details-result-col { width: 21%; }
+.final-tables .details-indiv-col { width: 15%; }
+.final-tables .has-medals-3 .details-score { width: 10%; }
+.final-tables .has-medals-3 .details-result-col { width: 19%; }
+.final-tables .has-medals-3 .details-indiv-col { width: 21%; }
+.final-tables .has-medals-1 .details-score,
+.final-tables .has-medals-0 .details-score { width: 12%; }
+.final-tables .has-medals-1 .details-indiv-col,
+.final-tables .has-medals-0 .details-indiv-col { width: 11%; }
+.final-tables .has-medals-1 .details-result-col,
+.final-tables .has-medals-0 .details-result-col { width: 21%; }
+/* Prénom et nom sur une ligne, en tête du tableau, au-dessus des intitulés. */
+.final-table-name {
+  margin: 0 0 calc(6px * var(--k) * var(--z));
+  font-family: var(--font);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--text);
+  display: flex;
+  flex-direction: column;   /* poste et âge sous le nom */
+  align-items: flex-start;
+  gap: 0.45em   /* un peu d'air entre le nom et le poste / âge */;
+  min-width: 0;
+}
+.final-table-player { max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+.final-table-meta { flex: none; color: var(--text); letter-spacing: 0.08em; }
+.final-tables .details-team .club { width: calc(28px * var(--k) * var(--z)); height: calc(28px * var(--k) * var(--z)); }
+.final-tables .details-team .flag { width: calc(27px * var(--k) * var(--z)); height: calc(18px * var(--k) * var(--z)); }
+.final-tables .details-table th,
+.final-tables .details-table td { padding: calc(4px * var(--k) * var(--z)) calc(5px * var(--k) * var(--z)); }
+.final-tables .details-table thead th { font-size: calc(13px * var(--k) * var(--z)); }   /* intitulés agrandis (27/09/2026) */
+.final-tables .details-table thead tr { height: calc(38px * var(--k) * var(--z)); }
+.final-tables .details-table tbody tr { height: calc(48px * var(--k) * var(--z)); }
+.final-tables .details-table td { font-size: calc(clamp(18px, 1.7vw, 28px) * var(--k) * var(--z)); }
+.final-tables .details-table td.details-result { font-size: calc(clamp(12px, 0.95vw, 15px) * var(--k) * var(--z)); }
+.final-tables .comp { width: calc(28px * var(--k) * var(--z)); height: calc(28px * var(--k) * var(--z)); padding: calc(4px * var(--k) * var(--z)); }
+.final-tables .details-trophy {   /* hauteur de base = logos, ajustée par --tr (FinalTables.jsx) */
+  display: block;
+  margin: 0 auto;
+  height: calc(28px * var(--k) * var(--z) * var(--tr, 1));
+  width: auto;
+  max-width: calc(34px * var(--k) * var(--z));
+  object-fit: contain;
+  /* Traitement léger et commun : ombre douce qui détache toutes les formes du fond. */
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.6));
+}
+.final-tables .details-indiv img { width: calc(28px * var(--k) * var(--z)); height: calc(28px * var(--k) * var(--z)); }   /* même hauteur que les logos */
+
+@media (max-width: 820px) {
+  .final .final-tables.details { padding: 12px 16px 32px; }
+}
+/* Page du duel : pas de séparateur sous la dernière ligne des tableaux. */
+/* Page du duel : chaque tableau va du début du logo d'équipe à la droite du dernier score —
+   logos d'équipe calés à gauche, colonne Ratio calée à droite (intitulés compris), sans marge
+   de cellule sur ces deux bords. */
+.final-tables .details-table th:first-child,
+.final-tables .details-table td:first-child { text-align: left; padding-left: 0; }
+/* Scores (Ratio compris) centrés dans leurs colonnes, comme les autres (27/09/2026). */
+.final-tables .details-team .club,
+.final-tables .details-team .flag { margin: 0; }
+/* Page du duel : médailles des distinctions individuelles centrées dans leur cellule, en
+   largeur et en hauteur (sans décalage de ligne de base). */
+.final-tables .details-table td.details-indiv { text-align: center; vertical-align: middle; line-height: 0; }
+.final-tables .details-indiv .tip { display: inline-flex; vertical-align: middle; }
+.final-tables .details-indiv img { display: block; margin: 0 1px; }
+/* Page du duel : ligne Total. */
+.final-tables .details-table tfoot tr { height: calc(44px * var(--k) * var(--z)); }
+.final-tables .details-table tfoot th { text-align: left; padding-left: 0; }
+/* Les deux tableaux toujours de la même largeur : colonne et panneau de largeur fixe, le contenu
+   ne peut pas les agrandir. */
+.final.is-pinned .final-tables .details-side { min-width: 0; max-width: var(--tw); }
+.final-tables .details-panel { min-width: 0; overflow: hidden; }
+.final-tables .details-table { width: 100%; }
+/* Intitulés longs (« Compétition ») : espace de part et d'autre, jamais collés à leurs voisins. */
+.final-tables .details-table thead th { padding-left: 4px; padding-right: 4px; letter-spacing: 0.03em; }
+.final-tables .details-table thead th:first-child { padding-left: 0; }
+/* Lignes de remplissage en fin de tableau (alignement des lignes Total) : invisibles, sans trait. */
+.final-tables .details-table tbody tr:nth-last-child(1 of :not(.is-pad)) { border-bottom: 0; }
+/* Lignes vides en fin de famille : gardent le trait de séparation, pour la lisibilité. */
+.final-tables .details-table tbody tr.is-pad { border-bottom: 1px solid var(--line); }
+.final-tables .details-table tbody tr:last-child { border-bottom: 0; }
+/* « Total » : même police, taille, couleur et espacement que les intitulés de colonnes. */
+.final-tables .details-table tfoot th {
+  color: var(--text);
+  font-size: calc(13px * var(--k) * var(--z));
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  line-height: 1.15;
+}
+/* Séparateur au-dessus de la ligne Total : même couleur que les autres séparateurs. */
+.final-tables .details-table tfoot tr { border-top: 1px solid var(--line); }
+/* Ligne Total : le plus haut des deux joueurs en or (sauf matches). */
+.final-tables .details-table tfoot td.is-best { color: var(--gold); }
+/* « Total : » centré sous les deux premières colonnes (Équipe, Tournoi). */
+.final-tables .details-table tfoot th.final-total-label { padding-right: 0; }
+/* « Total : » : même police et taille que les scores de la ligne. */
+.final-tables .details-table tfoot th.final-total-label {
+  font-weight: 700;
+  line-height: 1;
+}
+.final-tables .details-table tfoot th.final-total-label { text-transform: uppercase; }
+/* « TOTAL : » : même taille que le nom du joueur en tête du tableau. */
+/* « TOTAL : » : même taille et espacement que les intitulés de colonnes. */
+.final-tables .details-table tfoot th.final-total-label { font-size: calc(13px * var(--k) * var(--z)); letter-spacing: 0.03em; }
+/* « TOTAL : » aligné à gauche (bord gauche des logos d'équipe). */
+.final-tables .details-table tfoot th.final-total-label { text-align: left; padding-left: 0; }
+/* Nom, poste et âge en tête du tableau, agrandis (27/09/2026). */
+.final-table-name { font-size: calc(26px * var(--k) * var(--z)); }
+.final-table-meta { font-size: 0.72em; }
+/* Page du duel : places d'honneur des distinctions individuelles en argent (2e) ou en bronze
+   (3e), plus en gris. */
+.final .block li.is-rank-2 .award { color: #c7ccd3; }
+.final .block li.is-rank-3 .award { color: #cd8a4f; }
+/* Colonne Individuel : médailles jamais collées au bord droit du panneau. */
+.final-tables .details-table td.details-indiv,
+.final-tables .details-table th:last-child { padding-right: 6px; }
+/* Panneaux des tableaux : même noir que le site (plus de teinte chaude). */
+.final.is-pinned .final-tables .details-panel { background: rgba(5, 5, 5, 0.9); }
+/* Places d'honneur (2e argent, 3e bronze) grisées pour ressortir moins que les titres de 1er :
+   couleur de la médaille gardée, mais atténuée, logo désaturé. */
+.final .block li.is-minor { opacity: 0.55; filter: grayscale(0.6); }
+/* Page du duel : flèche vers les tableaux et aide clavier (comme l'intro et la sélection). */
+.final-down { z-index: 4; opacity: 0; visibility: hidden; transition: opacity var(--t-med) var(--ease-out), visibility 0s var(--t-med); }
+.final-down.is-on { opacity: 1; visibility: visible; transition: opacity var(--t-med) var(--ease-out); }
+.final-help { position: absolute; left: 0; right: 0; z-index: 4; bottom: 18px; opacity: 1; }
+@media (max-width: 820px), (hover: none) { .final-help { display: none; } }
+/* Infobulle du poste dans l'en-tête des tableaux : dans le flux du texte, sans décalage. */
+.final-table-meta .tip { vertical-align: baseline; }
+/* Mobile : tableaux lisibles dans 360 px — pas d'agrandissement (--z), textes et icônes à leur
+   taille de base, intitulés abrégés par la police plus petite, médailles plus serrées. */
+@media (max-width: 820px) {
+  .final-tables { --z: 0.82; }
+  .final-tables .details-table thead th { font-size: 9px; letter-spacing: 0; padding-left: 1px; padding-right: 1px; }
+  .final-tables .details-table td { font-size: 15px; }
+  .final-tables .details-table td.details-result { font-size: 10px; }
+  .final-tables .details-indiv img { margin: 0; }
+  .final-tables .details-team-col { width: 8%; }
+  .final-tables .details-comp-col { width: 10%; }
+  .final-tables .details-score { width: 10%; }
+  .final-tables .details-result-col { width: 18%; }
+  .final-tables .details-indiv-col { width: 24%; }
+  .final-table-name { font-size: 22px; }
+}
+@media (max-width: 820px) {
+  /* Lignes vides : jamais plus larges que le tableau. */
+  .final-tables .details-table tr.is-pad td { padding: 0; }
+  .final-tables .details-table { table-layout: fixed; }
+  .final-tables .details-table thead th { overflow: hidden; text-overflow: clip; }
+}
+/* Infobulle cachée : sans largeur tant qu'elle n'est pas affichée (elle élargissait les tableaux
+   sur mobile). */
+.tip:not(:hover):not(:focus-visible)::after { content: none; }

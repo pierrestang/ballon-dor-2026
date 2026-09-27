@@ -20,6 +20,8 @@ export const clubLogo = (club) => (LOGOS[club] ? asset(`assets/logos/${LOGOS[clu
 
 const sequence = (id) => asset(`assets/players/sequences/${id}/`)
 export const posterUrl = (id) => sequence(id) + 'poster.avif'
+// Pièces d'or (page 1) : portrait du joueur (les deux faces).
+export const coinUrl = (id) => asset(`assets/coins/${id}.avif`)
 export const bustUrl = (id) => sequence(id) + 'bust.avif'     // tête et buste (cartes page 1)
 export const backUrl = (id) => sequence(id) + 'dos.avif'   // vue de dos (page 1)
 export const frameUrl = (id, i) => sequence(id) + String(i).padStart(3, '0') + '.avif'
@@ -28,3 +30,34 @@ export const photoUrl = (id) => sequence(id) + 'face.avif'
 
 export const decimal = (n) =>
   n.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+
+// Dates de naissance (données publiques, ajoutées le 27/09/2026 : absentes de l'Excel), pour
+// l'âge affiché dans les tableaux de la page du duel.
+const BIRTHS = {
+  'kylian-mbappe': '1998-12-20',
+  rodri: '1996-06-22',
+  'harry-kane': '1993-07-28',
+  'lionel-messi': '1987-06-24',
+  'ousmane-dembele': '1997-05-15',
+  'khvicha-kvaratskhelia': '2001-02-12',
+  'lamine-yamal': '2007-07-13',
+  'erling-haaland': '2000-07-21',
+  'michael-olise': '2001-12-12',
+  'jude-bellingham': '2003-06-29',
+}
+
+/** Âge du joueur aujourd'hui (null si date inconnue). */
+export const ageOf = (id, now = new Date()) => {
+  const b = BIRTHS[id] && new Date(BIRTHS[id])
+  if (!b) return null
+  let a = now.getFullYear() - b.getFullYear()
+  if (now.getMonth() < b.getMonth() || (now.getMonth() === b.getMonth() && now.getDate() < b.getDate())) a--
+  return a
+}
+
+// Postes en toutes lettres (infobulle des abréviations BU, AD… ; POSTES dans excel_vers_json.py).
+const POSTE_LABELS = {
+  BU: 'Buteur', AD: 'Ailier droit', AG: 'Ailier gauche',
+  MDC: 'Milieu défensif central', MOC: 'Milieu offensif central',
+}
+export const posteLabel = (poste) => poste.split('/').map((p) => POSTE_LABELS[p] ?? p).join(' / ')
