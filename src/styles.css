@@ -1248,10 +1248,10 @@ svg path { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: ro
   /* Lettres en contour, vides au milieu (trait doré fin, comme le pointillé). */
   fill: none;
   stroke: var(--p1-gold);
-  stroke-width: 0.6;
-  paint-order: stroke;
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;   /* trait de 1 px, comme la pièce fantôme */
 }
-.pick-slot-label-arc { opacity: 0.45; transition: opacity var(--t-med) var(--ease-out); }
+.pick-slot-label-arc { opacity: 1; transition: opacity var(--t-med) var(--ease-out); }
 .pick-slot-label-arc.is-hidden { opacity: 0; }
 
 /* ------------------------------------------------------------------ */
@@ -1286,3 +1286,7 @@ svg path { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: ro
 .intro .intro-down { transition: opacity var(--t-med) var(--ease-out), color var(--t-fast) var(--ease-out); }
 .pick-go, .final-down { transition: opacity var(--t-med) var(--ease-out), visibility 0s var(--t-med), color var(--t-fast) var(--ease-out); }
 .pick-go.is-on, .final-down.is-on { transition: opacity var(--t-med) var(--ease-out), color var(--t-fast) var(--ease-out); }
+/* Libellés des emplacements vides : même respiration d'opacité (25 → 35 %) que la pièce
+   fantôme au-dessus, en phase avec elle. */
+.pick-slot-label { animation: pick-ghost-breathe 6s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .pick-slot-label { animation: none; opacity: 0.3; } }
