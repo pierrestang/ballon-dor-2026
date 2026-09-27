@@ -62,9 +62,4 @@ export const ageOf = (id, now = new Date()) => {
   return a
 }
 
-// Postes en toutes lettres (infobulle des abréviations BU, AD… ; POSTES dans excel_vers_json.py).
-const POSTE_LABELS = {
-  BU: 'Buteur', AD: 'Ailier droit', AG: 'Ailier gauche',
-  MDC: 'Milieu défensif central', MOC: 'Milieu offensif central',
-}
-export const posteLabel = (poste) => poste.split('/').map((p) => POSTE_LABELS[p] ?? p).join(' / ')
+export { posteLabel } from './postes'
