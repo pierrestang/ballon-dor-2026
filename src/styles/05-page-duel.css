@@ -239,3 +239,67 @@
 /* Infobulle cachée : sans largeur tant qu'elle n'est pas affichée (elle élargissait les tableaux
    sur mobile). */
 .tip:not(:hover):not(:focus-visible)::after { content: none; }
+
+/* ------------------------------------------------------------------ */
+/* Tableaux éditoriaux (28/09/2026) : moins de traits, plus d'air,     */
+/* compétitions remportées mises en avant, en-tête avec la pièce.      */
+/* ------------------------------------------------------------------ */
+/* En-tête : pièce du joueur · nom, poste et âge · nombre de titres (or, à droite). */
+.final-table-head {
+  display: flex;
+  align-items: center;
+  gap: calc(14px * var(--k) * var(--z));
+  margin: 0 0 calc(14px * var(--k) * var(--z));
+  padding-bottom: calc(12px * var(--k) * var(--z));
+  border-bottom: 1px solid rgba(212, 175, 55, 0.35);
+}
+.final-table-head .final-table-name { margin: 0; flex: 1; min-width: 0; }
+.final-table-coin {
+  width: calc(52px * var(--k) * var(--z));
+  height: calc(52px * var(--k) * var(--z));
+  flex: none;
+  object-fit: contain;
+  transform: scaleX(-1);   /* portrait tourné vers la droite, comme les pièces du site */
+  filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.35));
+}
+.final-table-titles {
+  flex: none;
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  font-family: var(--font);
+  font-weight: 700;
+  font-size: calc(13px * var(--k) * var(--z));
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+.final-table-titles b { font-family: var(--serif); font-style: italic; font-weight: 600; font-size: 2.6em; line-height: 1; color: var(--gold); }
+/* Intitulés discrets (gris), sans trait ; lignes séparées par l'espace, pas par des traits. */
+.final-tables .details-table thead th { color: var(--text-secondary); border-bottom: 0; }
+.final-tables .details-table tbody tr,
+.final-tables .details-table tbody tr.is-pad { border-bottom: 0; }
+.final-tables .details-table tbody tr:not(.is-pad) td,
+.final-tables .details-table tbody tr:not(.is-pad) th { border-top: 1px solid rgba(237, 234, 227, 0.05); }
+/* Compétition remportée : ligne dorée (voile + filet à gauche), chiffres en blanc plein. */
+.final-tables .details-table tbody tr.is-won { background: linear-gradient(90deg, rgba(212, 175, 55, 0.26), rgba(212, 175, 55, 0.06) 75%, transparent); }
+/* Filet or des lignes gagnantes, sans décaler leur contenu : toute la première colonne (intitulé,
+   lignes, Total) a le même retrait, les logos et drapeaux restent alignés. */
+.final-tables .details-table tbody tr.is-won > :first-child { box-shadow: inset 2px 0 0 var(--gold); }
+.final-tables .details-table :is(thead th, tbody td, tfoot th):first-child { padding-left: calc(10px * var(--k) * var(--z)); }
+/* Logo du club et drapeau : même largeur, centrés sur le même axe. */
+.final-tables .details-team .club,
+.final-tables .details-team .flag { width: calc(28px * var(--k) * var(--z)); }
+.final-tables .details-team .club { height: calc(28px * var(--k) * var(--z)); }
+.final-tables .details-team .flag { height: calc(18.7px * var(--k) * var(--z)); }
+.final-tables .details-table tbody tr:not(.is-won) td:not(.details-result):not(.details-indiv) { color: rgba(237, 234, 227, 0.78); }
+/* Total : séparé par un filet doré, chiffres plus grands. */
+.final-tables .details-table tfoot tr { border-top: 1px solid rgba(212, 175, 55, 0.35); }
+.final-tables .details-table tfoot td { font-size: calc(clamp(20px, 1.9vw, 30px) * var(--k) * var(--z)); }
+/* En-tête : nom et poste · âge resserrés (interligne 1, écart réduit) ; la pièce a exactement
+   la hauteur des deux lignes (--nm : taille du nom ; bloc = 1 + 0,12 + 0,72 = 1,84 × --nm). */
+.final-table-head { --nm: calc(26px * var(--k) * var(--z)); align-items: center; }
+.final-table-head .final-table-name { font-size: var(--nm); line-height: 1; gap: 0.12em; }
+.final-table-head .final-table-meta { line-height: 1; }
+.final-table-head .final-table-coin { width: calc(var(--nm) * 1.62); height: calc(var(--nm) * 1.62); }   /* hauteur des lettres visibles (capitales), du haut du nom au bas de « BU · 33 ANS » */
+

@@ -64,6 +64,10 @@ Intro → trois versions au choix (← / →, bords, glisser ; on ouvre sur **Le
 - **Image à partager** du classement final, 1080 × 1350 (`shareImage.js`, bouton « PARTAGER MON CLASSEMENT » : partage système sur mobile, sinon téléchargement PNG).
 - **Typographie** : Cormorant Garamond italique 600 (`--serif`) pour les places du classement final et les chiffres de l'image à partager ; pas dans les textes en arc (placement lettre par lettre calculé sur Barlow).
 
+## Tableaux détaillés (28/09/2026)
+
+Traitement éditorial : en-tête avec la pièce du joueur, nom, poste et âge, et son nombre de titres de la saison en grand chiffre italique doré (`final-table-head`) ; intitulés gris, lignes séparées par l'espace et un filet très léger ; compétition remportée : ligne dorée (voile en dégradé et filet or à gauche, `is-won`), les autres lignes légèrement atténuées ; ligne Total séparée par un filet doré, chiffres plus grands.
+
 ## Charte
 
 - Variables dans `:root` (`00-base.css`) : fond `--bg` + dégradé `--bg-center` (redéfinis par version, `data-theme` : Mon classement noir, Duel nuit bleue, Les candidats vert), texte `--text`, gris `--text-secondary` (6,9:1), or `--gold`, halo `--halo`, panneaux `--panel`, durées `--t-fast/med/slow`, courbes `--ease-out/expo`.

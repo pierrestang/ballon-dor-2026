@@ -3,7 +3,7 @@
 // au-dessus du tableau (colonne Équipe et ligne Total remises le 27/09/2026). Le comportement de page
 // (clavier, molette, retour) est dans Final.jsx.
 import { m } from 'framer-motion'
-import { ageOf, asset, decimal, posteLabel } from './data'
+import { ageOf, asset, coinUrl, decimal, posteLabel } from './data'
 import Tip from './Tip'
 import { ClubLogo, Flag } from './Nameplate'
 import { SLIDE } from './transitions'
@@ -102,14 +102,18 @@ function Table({ player, side, medals, sizes }) {
   return (
     <section className={`details-side is-${side}`}>
       <div className="details-panel">
-      {/* Prénom et nom, puis poste et âge à droite. */}
-      <m.h2 className="final-table-name" {...row(0)}>
-        <span className="final-table-player">{player.nom}</span>
-        <span className="final-table-meta">
-          <Tip label={posteLabel(player.poste)}>{player.poste}</Tip>
-          {ageOf(player.id) !== null && <> · {ageOf(player.id)} ans</>}
-        </span>
-      </m.h2>
+      {/* En-tête éditorial : sa pièce, puis prénom et nom, poste et âge ; titres de la saison. */}
+      <m.header className="final-table-head" {...row(0)}>
+        <img className="final-table-coin" src={coinUrl(player.id)} alt="" width="64" height="64" />
+        <h2 className="final-table-name">
+          <span className="final-table-player">{player.nom}</span>
+          <span className="final-table-meta">
+            <Tip label={posteLabel(player.poste)}>{player.poste}</Tip>
+            {ageOf(player.id) !== null && <> · {ageOf(player.id)} ans</>}
+          </span>
+        </h2>
+        <span className="final-table-titles"><b>{totals(player)[4]}</b> {totals(player)[4] > 1 ? 'titres' : 'titre'}</span>
+      </m.header>
       <table className={`details-table has-medals-${medals}`}>
         {/* Colonnes de scores toutes de la même largeur. */}
         <colgroup>
@@ -130,7 +134,7 @@ function Table({ player, side, medals, sizes }) {
           {lines.map((c, i) => c.pad ? (
             <tr key={`pad-${c.pad}`} className="is-pad" aria-hidden="true"><td colSpan={8} /></tr>
           ) : (
-              <m.tr key={c.nom} {...row(i + 2)}>
+              <m.tr key={c.nom} className={c.trophee ? 'is-won' : undefined} {...row(i + 2)}>
                 {/* Compétition : logo seul, son nom au survol. */}
                 {/* Équipe avec laquelle la compétition a été jouée : club ou sélection (le logo et le
                     drapeau au-dessus des joueurs s'effacent quand les tableaux apparaissent). */}
