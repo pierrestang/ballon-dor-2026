@@ -1245,9 +1245,13 @@ svg path { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: ro
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  fill: var(--p1-gold);
+  /* Lettres en contour, vides au milieu (trait doré fin, comme le pointillé). */
+  fill: none;
+  stroke: var(--p1-gold);
+  stroke-width: 0.6;
+  paint-order: stroke;
 }
-.pick-slot-label-arc { opacity: 0.3; transition: opacity var(--t-med) var(--ease-out); }
+.pick-slot-label-arc { opacity: 0.45; transition: opacity var(--t-med) var(--ease-out); }
 .pick-slot-label-arc.is-hidden { opacity: 0; }
 
 /* ------------------------------------------------------------------ */
