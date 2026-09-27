@@ -54,9 +54,19 @@ function load() {
   try {
     localStorage.removeItem(OLD_GAME_STORE)
     const saved = JSON.parse(localStorage.getItem(GAME_STORE))
-    if (saved?.t?.order && saved.ui) return saved
+    if (valid(saved)) return saved
+    localStorage.removeItem(GAME_STORE)
   } catch { /* stockage indisponible : nouvelle partie */ }
   return null
+}
+// Partie enregistrée utilisable : structure complète, mêmes candidats que le site (une liste de
+// joueurs modifiée ou une sauvegarde abîmée donnait une page blanche), moteur qui l'accepte.
+function valid(saved) {
+  const t = saved?.t
+  if (!t || !saved.ui || !Array.isArray(t.order) || !Array.isArray(t.history)) return false
+  if (!t.results || typeof t.results !== 'object' || !t.barrages || typeof t.barrages !== 'object') return false
+  if (t.order.length !== IDS.length || !IDS.every((id) => t.order.includes(id))) return false
+  try { analyze(t); return true } catch { return false }
 }
 // seenRound : dernière ronde dont l'annonce a été vue.
 const fresh = () => ({ t: createSwiss(IDS), ui: { seenRound: 0, submitted: false } })

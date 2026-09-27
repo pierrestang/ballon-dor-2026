@@ -160,6 +160,8 @@ Parcours complet en Chrome headless (intro, Les candidats, Présentation, page d
 - Ratio des lignes aux passes non relevées : buts par match pour toutes (supercoupes, coupes, Ligue des champions de Bellingham…), plus seulement les qualifications ; avant, « – » même avec des buts.
 - Mobile : largeurs de colonnes des tableaux fixes, prioritaires sur `has-medals-N` (« Individuel » était rogné, « Équipe » et « Tournoi » se chevauchaient) ; intitulés à 9 px sous 380 px ; lignes vides d'alignement masquées (tableaux empilés : elles faisaient un trou).
 - Mon classement : barrage en cours compté dans le total du compteur (« DUEL 28 / 28 » s'affichait au 29e duel, barre pleine avant le dernier vote).
+- Référencement : les 10 candidats en texte dans `#root` au build (`scripts/contenu_statique.mjs`, plugin de `vite.config.js`), masqués visuellement, remplacés par React au montage, lisibles sans JavaScript (`<noscript>`).
+- Cas limites : partie enregistrée abîmée ou d'une autre liste de joueurs (page blanche sur Mon classement) : validée au chargement (`valid`, `Game.jsx`), sinon effacée et nouvelle partie. Vérifiés sans correction : adresses invalides (`#joueur/inconnu`, `#duel/x/x`…) → intro ; Fast 3G (build) : halo et stats d'abord, joueur à ~8 s.
 
 ## Animations (règles communes)
 
