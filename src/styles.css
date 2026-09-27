@@ -5,7 +5,12 @@
   --bg: #050505;
   --bg-center: #0b0b0c;                        /* centre du léger dégradé radial des fonds */
   --text: #edeae3;
-  --muted: rgba(237, 234, 227, 0.45);
+  /* Éléments secondaires (sous-titres, libellés, aides clavier, flèches, chevrons) : gris clair
+     lisible sur le fond noir (contraste 6,9:1, WCAG AA), en dessous du blanc des titres ;
+     survol et focus des éléments interactifs : or du site. */
+  --text-secondary: #9a968f;
+  --text-secondary-hover: #d4af37;
+  --muted: var(--text-secondary);
   --line: rgba(237, 234, 227, 0.1);
   --gold: #d4af37;
   --halo: rgba(217, 178, 95, 0.14);           /* halo doré derrière pièces et joueurs */
@@ -14,6 +19,8 @@
   /* Tailles : intitulés en petites capitales (libellés de stats, titres de listes, en-têtes de
      tableaux, statuts) — une seule taille. */
   --fs-label: clamp(12px, 0.95vw, 15px);
+  /* Aides au déplacement (aide clavier) : taille de référence de la page de sélection. */
+  --fs-help: clamp(11px, 0.72vw, 13px);
   /* Mouvements : deux courbes et trois durées pour tout le site. */
   --ease-out: cubic-bezier(0.215, 0.61, 0.355, 1);   /* power3.out : apparitions, survols */
   --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);        /* expo.out : déplacements */
@@ -232,7 +239,7 @@ svg path { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: ro
   --p1-muted: var(--muted);
   --p1-gold: var(--gold);
   --p1-halo: var(--halo);
-  --p1-meta: clamp(11px, 0.72vw, 13px);  /* textes mono de l'intro */
+  --p1-meta: var(--fs-help);  /* textes mono de l'intro */
   position: fixed;
   inset: 0;
   overflow: hidden;
@@ -482,7 +489,7 @@ svg path { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: ro
   margin: 0;
   text-align: center;
   font-family: var(--mono);
-  font-size: var(--p1-meta);
+  font-size: var(--fs-help);
   letter-spacing: 0.2em;
   color: var(--muted)   /* même gris que le reste du site, plus lisible */;
   pointer-events: none;
@@ -1227,3 +1234,51 @@ svg path { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: ro
 /* Infobulle cachée : sans largeur tant qu'elle n'est pas affichée (elle élargissait les tableaux
    sur mobile). */
 .tip:not(:hover):not(:focus-visible)::after { content: none; }
+
+/* ------------------------------------------------------------------ */
+/* Emplacements vides : « JOUEUR 1 » / « JOUEUR 2 » en arc (Carousel.jsx) */
+/* ------------------------------------------------------------------ */
+/* Même tracé, police, graisse et espacement que les noms sous les pièces ; doré atténué du
+   pointillé, plat (aucune ombre ni effet) ; s'efface quand un joueur est placé. */
+.pick-slot-label {
+  font-family: var(--font);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  fill: var(--p1-gold);
+}
+.pick-slot-label-arc { opacity: 0.3; transition: opacity var(--t-med) var(--ease-out); }
+.pick-slot-label-arc.is-hidden { opacity: 0; }
+
+/* ------------------------------------------------------------------ */
+/* Éléments secondaires : même gris lisible partout, or au survol       */
+/* ------------------------------------------------------------------ */
+.pick-title p,
+.pick-help,
+.loader-status:not(.is-ready) { color: var(--text-secondary); }
+/* Flèches ‹ › (sélection, joueurs de la page du duel) et chevrons de défilement (intro,
+   sélection, page du duel) : gris lisible, or au survol et au focus clavier (200 ms). */
+.pick-arrow,
+.figure-picker .arrow,
+.intro-down {
+  color: var(--text-secondary);
+  opacity: 1;
+  transition: color var(--t-fast) var(--ease-out), opacity var(--t-fast) var(--ease-out), visibility 0s;
+}
+.pick-arrow:hover, .pick-arrow:focus-visible,
+.figure-picker .arrow:hover, .figure-picker .arrow:focus-visible,
+.intro-down:hover, .intro-down:focus-visible { color: var(--text-secondary-hover); opacity: 1; }
+.pick-arrow svg,
+.figure-picker .arrow svg,
+.pick-arrow:hover svg,
+.figure-picker .arrow:hover svg { filter: none; }   /* plus de lueur blanche : couleur seule */
+.pick-arrow svg path, .figure-picker .arrow svg path { transition: stroke var(--t-fast) var(--ease-out); }
+/* Les états masqués existants restent masqués. */
+.pick-arrow.is-gone { opacity: 0; }
+.intro .intro-down { opacity: 0; }
+.intro.is-ready .intro-down { opacity: 1; }
+.pick-go:not(.is-on), .final-down:not(.is-on) { opacity: 0; }
+/* Transitions d'apparition existantes des chevrons, inchangées (+ couleur au survol). */
+.intro .intro-down { transition: opacity var(--t-med) var(--ease-out), color var(--t-fast) var(--ease-out); }
+.pick-go, .final-down { transition: opacity var(--t-med) var(--ease-out), visibility 0s var(--t-med), color var(--t-fast) var(--ease-out); }
+.pick-go.is-on, .final-down.is-on { transition: opacity var(--t-med) var(--ease-out), color var(--t-fast) var(--ease-out); }

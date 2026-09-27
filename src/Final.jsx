@@ -307,7 +307,7 @@ export default function Final({ pair, nav, reduced, onBack, onStep }) {
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9l7 7 7-7" /></svg>
             </button>
             <p className="pick-help final-help" aria-hidden="true">
-              {shownView ? '↑ JOUEURS · ÉCHAP SÉLECTION' : '↓ TABLEAUX · ← → CHANGER DE JOUEUR · ↑ SÉLECTION'}
+              {shownView ? '↑ JOUEURS · ESC SÉLECTION' : '↓ TABLEAUX · ← → CHANGER DE JOUEUR · ↑ SÉLECTION'}
             </p>
           </>
         )}

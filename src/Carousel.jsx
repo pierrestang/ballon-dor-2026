@@ -220,11 +220,11 @@ function Ghost({ hidden }) {
 
 /** Nom en arc sous une pièce (même tracé, même police et même frappe lettre par lettre que
     l'intro) ; le SVG est centré sur la pièce et 1,8 fois plus grand qu'elle. */
-function NameCurve({ id, text, animate }) {
+function NameCurve({ id, text, animate, className = 'pick-name', svgClass = '' }) {
   return (
-    <svg className="pick-curve" viewBox="-180 -180 360 360" aria-hidden="true">
+    <svg className={`pick-curve${svgClass ? ` ${svgClass}` : ''}`} viewBox="-180 -180 360 360" aria-hidden="true">
       <path id={id} d={BOTTOM_ARC} />
-      {text && <NameArc text={text} href={`#${id}`} fontSize={ARC_FONT} animate={animate} className="pick-name" />}
+      {text && <NameArc text={text} href={`#${id}`} fontSize={ARC_FONT} animate={animate} className={className} />}
     </svg>
   )
 }
@@ -293,10 +293,20 @@ export default function Carousel({ nav, pair, setPair, onOpen, onIntro }) {
 
   // Pendant qu'une pièce revient au centre, le joueur central est celui de cette pièce : on ne
   // change pas de joueur, on n'en place ni n'en retire d'autre, jusqu'à ce qu'elle soit posée.
+  // Ordre de défilement : les joueurs disponibles dans l'ordre habituel, puis ceux déjà placés
+  // (grisés) en dernière position.
+  const order = (taken) => {
+    const all = players.map((_, k) => k)
+    return [...all.filter((k) => !taken.has(k)), ...all.filter((k) => taken.has(k))]
+  }
   const turn = (d) => {
     if (returning) return
     setDir(d)
-    setActive((a) => (a + d + N) % N)
+    setActive((a) => {
+      const o = order(placed)
+      const i = o.indexOf(a)
+      return o[(i + d + o.length) % o.length]
+    })
   }
   const focusCoin = () => requestAnimationFrame(() => coinRef.current?.focus({ preventScroll: true }))
 
@@ -316,6 +326,13 @@ export default function Carousel({ nav, pair, setPair, onOpen, onIntro }) {
     const i = slots.findIndex((s) => !s)
     if (i < 0) return
     const t = performance.now()
+    // Un emplacement reste libre : la pièce centrale passe aussitôt au joueur disponible suivant
+    // (le joueur placé, grisé, part en dernière position du défilement).
+    if (slots.filter((s) => !s).length > 1) {
+      const taken = new Set([...placed, k])
+      const next = players.map((_, n) => (k + 1 + n) % N).find((n) => !taken.has(n))
+      if (next !== undefined) { setDir(1); setActive(next) }
+    }
     if (reduced) {
       setSlots((s) => s.map((x, j) => (j === i ? { k, landed: true, t } : x)))
       return
@@ -487,6 +504,11 @@ export default function Carousel({ nav, pair, setPair, onOpen, onIntro }) {
                           label={`Retirer ${players[s.k].nom} de l'emplacement ${LABELS[i].slice(-1)}`} />
               )}
               <NameCurve id={`pick-arc-${i}`} text={nameOn ? name ?? '' : ''} animate={!reduced} />
+              {/* Emplacement vide : « JOUEUR 1 » / « JOUEUR 2 » en arc sous le cercle (même tracé
+                  et même police que les noms), dans le doré atténué du pointillé ; s'efface quand un
+                  joueur est placé. */}
+              <NameCurve id={`pick-slot-label-${i}`} text={`Joueur ${i + 1}`} animate={false}
+                         className="pick-slot-label" svgClass={`pick-slot-label-arc${s ? ' is-hidden' : ''}`} />
             </m.div>
           )
         })}
@@ -533,7 +555,7 @@ export default function Carousel({ nav, pair, setPair, onOpen, onIntro }) {
       {/* Bas de l'écran : l'aide clavier (masquée sur mobile), puis, le duel prêt, la flèche
           clignotante de l'intro et de la page 2 (vers le duel). */}
       <p className={`pick-help${ready ? ' is-hidden' : ''}`} aria-hidden="true">
-        ← → NAVIGUER · ENTRÉE SÉLECTIONNER · RETOUR RETIRER
+        ← → NAVIGUER · ↵ SÉLECTIONNER · ESC RETIRER
       </p>
       <button className={`intro-down pick-go${ready ? ' is-on' : ''}`} onClick={() => onOpen()}
               disabled={!ready} aria-hidden={!ready} aria-label="Lancer le duel">

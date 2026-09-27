@@ -24,8 +24,7 @@ function useWindowLoaded() {
 }
 
 export default function App() {
-  // Duel de départ : Mbappé (0) contre Messi (3) — assez éloignés sur le disque pour que les
-  // 6 joueurs visibles (2 × centre + voisins) soient tous différents.
+  // Duel de départ (retour depuis la page du duel sans sélection) : Olise (0) contre Messi (3).
   const [pair, setPair] = useState([0, 3])
   const [intro, setIntro] = useState(true)
   // Page du duel (Final.jsx) : joueurs puis tableaux au scroll ; remplace, depuis le 26/09/2026,

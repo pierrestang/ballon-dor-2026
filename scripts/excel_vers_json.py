@@ -47,9 +47,9 @@ COULEURS = {
 
 # Ordre des joueurs sur le disque de la page 1 : jamais deux joueurs de la même sélection
 # (ni de la même couleur) côte à côte, y compris entre le dernier et le premier.
-ORDRE = ["Kylian Mbappé", "Rodri", "Harry Kane", "Lionel Messi", "Ousmane Dembélé",
-         "Khvicha Kvaratskhelia", "Lamine Yamal", "Erling Haaland", "Michael Olise",
-         "Jude Bellingham"]
+ORDRE = ["Michael Olise", "Harry Kane", "Lamine Yamal", "Lionel Messi", "Kylian Mbappé",
+         "Khvicha Kvaratskhelia", "Ousmane Dembélé", "Erling Haaland", "Rodri",
+         "Jude Bellingham"]   # ordre du 27/09/2026
 
 DRAPEAUX = {
     "France": "fr", "Espagne": "es", "Angleterre": "gb-eng",
