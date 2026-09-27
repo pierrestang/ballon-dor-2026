@@ -17,7 +17,7 @@ const TURN_S = 2.5   // durée du tour complet (comme le défilement automatique
     `play` l'est déjà) : canvas de la séquence de rotation, photo nette de face avant et après.
     Mouvement réduit : la photo seule. Si une image n'est pas encore chargée, la dernière reste
     affichée. */
-function Turn({ id, name, play }) {
+export function Turn({ id, name, play }) {
   const reduced = useReducedMotion()
   const canvas = useRef(null)
   const frame = useRef(0)
@@ -85,7 +85,7 @@ function Turn({ id, name, play }) {
 
 /** Prénom et nom en arc de cercle au-dessus de la tête du joueur (taille des lettres selon
     la longueur du nom). */
-function ArcName({ id, name }) {
+export function ArcName({ id, name }) {
   const fontSize = Math.min(135, 880 / (name.length * 0.5))
   return (
     <svg className="arc-name" viewBox="0 0 1000 260" aria-hidden="true">
@@ -138,7 +138,7 @@ function Compare({ a, b }) {
 }
 
 /** Club, drapeau et poste, puis les titres collectifs et individuels. */
-function Palmares({ player, side }) {
+export function Palmares({ player, side }) {
   return (
     <div className={`palmares is-${side}`}>
       <div className="badges">

@@ -34,7 +34,7 @@ const NARROW = '(max-width: 820px)'
 // Le nom en arc déborde de son SVG (lettres au-dessus du tracé) : on mesure le texte lui-même.
 const KEPT = '.figure, .arc-name text, .palmares, .compare'
 
-function useNarrow() {
+export function useNarrow() {
   const [narrow, setNarrow] = useState(() => window.matchMedia(NARROW).matches)
   useEffect(() => {
     const mq = window.matchMedia(NARROW)
@@ -48,7 +48,7 @@ function useNarrow() {
 /** Réduction du bloc des joueurs pour que ce qui reste (photos, noms, logos, drapeaux) tienne
     dans la bande du haut (bandH px) : échelle et décalage vertical, origine en haut au centre.
     Mesuré sur le bloc sans transformation. */
-function reducedPlayers(grid, bandH) {
+export function reducedPlayers(grid, bandH) {
   // Mesure sur le bloc non transformé (sinon une mesure refaite lirait le bloc déjà réduit).
   const prev = grid.style.transform
   grid.style.transform = 'none'

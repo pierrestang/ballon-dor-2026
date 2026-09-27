@@ -22,8 +22,6 @@ const sequence = (id) => asset(`assets/players/sequences/${id}/`)
 export const posterUrl = (id) => sequence(id) + 'poster.avif'
 // Pièces d'or (page 1) : portrait du joueur (les deux faces).
 export const coinUrl = (id) => asset(`assets/coins/${id}.avif`)
-export const bustUrl = (id) => sequence(id) + 'bust.avif'     // tête et buste (cartes page 1)
-export const backUrl = (id) => sequence(id) + 'dos.avif'   // vue de dos (page 1)
 export const frameUrl = (id, i) => sequence(id) + String(i).padStart(3, '0') + '.avif'
 // Photo studio nette de face, calée sur l'image 000 de la séquence.
 export const photoUrl = (id) => sequence(id) + 'face.avif'

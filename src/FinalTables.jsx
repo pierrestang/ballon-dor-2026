@@ -215,3 +215,15 @@ export default function FinalTables({ pair }) {
     </div>
   )
 }
+
+/** Tableau d'un seul joueur (page Présentation des joueurs, Solo.jsx) : ses compétitions, sans
+    ligne vide ni comparaison. */
+export function SingleTable({ player }) {
+  const sizes = GROUPS.map((g) => inGroup(player, g).length)
+  const medals = Math.min(3, Math.max(0, ...player.competitions.map((c) => c.individuel.length)))
+  return (
+    <div className="details-grid is-single">
+      <Table key={player.id} player={player} rival={player} side="left" medals={medals} sizes={sizes} />
+    </div>
+  )
+}

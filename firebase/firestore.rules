@@ -1,0 +1,36 @@
+rules_version = '2';
+
+// Règles Firestore du classement communautaire (mode « Mon classement », src/community.js).
+// À coller dans la console Firebase : Firestore Database > Règles > Publier.
+// Chaque document est un classement anonyme : 10 positions (1 à 10, toutes différentes) + date.
+// Création seule ; aucune modification ni suppression ; lecture ouverte (données anonymes,
+// nécessaire aux requêtes d'agrégation).
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function pos(v) { return v is int && v >= 1 && v <= 10; }
+    function valid(d) {
+      return d.keys().hasOnly(['p_michael_olise', 'p_harry_kane', 'p_lamine_yamal', 'p_lionel_messi', 'p_kylian_mbappe', 'p_khvicha_kvaratskhelia', 'p_ousmane_dembele', 'p_erling_haaland', 'p_rodri', 'p_jude_bellingham', 'date'])
+        && d.keys().hasAll(['p_michael_olise', 'p_harry_kane', 'p_lamine_yamal', 'p_lionel_messi', 'p_kylian_mbappe', 'p_khvicha_kvaratskhelia', 'p_ousmane_dembele', 'p_erling_haaland', 'p_rodri', 'p_jude_bellingham', 'date'])
+        && d.date is timestamp
+        && pos(d.p_michael_olise)
+        && pos(d.p_harry_kane)
+        && pos(d.p_lamine_yamal)
+        && pos(d.p_lionel_messi)
+        && pos(d.p_kylian_mbappe)
+        && pos(d.p_khvicha_kvaratskhelia)
+        && pos(d.p_ousmane_dembele)
+        && pos(d.p_erling_haaland)
+        && pos(d.p_rodri)
+        && pos(d.p_jude_bellingham)
+        && [d.p_michael_olise, d.p_harry_kane, d.p_lamine_yamal, d.p_lionel_messi, d.p_kylian_mbappe, d.p_khvicha_kvaratskhelia, d.p_ousmane_dembele, d.p_erling_haaland, d.p_rodri, d.p_jude_bellingham].toSet().size() == 10;
+    }
+    match /classements/{doc} {
+      allow read: if true;
+      allow create: if valid(request.resource.data);
+      allow update, delete: if false;
+    }
+    match /{path=**} {
+      allow read, write: if false;
+    }
+  }
+}

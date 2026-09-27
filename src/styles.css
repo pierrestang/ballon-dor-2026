@@ -87,7 +87,8 @@ svg path { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: ro
 /* Intro — trophée qui se construit, puis pièce d'or et noms en arc      */
 /* ------------------------------------------------------------------ */
 
-.intro {
+.stage {
+  /* Variables du chargement (trophée, statut), reprises de l'ancienne page d'intro. */
   --i-bg: var(--bg);
   --i-bg-center: var(--bg-center);
   --i-ink: var(--text);
@@ -98,65 +99,7 @@ svg path { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: ro
   --i-trophy: clamp(130px, 24vh, 240px);
   --i-ease: var(--ease-out);
   --i-expo: var(--ease-expo);
-  /* Diamètre de la pièce : 42 % de la hauteur (arcs compris, il reste de la place). */
-  --d: min(42vh, 58vw);
-
-  position: fixed;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  text-align: center;
-  color: var(--i-ink);
-  background: radial-gradient(ellipse at 50% 50%, var(--i-bg-center) 0%, var(--i-bg) 70%);
   font-variant-numeric: tabular-nums;
-}
-
-/* Pièce d'or au centre (IntroCoin.jsx), avec le visuel de la page 1 : classes .coin,
-   .coin-face, .coin-layer partagées ; halo doré derrière, flottement doux. */
-.intro-coin {
-  position: relative;
-  width: var(--d);
-  height: var(--d);
-  opacity: 0;
-  transform: scale(0.92);
-  transition: opacity 0.6s var(--i-ease), transform 0.8s var(--i-expo);
-}
-.intro-coin.is-on { opacity: 1; transform: none; }
-.intro-coin-item { position: absolute; inset: 0; perspective: 1400px; }
-.intro-coin-item::before {   /* source de lumière, comme .row-item::before en page 1 */
-  content: '';
-  position: absolute;
-  inset: -14%;
-  background: radial-gradient(closest-side, var(--halo), transparent);
-  pointer-events: none;
-}
-.intro-coin-float { width: 100%; height: 100%; transform-style: preserve-3d; animation: coin-float 5s ease-in-out infinite; }
-/* Titre et nom en arc (police des noms de la page 3 : Barlow Condensed 700 capitales). */
-.intro-arcs {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 180%;
-  height: 180%;
-  translate: -50% -50%;
-  overflow: visible;
-  pointer-events: none;
-}
-.intro-arcs path { fill: none; stroke: none; }
-.intro-arcs text {
-  font-family: var(--font);
-  font-weight: 700;
-  text-transform: uppercase;
-  fill: var(--i-ink);
-}
-.arc-title,
-.arc-name { letter-spacing: 0.08em; }   /* taille : ARC_FONT (IntroCoin.jsx) */
-.arc-year { fill: var(--i-accent); }
-@media (prefers-reduced-motion: reduce) {
-  .intro-coin-float { animation: none; }
-  .intro-coin { transform: none; }
 }
 
 /* Loader : trophée en trait fin, statut et pourcentage dessous, au centre de l'écran. */
@@ -218,8 +161,6 @@ svg path { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: ro
   0%, 100% { opacity: 1; transform: translateY(0); }
   50% { opacity: 0.15; transform: translateY(8px); }
 }
-.intro .intro-down { opacity: 0; transition: opacity var(--t-med) var(--ease-out); }
-.intro.is-ready .intro-down { opacity: 1; }
 @media (prefers-reduced-motion: reduce) {
   .intro-down svg,
   .trophy-loader.is-done .trophy-flash { animation: none; }
@@ -279,30 +220,6 @@ svg path { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: ro
 .coin-layer.is-dark { background: linear-gradient(90deg, #4f370b, #8a6622 30%, #b8923f 50%, #8a6622 70%, #4f370b); }
 @keyframes coin-float { 0%, 100% { translate: 0 0; } 50% { translate: 0 -2.5%; } }
 
-/* Arrivée sur la page : la page glisse d'abord, vide, puis ses éléments apparaissent dans
-   l'ordre (Carousel.jsx, .is-revealed) — titre et description (entrée des textes du site :
-   fondu et descente de 12 px, comme les lignes des pages 2 et 3), emplacements, pièce centrale
-   (fondu et léger agrandissement, comme la pièce de l'intro), aide clavier. */
-.pick-in {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.6s cubic-bezier(0.215, 0.61, 0.355, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.pick-in-slots { transition-delay: 0.12s; }
-.pick-in-coin { transform: scale(0.94); transition-delay: 0.24s; }
-.carousel.is-revealed .pick-in { opacity: 1; transform: none; }
-.pick-in .pick-slot,
-.pick-in .pick-arrow { pointer-events: auto; }
-.pick-title h1,
-.pick-title p { opacity: 0; translate: 0 -12px; transition: opacity var(--t-med) var(--ease-out), translate var(--t-med) var(--ease-out); }
-.pick-title p { transition-delay: 0.05s; }
-.carousel.is-revealed .pick-title h1,
-.carousel.is-revealed .pick-title p { opacity: 1; translate: 0 0; }
-.carousel .pick-help { opacity: 0; transition: opacity 0.4s ease-out 0.4s; }
-.carousel.is-revealed .pick-help:not(.is-hidden) { opacity: 1; }
-
 /* Titre de la page, en haut au centre : police des noms des joueurs (Barlow Condensed 700
    capitales), description dessous, plus fine et atténuée. */
 .pick-title {
@@ -336,25 +253,34 @@ svg path { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: ro
 .pick-title h1 span,
 .pick-title p span { display: inline-block; white-space: nowrap; }
 
-/* Nom en arc sous une pièce (NameCurve) : tracé et police de l'intro. */
-.pick-curve {
+/* Textes en arc (Letters.jsx) : une span par lettre, repère centré sur la pièce ; 1 unité =
+   rayon de la pièce / 100 (taille de police de .arc-box), lettres de ARC_FONT unités. */
+.arc-box {
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 180%;
-  height: 180%;
-  translate: -50% -50%;
-  overflow: visible;
+  width: 0;
+  height: 0;
+  font-size: calc(var(--d) / 200);
   pointer-events: none;
 }
-.pick-curve path { fill: none; stroke: none; }
-.pick-name {
-  font-family: var(--font);   /* noms sous les pièces : police de l'intro partout */
+.arc-l { position: absolute; left: 0; top: 0; width: 0; height: 0; }
+.arc-g {
+  position: absolute;
+  left: 0;
+  translate: -50% 0;
+  line-height: 1;
+  white-space: pre;
+  font-family: var(--font);
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  fill: var(--p1-ink);
+  letter-spacing: 0;   /* l'espacement des lettres est dans leurs angles (Letters.jsx) */
+  color: var(--text);
 }
+.arc-title .is-accent { color: var(--gold); }   /* « 2026 » */
+/* Lettres en ligne animées au scroll (titre et description de la sélection). */
+.line-l,
+.pick-title .line-l { display: inline-block; white-space: pre; }
 
 /* Emplacements du duel (taille : --d = G, Carousel.jsx). Univers numismatique : vide, une pièce
    fantôme gravée en trait seul ; rempli, la vraie pièce, un peu plus lumineuse que celles du
@@ -500,6 +426,29 @@ svg path { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: ro
 /* Duel prêt : flèche clignotante de l'intro (.intro-down) en bas de l'écran, vers le duel. */
 .pick-go { opacity: 0; visibility: hidden; transition: opacity 0.4s, visibility 0s 0.4s; }
 .pick-go.is-on { opacity: 1; visibility: visible; transition: opacity var(--t-med) var(--ease-out); }
+
+/* Intro et sélection : une seule scène (Carousel.jsx). Couches plein écran ; la sélection ne
+   répond qu'à la fin de la transition (.is-live). */
+.stage-layer { position: absolute; inset: 0; pointer-events: none; }
+.stage-hero { will-change: transform; }
+/* Apparition de la pièce à la fin du chargement (fondu et léger agrandissement). */
+.stage-hero-in { position: absolute; inset: 0; opacity: 0; transform: scale(0.92);
+                 transition: opacity 0.6s var(--ease-out), transform 0.8s var(--ease-expo); }
+.stage-hero-in.is-on { opacity: 1; transform: none; }
+.stage-arc-top { position: absolute; pointer-events: none; }
+.stage .pick-slot,
+.stage .pick-arrow { pointer-events: auto; }
+.stage:not(.is-live) .pick-slot,
+.stage:not(.is-live) .pick-slot-coin,
+.stage:not(.is-live) .pick-arrow,
+.stage:not(.is-live) .pick-coin,
+.stage:not(.is-live) .pick-go { pointer-events: none; }
+/* Chevron de l'intro : apparaît avec la pièce, inerte dès qu'on a quitté l'intro. */
+.stage-intro-down .intro-down { pointer-events: auto; opacity: 0;
+                                transition: opacity var(--t-med) var(--ease-out), color var(--t-fast) var(--ease-out); }
+.stage.is-intro-ready .stage-intro-down .intro-down { opacity: 1; }
+.stage.is-live .stage-intro-down .intro-down { visibility: hidden; }
+@media (prefers-reduced-motion: reduce) { .stage-hero-in { transform: none; } }
 
 /* Pièce en vol entre l'arc et un emplacement. */
 .pick-flight { position: absolute; left: 0; top: 0; z-index: 50; pointer-events: none; perspective: 1400px;
@@ -1012,7 +961,7 @@ svg path { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: ro
   position: absolute;
   inset: 0;
   z-index: 1;
-  background: rgba(5, 5, 5, 0.6);
+  background: color-mix(in srgb, var(--bg) 60%, transparent);
   opacity: 0;
   pointer-events: none;
 }
@@ -1199,7 +1148,7 @@ svg path { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: ro
 .final-tables .details-table td.details-indiv,
 .final-tables .details-table th:last-child { padding-right: 6px; }
 /* Panneaux des tableaux : même noir que le site (plus de teinte chaude). */
-.final.is-pinned .final-tables .details-panel { background: rgba(5, 5, 5, 0.9); }
+.final.is-pinned .final-tables .details-panel { background: color-mix(in srgb, var(--bg) 90%, transparent); }
 /* Places d'honneur (2e argent, 3e bronze) grisées pour ressortir moins que les titres de 1er :
    couleur de la médaille gardée, mais atténuée, logo désaturé. */
 .final .block li.is-minor { opacity: 0.55; filter: grayscale(0.6); }
@@ -1245,12 +1194,9 @@ svg path { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: ro
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  /* Lettres en contour, vides au milieu (trait doré fin, comme le pointillé). */
-  fill: none;
-  stroke: var(--p1-gold);
-  stroke-width: 1;
-  vector-effect: non-scaling-stroke;   /* trait de 1 px, comme la pièce fantôme */
 }
+/* Lettres en contour, vides au milieu (trait doré fin de 1 px, comme la pièce fantôme). */
+.pick-slot-label .arc-g { color: transparent; -webkit-text-stroke: 1px var(--p1-gold); }
 .pick-slot-label-arc { opacity: 1; transition: opacity var(--t-med) var(--ease-out); }
 .pick-slot-label-arc.is-hidden { opacity: 0; }
 
@@ -1279,14 +1225,344 @@ svg path { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: ro
 .pick-arrow svg path, .figure-picker .arrow svg path { transition: stroke var(--t-fast) var(--ease-out); }
 /* Les états masqués existants restent masqués. */
 .pick-arrow.is-gone { opacity: 0; }
-.intro .intro-down { opacity: 0; }
-.intro.is-ready .intro-down { opacity: 1; }
 .pick-go:not(.is-on), .final-down:not(.is-on) { opacity: 0; }
 /* Transitions d'apparition existantes des chevrons, inchangées (+ couleur au survol). */
-.intro .intro-down { transition: opacity var(--t-med) var(--ease-out), color var(--t-fast) var(--ease-out); }
 .pick-go, .final-down { transition: opacity var(--t-med) var(--ease-out), visibility 0s var(--t-med), color var(--t-fast) var(--ease-out); }
 .pick-go.is-on, .final-down.is-on { transition: opacity var(--t-med) var(--ease-out), color var(--t-fast) var(--ease-out); }
 /* Libellés des emplacements vides : même respiration d'opacité (25 → 35 %) que la pièce
    fantôme au-dessus, en phase avec elle. */
-.pick-slot-label { animation: pick-ghost-breathe 6s ease-in-out infinite; }
-@media (prefers-reduced-motion: reduce) { .pick-slot-label { animation: none; opacity: 0.3; } }
+.pick-slot-label .arc-l { animation: pick-ghost-breathe 6s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .pick-slot-label .arc-l { animation: none; opacity: 0.3; } }
+
+/* ------------------------------------------------------------------ */
+/* Mode « Mon classement » (Game.jsx, BattleCard.jsx)                    */
+/* ------------------------------------------------------------------ */
+.game {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  color: var(--text);
+  background: radial-gradient(ellipse at 50% 50%, var(--bg-center) 0%, var(--bg) 70%) fixed, var(--bg);
+  user-select: none;
+}
+.game-nav {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  right: 16px;
+  z-index: 5;
+  display: flex;
+  justify-content: space-between;
+  pointer-events: none;
+}
+.game-link, .game-btn, .game-help, .game-count, .game-phase, .game-sub, .game-seed, .game-comm {
+  font-family: var(--mono);
+  font-size: var(--fs-help);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.game-link { pointer-events: auto; color: var(--text-secondary); padding: 6px 2px; transition: color var(--t-fast) var(--ease-out); }
+.game-link:hover, .game-link:focus-visible { color: var(--text-secondary-hover); }
+
+.game-screen {
+  min-height: 100svh;
+  box-sizing: border-box;
+  padding: clamp(52px, 7vh, 72px) 16px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(12px, 2.4vh, 28px);
+}
+.game-title {
+  font-family: var(--font);
+  font-weight: 700;
+  font-size: clamp(28px, 3.2vw, 48px);
+  line-height: 1;
+  letter-spacing: 0.08em;
+  margin-right: -0.08em;
+  text-transform: uppercase;
+  text-align: center;
+}
+.game-sub { color: var(--text-secondary); text-align: center; margin-top: -8px; }
+.game-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: auto; }
+.game-btn {
+  padding: 12px 20px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  color: var(--text-secondary);
+  transition: color var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out);
+}
+.game-btn:hover, .game-btn:focus-visible { color: var(--gold); border-color: var(--gold); }
+.game-btn.is-primary { color: var(--gold); border-color: rgba(212, 175, 55, 0.5); }
+.game-btn:disabled { opacity: 0.5; cursor: default; }
+
+/* Pièces (tirage, qualifiés, podium) : pièce 3D et nom en arc dessous, taille --d. */
+.game-draw-coin {
+  position: relative;
+  display: block;
+  width: var(--d);
+  height: var(--d);
+  perspective: 1400px;
+  transform-style: preserve-3d;
+}
+.game-draw-coin::before {
+  content: '';
+  position: absolute;
+  inset: -18%;
+  background: radial-gradient(closest-side, var(--halo), transparent);
+  pointer-events: none;
+}
+.game-card-name .arc-g { color: var(--text); }
+
+/* Tirage au sort : trois colonnes de poules. */
+.game-pools { display: flex; justify-content: center; gap: clamp(24px, 6vw, 96px); flex-wrap: wrap; }
+.game-pool { display: flex; flex-direction: column; align-items: center; gap: clamp(14px, 2.4vh, 26px); }
+.game-pool h2 {
+  font-family: var(--font);
+  font-weight: 700;
+  font-size: clamp(18px, 1.6vw, 24px);
+  letter-spacing: 0.1em;
+  color: var(--gold);
+  text-transform: uppercase;
+}
+.game-draw-item { position: relative; display: flex; flex-direction: column; align-items: center; padding-bottom: 30px; }
+.game-seed { position: absolute; bottom: 0; left: 50%; translate: -50% 0; white-space: nowrap; color: var(--gold); font-size: 9px; }
+
+/* Duel : en-tête (phase, compteur, barre), deux cartes et « VS ». */
+.game-head { display: flex; flex-direction: column; align-items: center; gap: 8px; width: min(420px, 100%); }
+.game-phase { color: var(--text); }
+.game-phase.is-barrage { color: var(--gold); }
+.game-count { color: var(--text-secondary); }
+.game-bar { display: block; width: 100%; height: 2px; background: var(--line); border-radius: 1px; overflow: hidden; }
+.game-bar span { display: block; height: 100%; background: var(--gold); transform-origin: 0 50%; }
+.game-pair { width: 100%; display: flex; justify-content: center; }
+.game-pair-in { display: flex; align-items: stretch; justify-content: center; gap: clamp(16px, 4vw, 64px); }
+.game-vs {
+  align-self: center;
+  font-family: var(--font);
+  font-weight: 700;
+  font-size: clamp(28px, 3.2vw, 52px);
+  letter-spacing: 0.08em;
+  color: var(--gold);
+}
+.game-card {
+  width: min(320px, 40vw);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 18px 12px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: calc(var(--radius) * 2);
+  text-align: left;
+  transition: border-color var(--t-fast) var(--ease-out), box-shadow var(--t-med) var(--ease-out);
+}
+.game-card:not(:disabled):hover, .game-card:focus-visible { border-color: rgba(212, 175, 55, 0.6); outline: none; }
+.game-card.is-won { border-color: var(--gold); box-shadow: 0 0 36px rgba(212, 175, 55, 0.35); }
+.game-card:disabled { cursor: default; }
+.game-card-coin { position: relative; display: block; width: var(--d); height: var(--d); margin-bottom: calc(var(--d) * 0.28); perspective: 1400px; }
+.game-card-coin::before {
+  content: '';
+  position: absolute;
+  inset: -20%;
+  background: radial-gradient(closest-side, var(--halo), transparent);
+  pointer-events: none;
+}
+.game-card-spin { display: block; width: 100%; height: 100%; transform-style: preserve-3d; animation: coin-float 5s ease-in-out infinite; }
+.game-card-id { display: flex; align-items: center; gap: 12px; }
+.game-card-id .flag { width: 30px; height: 20px; }
+.game-card-id .club { width: 32px; height: 32px; }
+.game-card-poste { font-family: var(--mono); font-size: var(--fs-help); letter-spacing: 0.15em; color: var(--text-secondary); }
+.game-card-stats { display: flex; flex-direction: column; width: 100%; }
+.game-stat { display: flex; justify-content: space-between; align-items: baseline; padding: 4px 0; border-top: 1px solid var(--line); }
+.game-stat-label { font-family: var(--font); font-weight: 700; font-size: var(--fs-label); letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-secondary); }
+.game-stat-value { font-family: var(--font); font-weight: 700; font-size: clamp(17px, 1.3vw, 22px); color: var(--text); }
+.game-stat.is-better .game-stat-value { color: var(--gold); }
+.game-help { color: var(--text-secondary); margin-top: auto; }
+@media (max-width: 820px), (hover: none) { .game-help { display: none; } }
+
+/* Tableaux des poules. */
+.game-tables { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px 28px; }
+.game-table {
+  border-collapse: collapse;
+  background: var(--panel);
+  border-radius: var(--radius);
+  font-family: var(--font);
+  font-weight: 700;
+  font-size: 13px;
+}
+.game-table caption { padding: 0 0 6px; text-align: left; color: var(--gold); letter-spacing: 0.1em; text-transform: uppercase; font-size: 13px; }
+.game-table th { color: var(--text-secondary); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 8px; }
+.game-table td { padding: 3px 8px; text-align: center; color: var(--text-secondary); border-top: 1px solid var(--line); }
+.game-table .is-name { text-align: left; }
+.game-table td.is-name { color: var(--text); white-space: nowrap; }
+.game-cell-name { display: inline-flex; align-items: center; gap: 8px; vertical-align: middle; }
+.game-table td.is-name em { font-style: normal; font-family: var(--mono); font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); }
+.game-table .is-rank { color: var(--text-secondary); }
+.game-table tr.is-qualified td { color: var(--gold); }
+.game-table tr.is-qualified td.is-name span { color: var(--gold); }
+.game-table tr.is-hot td { background: rgba(212, 175, 55, 0.08); }
+
+/* Qualifiés et podium. */
+.game-finalists { display: flex; justify-content: center; gap: clamp(24px, 5vw, 72px); padding-bottom: 24px; }
+.game-podium { display: flex; justify-content: center; align-items: flex-end; gap: clamp(24px, 5vw, 80px); padding-bottom: 20px; }
+.game-podium-step { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.game-podium-step .game-draw-coin { margin-bottom: calc(var(--d) * 0.3); }
+.game-podium-rank { font-family: var(--font); font-weight: 700; font-size: clamp(18px, 1.6vw, 26px); color: var(--gold); }
+.game-ranking { list-style: none; margin: 0; padding: 0; width: min(620px, 100%); }
+.game-ranking li { display: flex; align-items: center; gap: 14px; padding: 8px 12px; border-top: 1px solid var(--line); }
+.game-ranking li .flag { width: 27px; height: 18px; }
+.game-rank { width: 40px; font-family: var(--font); font-weight: 700; font-size: 18px; color: var(--text-secondary); }
+.game-ranking li.is-top .game-rank { color: var(--gold); }
+.game-rank-name { flex: 1; font-family: var(--font); font-weight: 700; font-size: 18px; letter-spacing: 0.06em; text-transform: uppercase; }
+.game-rank-comm { font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; color: var(--text-secondary); white-space: nowrap; }
+.game-rank-comm em { font-style: normal; margin-left: 8px; }
+.game-rank-comm .is-up { color: #7fc48b; }
+.game-rank-comm .is-down { color: #d98a7a; }
+.game-comm { color: var(--text-secondary); text-align: center; max-width: 620px; line-height: 1.6; }
+
+@media (max-width: 820px) {
+  .game-card { width: 44vw; padding: 14px 10px 10px; gap: 10px; }
+  .game-pair-in { gap: 8px; }
+  .game-vs { font-size: 22px; }
+  .game-stat-label { font-size: 10px; }
+  .game-stat-value { font-size: 16px; }
+  .game-table { font-size: 12px; }
+  .game-rank-comm { display: block; }
+  .game-ranking li { flex-wrap: wrap; }
+}
+@media (max-width: 820px) {
+  .game-seed { font-size: 8px; letter-spacing: 0.04em; }
+}
+@media (prefers-reduced-motion: reduce) { .game-card-spin { animation: none; } }
+
+/* ------------------------------------------------------------------ */
+/* Versions de l'intro (Carousel.jsx, MODES)                            */
+/* ------------------------------------------------------------------ */
+/* Titre de la version en arc sous le nom du joueur : même tracé, même police, même taille, or. */
+.stage-arc-mode { position: absolute; pointer-events: none; }
+.arc-mode .arc-g { color: var(--gold); }
+/* Versions voisines sur les bords, à mi-hauteur : ‹ précédente · suivante ›. */
+.stage-mode-side {
+  position: absolute;
+  top: 50%;
+  translate: 0 -50%;
+  pointer-events: auto;
+  font-family: var(--mono);
+  font-size: var(--fs-help);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  padding: 12px 4px;
+  opacity: 0;
+  transition: opacity var(--t-med) var(--ease-out), color var(--t-fast) var(--ease-out);
+}
+.stage-mode-side.is-left { left: clamp(16px, 3vw, 48px); }
+.stage-mode-side.is-right { right: clamp(16px, 3vw, 48px); }
+.stage.is-intro-ready .stage-mode-side { opacity: 1; }
+.stage.is-live .stage-mode-side { visibility: hidden; }
+.stage-mode-side:hover, .stage-mode-side:focus-visible { color: var(--text-secondary-hover); }
+@media (max-width: 820px) {
+  .stage-mode-side { top: auto; bottom: calc(clamp(12px, 4%, 40px) + 8px); translate: none; font-size: 10px; letter-spacing: 0.1em; }
+}
+
+/* ------------------------------------------------------------------ */
+/* Page « Présentation des joueurs » (Solo.jsx) : la page du duel à un joueur */
+/* ------------------------------------------------------------------ */
+/* Grand écran : palmarès · joueur (en grand) · stats. */
+.solo .solo-grid {
+  --fh: min(calc(100svh - var(--band) - 40px - var(--lift, 0px)), 62vw);
+  --fcol: calc(var(--fw) * 0.8);
+  grid-template-columns: minmax(0, 1fr) var(--fcol) minmax(0, 1fr);
+  grid-template-areas: '. . .' 'palmA figA mid';
+}
+.solo .palmares.is-left { justify-self: end; width: min(300px, 100%); }
+.solo .solo-stats { justify-self: center; align-self: start; gap: clamp(10px, 2.2vh, 22px); }   /* hauteur : Solo.jsx */
+/* Intitulé (deux mots : deux lignes) puis score dessous, centrés. */
+.solo .solo-stats .compare-row { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.solo .solo-stats .compare-row span { max-width: none; white-space: pre-line; }
+.solo .solo-stats .compare-row strong { text-align: center; }
+.solo .figure-picker .arrow.is-outer-left { left: 10%; }
+.solo .figure-picker .arrow.is-outer-right { right: 10%; }
+/* Un seul tableau, centré. */
+.final.solo.is-pinned .final-tables .details-grid { justify-content: center; }
+.final.solo .final-tables .details-side { width: min(820px, 92vw); }
+@media (max-width: 820px) {
+  .solo .solo-grid { grid-template-columns: minmax(0, 1fr); grid-template-areas: '.' 'figA'; }
+  .final.solo .palmares { display: none; }   /* club, drapeau et poste : dans le tableau dessous */
+  .final.solo .final-tables .details-side { width: 100%; }
+}
+
+/* ------------------------------------------------------------------ */
+/* Fonds par version (27/09/2026) : data-theme sur <html> (App.jsx)     */
+/* ------------------------------------------------------------------ */
+/* Mon classement : noir et or (valeurs de :root). Duel : nuit bleue. Présentation : vert
+   profond. Même dégradé radial partout (centre --bg-center → bord --bg), teinte surtout sur les
+   bords ; panneaux des tableaux et des cartes teintés pareil. Sur l'intro, le fond suit la
+   version choisie et passe d'une teinte à l'autre en 0,6 s (couleurs enregistrées avec
+   @property pour pouvoir être animées). */
+@property --bg { syntax: '<color>'; inherits: true; initial-value: #050505; }
+@property --bg-center { syntax: '<color>'; inherits: true; initial-value: #0b0b0c; }
+:root { transition: --bg 0.6s var(--ease-out), --bg-center 0.6s var(--ease-out); }
+:root[data-theme='duel'] {
+  --bg: #04070d;
+  --bg-center: #0e1a2e;
+  --panel: rgba(9, 16, 28, 0.9);
+}
+:root[data-theme='solo'] {
+  --bg: #040806;
+  --bg-center: #0c1f16;
+  --panel: rgba(9, 20, 14, 0.9);
+}
+@media (prefers-reduced-motion: reduce) { :root { transition: none; } }
+
+/* Joueurs en vidéo (page du duel, Présentation), grand écran : remontés légèrement (--lift),
+   pour dégager le bas de l'écran (chevron, aide clavier) ; nom en arc compris (27/09/2026). */
+@media (min-width: 821px) {
+  .final { --lift: 3.5svh; }
+  .final .figure { translate: 0 calc(-1 * var(--lift)); }
+}
+
+/* ------------------------------------------------------------------ */
+/* Les candidats (SoloPick.jsx) : état final de la scène, version Les candidats */
+/* ------------------------------------------------------------------ */
+.sp-ring { position: absolute; inset: 0; }
+.sp-slot { position: absolute; left: 0; top: 0; }
+/* Pièce : place, taille et profondeur animées ; plus sombre et floue loin du centre (--dim, --blur). */
+.sp-coin {
+  position: absolute;
+  left: 0;
+  top: 0;
+  border-radius: 50%;
+  perspective: 1400px;
+  transform-style: preserve-3d;
+  filter: brightness(var(--dim, 1)) blur(var(--blur, 0px));
+  cursor: pointer;
+}
+.sp-coin::before {
+  content: '';
+  position: absolute;
+  inset: -14%;
+  background: radial-gradient(closest-side, var(--halo), transparent);
+  pointer-events: none;
+  opacity: 0.5;
+}
+/* Pièce du centre : même halo que la pièce de la scène (.pick-item.is-active), qu'elle relaie. */
+.sp-coin.is-center::before { inset: -22%; opacity: 1; background: radial-gradient(closest-side, rgba(217, 178, 95, 0.26), transparent); }
+.sp-coin:focus-visible { outline: 1.5px solid var(--gold); outline-offset: 6px; }
+.sp-lift { display: block; width: 100%; height: 100%; transform-style: preserve-3d; }
+.sp-arrow { z-index: 25; }
+.stage :is(.sp-coin, .sp-arrow) { pointer-events: auto; }   /* la couche de l'anneau ignore la souris, pas ses pièces */
+.stage:not(.is-live) :is(.sp-coin, .sp-arrow, .sp-down) { pointer-events: none; }
+.stage .sp-down { pointer-events: auto; }
+
+/* Animation commune des pièces d'or (LiveCoin, Coin.jsx) : léger flottement et tour complet au
+   survol, sur toutes les pages (sélection du duel, candidats, jeu, accueil). */
+.coin-live, .coin-live-float { display: block; width: 100%; height: 100%; transform-style: preserve-3d; }
+.coin-live-float { animation: coin-float 5s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .coin-live-float { animation: none; } }
+/* Accueil : la pièce tourne au survol, mais n'est cliquable qu'une fois sur la sélection. */
+.stage.is-intro .pick-coin { pointer-events: auto; cursor: default; }

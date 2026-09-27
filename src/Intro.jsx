@@ -1,21 +1,17 @@
 import { useEffect, useRef, useState } from 'react'
-import { m, useReducedMotion, useIsPresent } from 'framer-motion'
 import players, { coinUrl } from './data'
-import { introVariants } from './transitions'
-import IntroCoin from './IntroCoin'
 
-// Intro : fond noir. Un trophée en trait fin se construit du socle vers le ballon au rythme du
-// chargement réel (polices + pièces de la page 1), avec une progression minimale simulée par
-// paliers (3 s au plus). Trophée complet : bref flash doré, il se réduit et s'efface, et la
-// pièce d'or de la page 1 apparaît au centre (IntroCoin), « BALLON D'OR 2026 » en arc au-dessus,
-// le nom du joueur en arc dessous ; un nominé toutes les 2 s. Au retour depuis la page 1, tout
-// est affiché d'emblée ; en mouvement réduit, le trophée s'efface simplement.
+// Chargement de l'intro (IntroSelect dans Carousel.jsx) : fond noir, un trophée en trait fin se
+// construit du socle vers le ballon au rythme du chargement réel (polices + pièces), avec une
+// progression minimale simulée par paliers (3 s au plus). Trophée complet : bref flash doré, il
+// se réduit et s'efface, et la pièce d'or apparaît au centre. Au retour depuis la page du duel,
+// tout est affiché d'emblée ; en mouvement réduit, le trophée s'efface simplement.
 
 const SIM_MS = 2300    // progression simulée, de 000 à 100
 const MAX_MS = 3000    // plafond : à 3 s, le chargement est affiché complet quoi qu'il arrive
-const FLASH_MS = 150   // flash doré du trophée complet
-const COIN_AT = FLASH_MS + 50   // apparition de la pièce (après la fin du chargement)
-const READY_AT = COIN_AT + 900  // flèche de défilement
+export const FLASH_MS = 150   // flash doré du trophée complet
+export const COIN_AT = FLASH_MS + 50   // apparition de la pièce (après la fin du chargement)
+export const READY_AT = COIN_AT + 900  // flèche de défilement
 const SETTLE_MS = READY_AT + 400   // fin de l'horloge d'animation
 
 // Progression simulée : accélérations et paliers (x = temps, y = progression, 0 → 1).
@@ -54,7 +50,7 @@ function useAssetProgress() {
 
 /** Horloge de l'intro : `t` (ms depuis le montage), `pct` (0 → 100) et `end` (instant où le
     chargement a atteint 100, null avant). `t` passe à Infinity une fois tout en place. */
-function useIntroClock(instant, reduced) {
+export function useIntroClock(instant, reduced) {
   const real = useAssetProgress()
   const [s, setS] = useState(() => (instant ? { t: Infinity, pct: 100, end: 0 } : { t: 0, pct: 0, end: reduced ? 0 : null }))
   useEffect(() => {
@@ -91,18 +87,20 @@ export const TROPHY_PATHS = [
   'M65.3 24.5L52 15.5M94.7 24.5L108 15.5M115.9 39.9L117.5 22.4M125 67.8L134.8 75.6M116.9 92.8L131.2 86.8'
     + 'M93.2 110L85.9 119.7M66.8 110L74.1 119.7M43.1 92.8L28.8 86.8M35 67.8L25.2 75.6M44.1 39.9L42.5 22.4',
   'M59.2 116C64 124 71 128 74 132M100.8 116C96 124 89 128 86 132',              // coupe, qui naît sous le ballon
-  'M74 132V136C74 140 67 142 62 144.5M86 132V136C86 140 93 142 98 144.5',              // col évasé
-  'M50 146a30 5 0 1 0 60 0a30 5 0 1 0-60 0M50 146V154M110 146V154M50 154a30 5 0 0 0 60 0',   // étage haut
+  // Col évasé, posé sur le bord arrière de l'étage haut (x = 66 et 94 sur l'ellipse de centre
+  // 80,146, rayons 30 × 5) ; ce bord n'est pas tracé derrière le col.
+  'M74 132V136C74 139 70 141 66 141.58M86 132V136C86 139 90 141 94 141.58',
+  'M50 146a30 5 0 0 0 60 0M110 146A30 5 0 0 0 94 141.58M66 141.58A30 5 0 0 0 50 146'
+    + 'M50 146V154M110 146V154M50 154a30 5 0 0 0 60 0',                         // étage haut
   'M40 158A40 6 0 0 1 50 154M110 154A40 6 0 0 1 120 158M40 158a40 6 0 0 0 80 0'
     + 'M40 158V166M120 158V166M40 166a40 6 0 0 0 80 0',                          // étage bas
-  'M68 160.5H92',                                                               // plaque gravée
 ]
 export const VIEW_W = 160, VIEW_H = 180
 const REVEAL_TOP = 6, REVEAL_BOTTOM = 174   // bornes verticales du dessin
 
 /** Trophée en trait fin : silhouette de fond toujours visible, silhouette dorée révélée du bas
     vers le haut par un rectangle de découpe qui monte avec `pct`. */
-function TrophyLoader({ pct, done, gone }) {
+export function TrophyLoader({ pct, done, gone }) {
   const h = (REVEAL_BOTTOM - REVEAL_TOP) * (pct / 100)
   const shape = TROPHY_PATHS.map((d) => <path key={d} d={d} />)
   return (
@@ -125,73 +123,5 @@ function TrophyLoader({ pct, done, gone }) {
       <p className={`loader-status${pct >= 100 ? ' is-ready' : ''}`}>{STATUS(pct)}</p>
       <p className="loader-pct">{String(pct).padStart(3, '0')}</p>
     </div>
-  )
-}
-
-export default function Intro({ nav, onEnter }) {
-  // Page qui sort (AnimatePresence la garde le temps du glissement) : on retire aussitôt ses
-  // écouteurs de clavier, molette et tactile, pour que la page suivante soit seule à réagir.
-  const isPresent = useIsPresent()
-  // Retour depuis la page 1 : tout est affiché d'emblée.
-  const reduced = useReducedMotion()
-  const instant = useRef(nav.from === 'carousel').current
-  const { t, pct, end } = useIntroClock(instant, reduced)
-  const elapsed = end === null ? -Infinity : t - end   // temps écoulé depuis la fin du chargement
-  const ready = elapsed >= READY_AT
-
-  // Entrer : un seul passage, même si les gestes s'enchaînent.
-  const leaving = useRef(false)
-  const enter = useRef(null)
-  enter.current = () => {
-    if (leaving.current) return
-    leaving.current = true
-    onEnter()
-  }
-
-  // Entrée / ↓ / molette vers le bas / glisser vers le haut : entrer.
-  const touchY = useRef(null)
-  useEffect(() => {
-    if (!isPresent) return   // page en train de sortir (glissement) : ses gestes ne comptent plus
-    let lockedUntil = performance.now() + 600
-    const advance = () => { if (performance.now() >= lockedUntil) enter.current() }
-    const onKey = (e) => {
-      if (['Enter', 'ArrowDown', ' '].includes(e.key)) { e.preventDefault(); advance() }
-    }
-    const onWheel = (e) => { if (e.deltaY > 25) advance() }
-    const onTouchStart = (e) => { touchY.current = e.touches[0].clientY }
-    const onTouchEnd = (e) => {
-      if (touchY.current !== null && touchY.current - e.changedTouches[0].clientY > 60) advance()
-      touchY.current = null
-    }
-    window.addEventListener('keydown', onKey)
-    window.addEventListener('wheel', onWheel, { passive: true })
-    window.addEventListener('touchstart', onTouchStart, { passive: true })
-    window.addEventListener('touchend', onTouchEnd, { passive: true })
-    return () => {
-      window.removeEventListener('keydown', onKey)
-      window.removeEventListener('wheel', onWheel)
-      window.removeEventListener('touchstart', onTouchStart)
-      window.removeEventListener('touchend', onTouchEnd)
-    }
-  }, [onEnter, isPresent])
-
-  return (
-    <m.main
-      className={`intro${ready ? ' is-ready' : ''}`}
-      custom={nav}
-      variants={introVariants}
-      initial="hidden"
-      animate="shown"
-      exit="exit"
-    >
-      <IntroCoin active={elapsed >= COIN_AT} reduced={reduced} />
-
-      <TrophyLoader pct={pct} done={elapsed >= 0} gone={elapsed >= FLASH_MS} />
-
-      {/* Flèche clignotante en bas : entrer (clic aussi). */}
-      <button className="intro-down" onClick={() => enter.current()} aria-label="Découvrir les candidats">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9l7 7 7-7" /></svg>
-      </button>
-    </m.main>
   )
 }

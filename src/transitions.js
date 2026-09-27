@@ -21,7 +21,7 @@ export const introVariants = {
 export const carouselVariants = {
   // Arrive par le bas depuis l'intro, par le haut en revenant du duel.
   hidden: (nav) => (nav.from === 'intro' ? { y: DOWN, scale: 1, opacity: 1 }
-    : nav.from === 'player' || nav.from === 'final' ? { y: UP, scale: 0.94, opacity: 0.4 } : { y: 0 }),
+    : nav.from === 'player' || nav.from === 'final' || nav.from === 'solo' ? { y: UP, scale: 0.94, opacity: 0.4 } : { y: 0 }),
   shown: here,
   // Sort par le bas vers l'intro, par le haut vers le duel (en reculant).
   exit: (nav) => (nav.to === 'intro' ? { y: DOWN, transition: SLIDE } : away(UP)),
@@ -50,3 +50,6 @@ export const finalVariants = {
   shown: here,
   exit: { y: DOWN, transition: SLIDE },
 }
+
+// Mode « Mon classement » (Game.jsx) : comme la page du duel, arrive par le bas, repart par le bas.
+export const gameVariants = finalVariants
