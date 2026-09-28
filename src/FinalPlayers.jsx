@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { animate, cubicBezier, useReducedMotion } from 'framer-motion'
-import { FRAMES, asset, clubLogo, decimal, kitStyle, photoUrl, posteLabel } from './data'
+import { FRAMES, asset, clubLogo, decimal, kitStyle, medalOf, photoUrl, posteLabel } from './data'
 import { frameAt, hasFrames, open, subscribe } from './sequence'
 import Tip from './Tip'
 
@@ -321,13 +321,6 @@ export function Compare({ a, b, titles = true }) {
     </div>
   )
 }
-
-// Médaille d'une distinction individuelle (comme les tableaux) : ballon (buteur), étoile (joueur),
-// cible (passeur), en or, argent ou bronze selon le rang.
-const MEDAL_SHAPE = { buteur: 'ball', joueur: 'star', passeur: 'target' }
-const MEDAL_METAL = ['gold', 'silver', 'bronze']
-const medalOf = (t) => (MEDAL_SHAPE[t.categorie] && MEDAL_METAL[t.rang - 1]
-  ? `assets/medailles/${MEDAL_SHAPE[t.categorie]}-${MEDAL_METAL[t.rang - 1]}.webp` : null)
 
 /** Club, drapeau et poste, puis les titres collectifs et individuels. Sur mobile (03-duel.css),
     une carte : écusson et drapeau en médaillon, nom du club et poste ; nombre de titres par

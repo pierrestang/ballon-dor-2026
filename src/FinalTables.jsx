@@ -3,7 +3,7 @@
 // au-dessus du tableau (colonne Équipe et ligne Total remises le 27/09/2026). Le comportement de page
 // (clavier, molette, retour) est dans Final.jsx.
 import { m } from 'framer-motion'
-import { ageOf, asset, coinUrl, decimal, posteLabel } from './data'
+import { ageOf, asset, clubLogo, coinUrl, decimal, medalOf, posteLabel } from './data'
 import Tip from './Tip'
 import { ClubLogo, Flag } from './Nameplate'
 import { SLIDE } from './transitions'
@@ -89,12 +89,28 @@ const totals = (p) => [
   p.stats.passes,
   p.stats.contributionsParMatch === null ? null : Math.round(p.stats.contributionsParMatch * 100) / 100,
   p.competitions.filter((c) => c.trophee).length,
-  p.competitions.flatMap((c) => c.individuel).filter((t) => t.rang === 1).length,
+  p.individuel.filter((t) => t.rang === 1).length,   // distinctions de 1er du palmarès (Soulier d'or compris)
 ]
+
+/** Distinctions écrites (cartes du mobile) : médaille, intitulé ; places d'honneur atténuées. */
+function Awards({ list }) {
+  return (
+    <ul className="details-award-list">
+      {list.map((t) => (
+        <li key={t.titre} className={t.rang > 1 ? 'is-minor' : undefined}>
+          <img src={asset(t.icone ?? medalOf(t))} alt="" width="26" height="26" loading="lazy" />
+          <span>{t.titre}</span>
+        </li>
+      ))}
+    </ul>
+  )
+}
 
 function Table({ player, side, medals, sizes }) {
   // Lignes du tableau, famille par famille : ses compétitions, puis des lignes vides jusqu'à la
   // taille commune de la famille (sizes).
+  const wins = player.individuel.filter((t) => t.rang === 1).length   // distinctions de 1er (palmarès)
+  const extra = player.individuel.filter((t) => !player.competitions.some((c) => c.nom === t.competition))
   const lines = GROUPS.flatMap((g, gi) => {
     const own = inGroup(player, g)
     return [...own, ...Array.from({ length: sizes[gi] - own.length }, (_, k) => ({ pad: `${gi}-${k}` }))]
@@ -117,6 +133,19 @@ function Table({ player, side, medals, sizes }) {
           <span className="final-table-titles"><b>{totals(player)[4]}</b> {totals(player)[4] > 1 ? 'titres' : 'titre'}</span>
         )}
       </m.header>
+      {/* Mobile : le bloc du joueur réunit tout (le palmarès séparé n'y est plus affiché) : club
+          (écusson et drapeau en médaillon), poste en toutes lettres, nombre de distinctions. */}
+      <m.div className="final-table-club" {...row(0)}>
+        <span className="final-table-crest">
+          {clubLogo(player.club) && <img className="club" src={clubLogo(player.club)} alt="" width="52" height="52" />}
+          <img className="flag" src={asset(player.drapeau)} alt="" width="48" height="32" />
+        </span>
+        <span className="final-table-club-text">
+          <span className="final-table-club-name">{player.club}</span>
+          <span className="final-table-poste">{posteLabel(player.poste)}</span>
+        </span>
+        {wins > 0 && <span className="final-table-titles"><b>{wins}</b> {wins > 1 ? 'distinctions' : 'distinction'}</span>}
+      </m.div>
       <table className={`details-table has-medals-${medals}`}>
         {/* Colonnes de scores toutes de la même largeur. */}
         <colgroup>
@@ -134,6 +163,16 @@ function Table({ player, side, medals, sizes }) {
           </m.tr>
         </thead>
         <tbody>
+          {/* Mobile : distinctions sans ligne de compétition (Soulier d'or européen). */}
+          {extra.map((t) => (
+            <tr key={t.titre} className="is-extra">
+              <th scope="row" className="details-comp">
+                <img className="comp" src={asset(t.logo)} alt="" loading="lazy" width="36" height="36" />
+                <span className="details-comp-name">{t.titre}</span>
+              </th>
+              <td className="details-awards"><Awards list={[{ ...t, titre: 'Distinction de la saison' }]} /></td>
+            </tr>
+          ))}
           {lines.map((c, i) => c.pad ? (
             <tr key={`pad-${c.pad}`} className="is-pad" aria-hidden="true"><td colSpan={8} /></tr>
           ) : (
@@ -159,6 +198,8 @@ function Table({ player, side, medals, sizes }) {
                     <Tip label={trophyLabel(c)}>
                       <img className="details-trophy" src={asset(c.trophee)} alt={trophyLabel(c)}
                            height="36" loading="lazy" onLoad={balanceTrophy} />
+                      {/* Mobile : pastille dorée, trophée et mot. */}
+                      <span className="details-won">{c.type === 'championnat' ? 'Champion' : 'Vainqueur'}</span>
                     </Tip>
                   ) : (
                     <span className="clamp">{shortResult(c.resultat)}</span>
@@ -173,6 +214,8 @@ function Table({ player, side, medals, sizes }) {
                     </Tip>
                   ))}
                 </td>
+                {/* Mobile : les distinctions écrites, une ligne chacune (médaille et intitulé). */}
+                {c.individuel.length > 0 && <td className="details-awards"><Awards list={c.individuel} /></td>}
               </m.tr>
           ))}
         </tbody>

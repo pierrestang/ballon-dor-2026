@@ -63,3 +63,10 @@ export const ageOf = (id, now = new Date()) => {
 }
 
 export { posteLabel } from './postes'
+
+// Médaille d'une distinction individuelle (comme les tableaux) : ballon (buteur), étoile (joueur),
+// cible (passeur), en or, argent ou bronze selon le rang.
+const MEDAL_SHAPE = { buteur: 'ball', joueur: 'star', passeur: 'target' }
+const MEDAL_METAL = ['gold', 'silver', 'bronze']
+export const medalOf = (t) => (MEDAL_SHAPE[t.categorie] && MEDAL_METAL[t.rang - 1]
+  ? `assets/medailles/${MEDAL_SHAPE[t.categorie]}-${MEDAL_METAL[t.rang - 1]}.webp` : null)
