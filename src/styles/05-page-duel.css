@@ -443,21 +443,28 @@
 /* Résultat, d'Individuel, de voile or ni de Total).                    */
 /* ------------------------------------------------------------------ */
 @media (min-width: 821px) {
-  /* Colonne à côté du joueur. */
+  /* Colonne à côté du joueur : le palmarès. */
   .palmares { width: 100%; max-width: 320px; }
-  .palmares .player-tag {
-    display: flex; flex-direction: row-reverse; justify-content: space-between; align-items: center; gap: 12px;
-    margin-bottom: 22px; padding: 12px 12px 12px 16px;
+
+  /* Identité au-dessus du joueur, à la place du nom en arc (masqué) : bandeau nom, poste · âge,
+     écusson et drapeau, comme sur mobile, au panneau du tableau. */
+  :is(.final, .game) .figure .arc-name { display: none; }
+  .figure .player-tag {
+    display: flex; flex-direction: row-reverse; justify-content: space-between; align-items: center; gap: 14px;
+    position: absolute; left: 50%; bottom: calc(100% + 12px); translate: -50% 0; z-index: 3;
+    width: max-content; min-width: 240px; max-width: 360px; box-sizing: border-box; padding: 12px 14px 12px 18px;
     border-radius: var(--radius); background: var(--panel); box-shadow: 0 0 0 1px rgba(237, 234, 227, 0.08);
+    pointer-events: none;
   }
-  .palmares .player-tag-crest { flex: none; display: flex; gap: 6px; }
-  .palmares .player-tag-crest :is(.club, .flag) { width: 32px; height: 32px; padding: 2px; box-sizing: border-box; object-fit: contain;
-                                                  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5)); }
-  .palmares .player-tag-text { min-width: 0; display: flex; flex-direction: column; gap: 3px; }
-  .palmares .player-tag-name { font-family: var(--font); font-weight: 700; font-size: 19px; line-height: 1.05; letter-spacing: 0.04em;
-                               text-transform: uppercase; color: var(--text); transition: color 0.32s var(--ease-out); }
-  .palmares .player-tag-poste { font-family: var(--font); font-weight: 700; font-size: 14px; line-height: 1.15; letter-spacing: 0.05em;
-                                text-transform: uppercase; color: var(--text-secondary); }
+  .figure .player-tag-crest { flex: none; display: flex; gap: 6px; }
+  .figure .player-tag-crest :is(.club, .flag) { width: 34px; height: 34px; padding: 2px; box-sizing: border-box; object-fit: contain;
+                                                filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5)); }
+  .figure .player-tag-text { min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+  .figure .player-tag-name { font-family: var(--font); font-weight: 700; font-size: 22px; line-height: 1.05; letter-spacing: 0.04em;
+                             text-transform: uppercase; color: var(--text); white-space: nowrap; transition: color 0.32s var(--ease-out); }
+  .figure .player-tag-poste { font-family: var(--font); font-weight: 700; font-size: 14px; line-height: 1.15; letter-spacing: 0.05em;
+                              text-transform: uppercase; color: var(--text-secondary); }
+  .game-figure.is-won .player-tag-name { color: var(--gold); }   /* jeu : le nom du joueur choisi passe à l'or */
   .palmares .final-table-palm li > span { font-size: 14px; }
 
   /* Stats face à face : chaque ligne en carte, comme les lignes des tableaux. */

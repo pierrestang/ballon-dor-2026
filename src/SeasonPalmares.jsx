@@ -29,9 +29,8 @@ const nearTitles = (player) => ['Finaliste', '2ème place', 'Demi-finaliste', '3
     places d'honneur en championnat ensuite, atténuées) et distinctions individuelles (logo, nom de
     la compétition dessous ; places d'honneur atténuées), chacun avec son nombre de titres
     (distinctions : les 1ers). Mobile : dans le bloc du tableau ; grand écran : à côté du joueur
-    (SidePanel, FinalPlayers.jsx). `r` : apparition (FinalTables) ; `minRows` : lignes réservées
-    par section, pour aligner les rubriques de deux joueurs côte à côte. */
-export default function SeasonPalmares({ player, r = () => ({}), minRows }) {
+    (SidePanel, FinalPlayers.jsx). `r` : apparition (FinalTables). */
+export default function SeasonPalmares({ player, r = () => ({}) }) {
   // Textes qui défilent au changement de joueur (et à l'apparition d'une ligne).
   const roll = (t) => <RollText text={t} trigger={player.id} onMount />
   const coll = collectiveTitles(player)
@@ -42,7 +41,7 @@ export default function SeasonPalmares({ player, r = () => ({}), minRows }) {
       <div className="final-table-palm-col">
         <h3>Collectif{coll.length > 0 && <b>{roll(String(coll.length))}</b>}</h3>
         {coll.length + near.length ? (
-          <ul style={rowsStyle(minRows?.coll)}>
+          <ul>
             {[...coll, ...near].map((t, i) => (
               <li key={i} className={t.won ? undefined : 'is-minor'}>
                 <img className="final-table-palm-logo" src={asset(t.logo)} alt="" loading="lazy" width="36" height="36" />
@@ -55,7 +54,7 @@ export default function SeasonPalmares({ player, r = () => ({}), minRows }) {
       <div className="final-table-palm-col">
         <h3>Individuel{wins > 0 && <b>{roll(String(wins))}</b>}</h3>
         {player.individuel.length ? (
-          <ul style={rowsStyle(minRows?.ind)}>
+          <ul>
             {player.individuel.map((t, i) => (
               <li key={i} className={t.rang > 1 ? 'is-minor' : undefined}>
                 <img className="final-table-palm-logo" src={asset(t.logo)} alt="" loading="lazy" width="36" height="36" />
@@ -69,7 +68,3 @@ export default function SeasonPalmares({ player, r = () => ({}), minRows }) {
   )
 }
 
-/** Nombre de lignes de chaque section (pour aligner deux palmarès côte à côte). */
-export const palmaresRows = (player) => ({ coll: collectiveTitles(player).length + nearTitles(player).length, ind: player.individuel.length })
-// Hauteur réservée à n lignes (ligne 32 px + écart 4 px).
-const rowsStyle = (n) => (n ? { minHeight: `${n * 36 - 4}px` } : undefined)

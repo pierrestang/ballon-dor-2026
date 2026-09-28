@@ -3,7 +3,7 @@ import { animate, cubicBezier, useReducedMotion } from 'framer-motion'
 import { FRAMES, ageOf, asset, clubLogo, decimal, kitStyle, photoUrl, posteLabel } from './data'
 import { frameAt, hasFrames, open, subscribe } from './sequence'
 import Tip from './Tip'
-import SeasonPalmares, { palmaresRows } from './SeasonPalmares'
+import SeasonPalmares from './SeasonPalmares'
 
 // Copie du bloc des deux joueurs de la page 2 (Duel.jsx), pour la page finale (Final.jsx) :
 // même disposition (palmarès · joueur · stats face à face · joueur · palmarès), même contenu,
@@ -354,23 +354,15 @@ export function Compare({ a, b, titles = true }) {
   )
 }
 
-/** Grand écran : colonne à côté du joueur — son identité (bandeau : nom, poste · âge, écusson et
-    drapeau, comme au-dessus du joueur sur mobile) puis son palmarès au format du mobile
-    (SeasonPalmares). `rows` : lignes réservées par section, pour que les rubriques des deux
-    joueurs s'alignent. Masquée sur mobile (le palmarès y est dans le bloc du tableau). */
-export function SidePanel({ player, side, rows }) {
+/** Grand écran : colonne à côté du joueur — son palmarès au format du mobile (SeasonPalmares ;
+    l'identité est au-dessus du joueur, PlayerTag). Masquée sur mobile (le palmarès y est dans le
+    bloc du tableau). */
+export function SidePanel({ player, side }) {
   return (
     <div className={`palmares is-${side}`}>
-      <PlayerTag player={player} />
-      <SeasonPalmares player={player} minRows={rows} />
+      <SeasonPalmares player={player} />
     </div>
   )
-}
-
-/** Lignes à réserver dans chaque section pour aligner deux palmarès. */
-export const pairRows = (a, b) => {
-  const [x, y] = [palmaresRows(a), palmaresRows(b)]
-  return { coll: Math.max(x.coll, y.coll, 1), ind: Math.max(x.ind, y.ind, 1) }
 }
 
 /** `pair` : joueurs des vidéos (changent tout de suite) ; `shown` : joueurs des textes, changés
@@ -380,7 +372,7 @@ export default function FinalPlayers({ pair, shown = pair, onStep, onStart }) {
   return (
     <>
       <h2 className="sr-only">{a.nom} contre {b.nom}</h2>
-      <SidePanel player={a} side="left" rows={pairRows(a, b)} />
+      <SidePanel player={a} side="left" />
       {[a, b].map((p, i) => (
         <div key={i ? 'right' : 'left'} className={`figure is-${i ? 'right' : 'left'}`} style={kitStyle(p.id)}>
           <ArcName id={p.id} name={p.nom} />
@@ -395,7 +387,7 @@ export default function FinalPlayers({ pair, shown = pair, onStep, onStart }) {
         </div>
       ))}
       <Compare a={a} b={b} titles={false} />
-      <SidePanel player={b} side="right" rows={pairRows(a, b)} />
+      <SidePanel player={b} side="right" />
     </>
   )
 }

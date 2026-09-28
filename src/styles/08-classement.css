@@ -268,11 +268,10 @@
 /* Tous les textes blancs du joueur choisi passent à l'or en même temps que son nom : poste et
    titres de son palmarès (les places d'honneur gardent leur argent / bronze), ses chiffres des
    stats face à face ; léger décalage de haut en bas. */
-.game-grid :is(.palmares .player-tag-name, .compare-row strong, .stats-table-row strong) { transition: color 0.32s var(--ease-out); }
+.game-grid :is(.compare-row strong, .stats-table-row strong) { transition: color 0.32s var(--ease-out); }
 .game-grid .palmares { transition: opacity 0.32s var(--ease-out); }
-/* Joueur choisi : son nom (bandeau de la colonne) et ses chiffres passent à l'or. */
-.game-grid.is-won-left .palmares.is-left .player-tag-name,
-.game-grid.is-won-right .palmares.is-right .player-tag-name,
+/* Joueur choisi : ses chiffres passent à l'or (son nom aussi, dans le bandeau au-dessus de lui :
+   .game-figure.is-won, 05-page-duel.css). */
 .game-grid.is-won-left .compare-row strong:first-child,
 .game-grid.is-won-right .compare-row strong:last-child,
 .game-grid.is-won-left .stats-table-row.is-left strong,
@@ -287,7 +286,7 @@
 .game-grid .compare-row:nth-child(2) strong { transition-delay: 40ms; }
 .game-grid .compare-row:nth-child(3) strong { transition-delay: 80ms; }
 .game-grid .compare-row:nth-child(4) strong { transition-delay: 120ms; }
-@media (prefers-reduced-motion: reduce) { .game-figure .arc-name tspan, .game-grid :is(.palmares, .palmares .player-tag-name, .compare-row strong) { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .game-figure .arc-name tspan, .game-grid :is(.palmares, .compare-row strong) { transition: none; } }
 .game-figure-vote:focus-visible { outline: none; }
 .game-figure::before { transition: opacity var(--t-med) var(--ease-out), inset var(--t-med) var(--ease-out); }
 @media (hover: hover) { .game-figure:has(.game-figure-vote:not(:disabled):hover)::before { inset: 8% -18% 4%; } }
