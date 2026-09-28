@@ -273,8 +273,10 @@
      au bas du joueur, mesuré par usePlexus), en légère transparence (le bas du joueur se devine
      derrière). */
   :is(.game, .final) .final-tables.details { min-height: 0; justify-content: flex-start; padding: 16px 12px 104px;
-                                             position: relative; z-index: 2; margin-top: 0; }   /* sous le joueur : sans panneau, plus de chevauchement (--plexus gardé, inutilisé ici) */
-  :is(.game, .final) .final-tables .details-panel { background: none; box-shadow: none; }   /* pas de panneau : seules les lignes ont un fond */
+                                             position: relative; z-index: 2; margin-top: calc(-1 * var(--plexus, 0px) - 16px); }
+  /* Fond seulement là où le bloc passe sur le joueur (jusqu'au bas de la vidéo), puis fondu vers la page. */
+  :is(.game, .final) .final-tables .details-panel { box-shadow: none; backdrop-filter: blur(3px);
+    background: linear-gradient(to bottom, color-mix(in srgb, var(--panel) 88%, transparent) calc(var(--plexus, 0px) - 16px), transparent calc(var(--plexus, 0px) + 32px)); }
   /* Flèches ‹ › des joueurs : aux épaules, au-dessus du bloc (elles étaient à mi-hauteur, dessous). */
   :is(.final, .game) .figure-picker .arrow { top: 22%; }
 
@@ -385,7 +387,7 @@
   :is(.final, .game) .figure .arc-name { display: none; }
   .figure .player-tag {
     display: flex; flex-direction: row-reverse; justify-content: flex-end; align-items: center; gap: 20px;
-    position: absolute; left: 50%; bottom: calc(100% + 44px); translate: -50% 0; z-index: 3;
+    position: absolute; left: 50%; bottom: calc(100% + 44px); translate: calc(-50% + var(--tag-dx, 0px)) 0; z-index: 3;   /* --tag-dx : centré sur sa moitié de page (usePlexus) */
     width: max-content; min-width: 300px; max-width: 480px; box-sizing: border-box; padding: 14px 16px 14px 22px;
     border-radius: var(--radius); background: rgba(237, 234, 227, 0.04);   /* fond des lignes de stats au milieu */
     pointer-events: none;

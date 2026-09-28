@@ -131,10 +131,19 @@ export function usePlexus(pageRef) {
     const page = pageRef.current
     const fig = page?.querySelector('.figure')
     if (!page || !fig) return
-    const set = () => page.style.setProperty('--plexus', `${Math.round(fig.offsetHeight * (1 - PLEXUS))}px`)
+    const figs = [...page.querySelectorAll('.figure')]
+    const set = () => {
+      page.style.setProperty('--plexus', `${Math.round(fig.offsetHeight * (1 - PLEXUS))}px`)
+      // Grand écran, deux joueurs : décalage qui centre le bandeau d'identité sur sa moitié de page (--tag-dx).
+      for (const f of figs) {
+        const r = f.getBoundingClientRect(), mid = r.left + r.width / 2, half = innerWidth / 2
+        f.style.setProperty('--tag-dx', figs.length > 1 ? `${Math.round((mid < half ? half / 2 : half * 1.5) - mid)}px` : '0px')
+      }
+    }
     set()
     const ro = new ResizeObserver(set)
     ro.observe(fig)
-    return () => ro.disconnect()
+    addEventListener('resize', set)
+    return () => { ro.disconnect(); removeEventListener('resize', set) }
   }, [])
 }
