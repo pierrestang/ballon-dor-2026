@@ -121,7 +121,7 @@ function Table({ player, side, medals, sizes }) {
       {/* Le bloc est recréé à chaque changement de joueur : ses chiffres sont frappés à l'affichage. */}
       <div className="final-table-season"><StatsTable players={[player]} short={SHORT} onMount /></div>
       <SeasonPalmares player={player} r={r} />
-      <m.h3 className="final-table-section" {...r(1)}>Détails par compétition</m.h3>
+      <m.h3 className="final-table-section" data-label="Détails par compétition" {...r(1)}>Détails par compétition</m.h3>
       <table className={`details-table has-medals-${medals}`}>
         {/* Colonnes de scores toutes de la même largeur. */}
         <colgroup>

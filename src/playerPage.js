@@ -143,6 +143,16 @@ export function usePlexus(pageRef) {
         const want = Math.min(Math.max(mid < half ? half / 2 : half * 1.5, w / 2 + 16), innerWidth - w / 2 - 16)
         f.style.setProperty('--tag-dx', figs.length > 1 ? `${Math.round(want - mid)}px` : '0px')
       }
+      // Bandeau figé : il monte avec la page jusqu'en haut de l'écran (sous la flèche), puis s'y arrête
+      // (--tag-lift : distance à parcourir ; 05-page-duel.css).
+      const tag = page.querySelector('.figure .player-tag')
+      if (tag) {
+        const sy = parseFloat(getComputedStyle(tag).getPropertyValue('--sy')) || 0
+        const lift = parseFloat(getComputedStyle(page).getPropertyValue('--tag-lift')) || 0
+        // haut du bandeau par rapport au haut de la page (indépendant du défilement et du glissement d'arrivée)
+        const top = tag.getBoundingClientRect().top - page.getBoundingClientRect().top - Math.max(0, sy - lift)
+        page.style.setProperty('--tag-lift', `${Math.max(0, Math.round(top - (innerWidth <= 820 ? 60 : 64)))}px`)
+      }
     }
     set()
     const ro = new ResizeObserver(set)

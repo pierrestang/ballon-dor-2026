@@ -59,10 +59,9 @@
   }
   /* Jusque sous les bandeaux d'identité figés : ce qui passe derrière eux est assombri. Sous les
      bandeaux (z-index 3, plus loin dans la page), au-dessus du bloc du tableau (2). */
-  :is(.final, .game)::before { z-index: 3; --bh: 190px; height: calc(var(--bh) + var(--safe-top)); margin-bottom: calc(-1 * var(--bh) - var(--safe-top));
+  :is(.final, .game)::before { z-index: 3; --bh: 160px; height: calc(var(--bh) + var(--safe-top)); margin-bottom: calc(-1 * var(--bh) - var(--safe-top));
                                background: linear-gradient(var(--bg) calc(100% - 28px), transparent); }
-  .final.solo::before { --bh: 168px; }
-  .game::before { --bh: 250px; }
+  .final.solo::before, .game::before { --bh: 160px; }
 }
 
 /* Flèches latérales (pièces de la sélection et des candidats, joueurs) : zone de clic 56 px. */

@@ -108,6 +108,10 @@ Traitement éditorial : en-tête avec la pièce du joueur, nom, poste et âge, e
 - **Bandeaux d'identité mobile (page du duel, jeu)** : prénom puis nom sur deux lignes, 16 px : deux bandeaux identiques.
 - **Intitulés courts partout sur mobile** (M · B · P · B+P/M, Présentation comprise) ; stat absente : tiret cadratin « — ».
 - Tableau de la Présentation (grand écran) à la largeur de ceux du duel (540 px) ; jeu : tableaux sous le titre de la manche figé (272 px réservés).
+- **Bandeau figé qui monte** (toutes les pages de joueurs, deux formats) : en descendant, il monte avec la page jusqu'en haut de l'écran (60 px mobile, 64 px grand écran), puis s'y fige (`--tag-lift`, mesuré par `usePlexus` ; le titre de la manche du jeu suit) ; bande sombre mobile : 160 px.
+- **Mobile, page du duel et jeu** : stats face à face en colonne entre les deux joueurs, au-dessus du plexus (intitulé court au milieu, `data-short` de `CompareRow` ; chiffre de chaque joueur de son côté) ; plus de stats dans les blocs ; intitulés en double (Collectif, Individuel, Détails par compétition) fusionnés, centrés entre les deux blocs, nombre de titres de chaque joueur de son côté (`data-label`). Vote : l'interrupteur du grand écran (`VoteSwitch`), fixé en bas ; le curseur n'est plus affiché.
+- **Présentation mobile** : intitulés en toutes lettres (MATCHES · BUTS · PASSES), sauf B+P/M.
+- **Rotation au défilement** (`SwapTurn`, partout) : en descendant, le joueur tourne sur lui-même, une image de la séquence tous les 10 px (`SPIN_PX`) ; revenu en haut, de face.
 - Ordinaux laissés tels quels (« 2ÈME PLACE », « 2E MEILLEUR BUTEUR ») : choix du propriétaire.
 
 ## Charte

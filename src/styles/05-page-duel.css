@@ -225,7 +225,7 @@
      page du duel et jeu : deux bandeaux de même taille (colonne du joueur, nom sur deux lignes). */
   /* Figé à l'écran en descendant (--sy) ; son fond devient celui du panneau à mesure (--down), le bloc passant dessous. */
   .player-tag {
-    position: absolute; left: 50%; bottom: calc(100% + 6px); translate: -50% var(--sy, 0px); z-index: 3; isolation: isolate;
+    position: absolute; left: 50%; bottom: calc(100% + 6px); translate: -50% max(0px, var(--sy, 0px) - var(--tag-lift, 0px)); z-index: 3; isolation: isolate;
     display: flex; flex-direction: row-reverse; justify-content: space-between; align-items: center; gap: 8px;   /* texte à gauche, écusson et drapeau à droite */
     width: calc(50vw - 18px); min-height: 58px; box-sizing: border-box;
     padding: 7px 8px 7px 12px;
@@ -319,6 +319,30 @@
      joueurs) : page du duel, Présentation, jeu. */
   :is(.final .final-players, .game .game-grid) .compare { display: none; }   /* l'emporte sur .solo .solo-stats */
   :is(.final, .game) .final-table-season { display: block; margin-bottom: 20px; }
+  /* Présentation (toute la largeur) : intitulés en toutes lettres, sauf B+P/M. */
+  .solo :is(.stats-table-head > span, .final-tables .details-table thead th)[data-short]:not([data-short="B+P/M"]) { font-size: 12px; letter-spacing: 0.04em; }
+  .solo :is(.stats-table-head > span, .final-tables .details-table thead th)[data-short]:not([data-short="B+P/M"])::after { content: none; }
+  /* Page du duel et jeu : stats face à face entre les deux joueurs, en colonne (intitulé court au milieu,
+     chiffre de chaque joueur de son côté), au-dessus du plexus ; plus de stats dans les blocs. */
+  :is(.final:not(.solo), .game) .final-table-season { display: none; }
+  .final .final-players:not(.solo-grid) .compare, .game .game-grid .game-mid {
+    display: grid; grid-row: figA; grid-column: figA-start / figB-end; align-self: start; justify-self: center; z-index: 3; margin-top: 10px; }
+  .game .game-grid .game-mid .compare { display: grid; }
+  :is(.final .final-players:not(.solo-grid), .game .game-grid) .compare { gap: 4px; width: auto; padding: 0; filter: opacity(calc(1 - var(--down, 0))); }
+  :is(.final .final-players:not(.solo-grid), .game .game-grid) .compare > .compare-row { display: grid; --label-w: 44px; column-gap: 6px; width: 148px; padding: 4px 8px;
+    border-radius: var(--radius); background: color-mix(in srgb, var(--panel) 80%, transparent); }
+  :is(.final .final-players:not(.solo-grid), .game .game-grid) .compare-row strong { font-size: 16px; }
+  :is(.final .final-players:not(.solo-grid), .game .game-grid) .compare-row > span[data-short] { font-size: 0; letter-spacing: 0; max-width: none; }
+  :is(.final .final-players:not(.solo-grid), .game .game-grid) .compare-row > span[data-short]::after { content: attr(data-short); font-size: 12px; letter-spacing: 0.04em; }
+  :is(.final .final-players:not(.solo-grid), .game .game-grid) .compare .stats-table { display: none; }
+  /* Intitulés en double (Collectif, Individuel, Détails) fusionnés : un seul, centré entre les deux blocs ;
+     le nombre de titres de chaque joueur de son côté. */
+  :is(.final:not(.solo), .game) .details-side.is-left { position: relative; z-index: 1; }   /* l'intitulé centré passe au-dessus du bloc de droite */
+  :is(.final:not(.solo), .game) .details-side.is-left :is(.final-table-palm h3, .final-table-section) { position: relative; flex-direction: row-reverse; font-size: 0; }
+  :is(.final:not(.solo), .game) .details-side.is-left :is(.final-table-palm h3, .final-table-section)::after {
+    content: attr(data-label); position: absolute; left: calc(100% + 12px); top: 50%; translate: -50% -50%; white-space: nowrap;
+    font-size: 12px; letter-spacing: 0.08em; color: var(--text-secondary); }
+  :is(.final:not(.solo), .game) .details-side.is-right :is(.final-table-palm h3, .final-table-section) { font-size: 0; }
   .final-table-season .stats-table { padding: 0; background: none; box-shadow: none; }
   /* Dans le bloc, une seule ligne : sans colonne de logo, chiffres centrés sur la largeur du bloc. */
   .final-table-season :is(.stats-table-head, .stats-table-row) { grid-template-columns: repeat(4, minmax(0, 1fr)); padding-left: 10px; }
@@ -397,7 +421,7 @@
   :is(.final, .game) .figure .arc-name { display: none; }
   .figure .player-tag {
     display: flex; flex-direction: row-reverse; justify-content: space-between; align-items: center; gap: 20px;   /* écusson et drapeau en haut à droite du bandeau */
-    position: absolute; left: 50%; bottom: calc(100% + 44px); translate: calc(-50% + var(--tag-dx, 0px)) var(--sy, 0px); z-index: 3;   /* --tag-dx : centré sur sa moitié de page (usePlexus) */
+    position: absolute; left: 50%; bottom: calc(100% + 44px); translate: calc(-50% + var(--tag-dx, 0px)) max(0px, var(--sy, 0px) - var(--tag-lift, 0px)); z-index: 3;   /* --tag-dx : centré sur sa moitié de page (usePlexus) */
     width: max-content; min-width: 300px; max-width: 480px; box-sizing: border-box; padding: 14px 16px 14px 22px;
     border-radius: var(--radius); background: rgba(237, 234, 227, 0.04);   /* fond des lignes de stats au milieu */
     pointer-events: none;
@@ -411,9 +435,9 @@
   :is(.final .final-players, .game-grid) :is(.palmares, .compare, .game-mid) {
     filter: opacity(calc(1 - var(--down, 0)));
   }
-  .game-grid-head { position: relative; z-index: 3; translate: 0 var(--sy, 0px); }
-  :is(.game, .final) .final-tables.details { padding-top: 232px; justify-content: flex-start; }   /* tableaux juste sous les bandeaux figés */
-  .game .final-tables.details { padding-top: 272px; }   /* jeu : sous le titre de la manche figé (« DUEL N SUR 5 ») */
+  .game-grid-head { position: relative; z-index: 3; translate: 0 max(0px, var(--sy, 0px) - var(--tag-lift, 0px)); }   /* monte avec les bandeaux */
+  :is(.game, .final) .final-tables.details { padding-top: calc(232px - var(--tag-lift, 0px)); justify-content: flex-start; }   /* tableaux juste sous les bandeaux figés */
+  .game .final-tables.details { padding-top: calc(272px - var(--tag-lift, 0px)); }   /* jeu : sous le titre de la manche figé (« DUEL N SUR 5 ») */
   .figure .player-tag-crest { flex: none; display: flex; gap: 8px; align-self: flex-start; }
   .figure .player-tag-crest :is(.club, .flag) { width: 34px; height: 34px; padding: 4px; box-sizing: border-box; object-fit: contain;
                                                 border-radius: 6px; background: rgba(244, 241, 234, 0.92); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5); }

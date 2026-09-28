@@ -39,7 +39,7 @@ export default function SeasonPalmares({ player, r = () => ({}) }) {
   return (
     <m.div className="final-table-palm" {...r(1)}>
       <div className="final-table-palm-col">
-        <h3>Collectif{coll.length > 0 && <b>{roll(String(coll.length))}</b>}</h3>
+        <h3 data-label="Collectif">Collectif{coll.length > 0 && <b>{roll(String(coll.length))}</b>}</h3>
         {coll.length + near.length ? (
           <ul>
             {[...coll, ...near].map((t, i) => (
@@ -52,7 +52,7 @@ export default function SeasonPalmares({ player, r = () => ({}) }) {
         ) : <p className="final-table-palm-empty">Aucun titre</p>}
       </div>
       <div className="final-table-palm-col">
-        <h3>Individuel{wins > 0 && <b>{roll(String(wins))}</b>}</h3>
+        <h3 data-label="Individuel">Individuel{wins > 0 && <b>{roll(String(wins))}</b>}</h3>
         {player.individuel.length ? (
           <ul>
             {player.individuel.map((t, i) => (

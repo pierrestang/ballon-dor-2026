@@ -29,6 +29,8 @@ export const SWAP_REST_S = (() => {
     prend le relais (bref fondu) et finit le tour jusqu'à sa face. `onMid` : appelé au relais (le
     reste de la page change en même temps, jeu). Mouvement réduit : la photo du nouveau joueur,
     directement. */
+const SPIN_PX = 10   // défilement : pixels par image de la séquence
+
 export function SwapTurn({ id, name, onMid, onStart }) {
   // onStart : appelé quand le changement commence vraiment (rotation lancée, ou changement direct
   // si les séquences manquent / mouvement réduit) — la page y lance ses textes (même départ).
@@ -39,6 +41,12 @@ export function SwapTurn({ id, name, onMid, onStart }) {
   const pos = useRef({ from: id, to: id, v: 0 })   // joueurs et position dans le tour (0 → FRAMES)
   const [still, setStill] = useState(id)   // photo nette affichée hors rotation
   const [turning, setTurning] = useState(false)
+  const turningRef = useRef(false)
+  useEffect(() => { turningRef.current = turning }, [turning])
+  // Défilement de la page : le joueur tourne sur lui-même, une image de la séquence tous les
+  // SPIN_PX pixels (tour complet sur FRAMES × SPIN_PX) ; revenu en haut, de face (photo nette).
+  const spin = useRef(0)
+  const [spun, setSpun] = useState(false)
   // Une seule image de la séquence à la fois (pas de mélange entre images voisines : il
   // dédoublait le joueur) ; autour du dos (SWAP), bref fondu de l'ancien joueur vers le nouveau.
   const draw = () => {
@@ -108,7 +116,7 @@ export function SwapTurn({ id, name, onMid, onStart }) {
           if (v >= RELAY) passMid()
           draw()
         },
-        onComplete: () => { pos.current = { from: id, to: id, v: 0 }; setTurning(false) },
+        onComplete: () => { pos.current = { from: id, to: id, v: spin.current }; setSpun(spin.current !== 0); draw(); setTurning(false) },
       })
     })()
     return () => {
@@ -120,10 +128,28 @@ export function SwapTurn({ id, name, onMid, onStart }) {
       setTurning(false)
     }
   }, [id, reduced])
+  useEffect(() => {
+    if (reduced) return
+    const box = canvas.current?.closest('.game')   // le jeu défile dans .game, les autres pages dans la fenêtre
+    const target = box || window
+    const onScroll = () => {
+      const s = Math.round((box ? box.scrollTop : window.scrollY) / SPIN_PX) % FRAMES
+      if (s === spin.current) return
+      spin.current = s
+      const p = pos.current
+      if (turningRef.current || p.from !== p.to || !hasFrames(p.to, 0, FRAMES - 1)) return   // changement de joueur en cours
+      p.v = s
+      draw()
+      setSpun(s !== 0)
+    }
+    target.addEventListener('scroll', onScroll, { passive: true })
+    return () => target.removeEventListener('scroll', onScroll)
+  }, [reduced])
+  const moving = turning || spun
   return (
     <>
-      <canvas ref={canvas} className={`rotation${turning ? '' : ' is-hidden'}`} aria-hidden="true" />
-      <img className={`still${turning ? '' : ' is-on'}`} src={photoUrl(still)} alt={name} width="810" height="1440" />
+      <canvas ref={canvas} className={`rotation${moving ? '' : ' is-hidden'}`} aria-hidden="true" />
+      <img className={`still${moving ? '' : ' is-on'}`} src={photoUrl(still)} alt={name} width="810" height="1440" />
     </>
   )
 }
@@ -286,11 +312,11 @@ const round2 = (n) => Math.round(n * 100) / 100
 
 /** Une ligne du face-à-face : valeur de gauche · libellé · valeur de droite (aucune couleur
     selon le meilleur score, 27/09/2026). */
-function CompareRow({ label, tip, left, right, format, trigger }) {
+function CompareRow({ label, short, tip, left, right, format, trigger }) {
   return (
     <div className="compare-row">
       <strong><Counter value={left} format={format} trigger={trigger?.[0]} /></strong>
-      <span>{tip ? <Tip label={tip}>{label}</Tip> : label}</span>
+      <span data-short={short}>{tip ? <Tip label={tip}>{label}</Tip> : label}</span>   {/* data-short : intitulé court (mobile) */}
       <strong><Counter value={right} format={format} trigger={trigger?.[1]} /></strong>
     </div>
   )
@@ -341,16 +367,16 @@ export function Compare({ a, b, titles = true }) {
     // Seuls les titres majeurs (1er) comptent ; les places d'honneur (2e, 3e) non.
     { label: 'Titres individuels', get: (p) => p.individuel.filter((t) => t.rang === 1).length,
       format: same },
-    { label: 'Matches', get: (p) => p.stats.matchs, format: same },
-    { label: 'Buts', get: (p) => p.stats.buts, format: same },
-    { label: 'Passes', get: (p) => p.stats.passes, format: same },
-    { label: 'Buts\u00a0+\u00a0passes\n/\u00a0match', tip: 'Buts + passes décisives / match', get: (p) => round2(p.stats.contributionsParMatch),
+    { label: 'Matches', short: 'M', get: (p) => p.stats.matchs, format: same },
+    { label: 'Buts', short: 'B', get: (p) => p.stats.buts, format: same },
+    { label: 'Passes', short: 'P', get: (p) => p.stats.passes, format: same },
+    { label: 'Buts\u00a0+\u00a0passes\n/\u00a0match', short: 'B+P/M', tip: 'Buts + passes décisives / match', get: (p) => round2(p.stats.contributionsParMatch),
       format: decimal },
   ]
   return (
     <div className="compare">
       {rows.filter((r) => titles || !r.label.startsWith('Titres')).map((r) => (
-        <CompareRow key={r.label} label={r.label} tip={r.tip} left={r.get(a)} right={r.get(b)}
+        <CompareRow key={r.label} label={r.label} short={r.short} tip={r.tip} left={r.get(a)} right={r.get(b)}
                     format={r.format} trigger={[a.id, b.id]} />
       ))}
       <StatsTable players={[a, b]} />
