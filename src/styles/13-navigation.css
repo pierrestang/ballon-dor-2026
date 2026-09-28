@@ -35,7 +35,7 @@
 :root { --safe-top: env(safe-area-inset-top, 0px); --safe-bottom: env(safe-area-inset-bottom, 0px); }
 .intro-down { border: 0; bottom: calc(clamp(6px, 1.5vh, 16px) + var(--safe-bottom)); }
 .intro-down:has(.intro-down-label) { display: flex; flex-direction: column; align-items: center; gap: 4px; }
-.intro-down.final-up { top: calc(clamp(6px, 1.5vh, 16px) + var(--safe-top)); bottom: auto; }   /* retour : « Menu », « Changer de duel »… */
+.intro-down.final-up { top: calc(clamp(6px, 1.5vh, 16px) + var(--safe-top)); bottom: auto; }   /* retour : « Menu », « Changer de joueurs »… */
 .intro-down.page-up { z-index: 5; }
 .intro-down.tables-up { position: fixed; top: calc(clamp(6px, 1.5vh, 16px) + var(--safe-top)); bottom: auto; z-index: 6; }   /* tableaux affichés : retour aux joueurs, sans libellé */
 /* Libellés des flèches sans libellé sur grand écran (entrer dans une version, lancer le duel) :

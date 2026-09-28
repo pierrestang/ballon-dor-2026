@@ -56,7 +56,7 @@ export default function Final({ pair, nav, reduced, onBack, onStep }) {
       <div ref={tables} className="details final-tables">
         <FinalTables pair={shown} />
       </div>
-      {atTables ? <TablesUp onClick={toTop} /> : <PageUp label="Changer de duel" onClick={back} />}
+      {atTables ? <TablesUp onClick={toTop} /> : <PageUp label="Changer de joueurs" onClick={back} />}
       </RollDuration.Provider>
     </m.main>
   )
