@@ -206,61 +206,48 @@
 /* Palmarès et stats : fondu quand ils changent (recréés au milieu de la rotation, Game.jsx). */
 .game-grid .game-figure .arc-name { animation: game-swap-in 0.5s var(--ease-out) both; }   /* stats, palmarès : défilement (Counter, Rolling, Flap) */
 @media (prefers-reduced-motion: reduce) { .game-grid .game-figure .arc-name { animation: none; } }
-/* Sélecteur de vote (VoteSwitch, Game.jsx) : panneau du site (fond sombre flouté, filet clair,
-   coins arrondis) en deux moitiés au nom des joueurs, séparées par un filet ; la moitié choisie se
-   remplit d'or (texte noir), l'autre s'assombrit. */
+.game-swipe-hint { display: none; }   /* mobile seulement */
+/* Interrupteur de vote (VoteSwitch, Game.jsx) : piste à deux moitiés (‹ ›), curseur doré qui
+   glisse vers le joueur choisi (clic sur une moitié ou ← / →). */
 .game-switch {
+  --w: 200px; --h: 52px;   /* curseur : ±50 px = ¼ de la piste (Game.jsx) */
   position: relative;
   display: flex;
-  align-items: stretch;
-  width: 280px;
-  height: 52px;
-  overflow: hidden;
-  border-radius: 14px;
-  background: color-mix(in srgb, var(--panel) 92%, transparent);
-  box-shadow: inset 0 0 0 1px rgba(237, 234, 227, 0.12), 0 10px 28px rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(8px);
+  width: var(--w);
+  height: var(--h);
+  border: 1px solid rgba(212, 175, 55, 0.5);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--bg) 70%, transparent);
 }
-.game-switch-fill {
-  position: absolute; z-index: 0; top: 0; bottom: 0; left: 0; width: 50%;
-  background: linear-gradient(180deg, #e2c35a, var(--gold));
-}
-.game-switch-sep { position: relative; z-index: 1; align-self: center; width: 1px; height: 24px; background: rgba(237, 234, 227, 0.14);
-                   transition: opacity var(--t-fast) var(--ease-out); }
-.game-switch.is-set .game-switch-sep { opacity: 0; }
 .game-switch-half {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   flex: 1;
-  min-width: 0;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 0 14px;
+  display: grid;
+  place-items: center;
+  padding: 0;
   background: none;
   border: 0;
-  font-family: var(--font);
-  font-weight: 700;
-  font-size: 15px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--text);
+  color: var(--text-secondary);
   cursor: pointer;
-  transition: color var(--t-med) var(--ease-out), opacity var(--t-med) var(--ease-out);
+  transition: color var(--t-fast) var(--ease-out);
 }
-.game-switch-half.is-right { justify-content: flex-end; }
-.game-switch-half span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.game-switch-half svg { flex: none; width: 18px; height: 18px; fill: none; stroke: var(--gold); stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
-.game-switch-half:focus-visible { outline: none; background: rgba(212, 175, 55, 0.08); }
-@media (hover: hover) { .game-switch-half:not(:disabled):hover { background: rgba(212, 175, 55, 0.08); } }
+.game-switch-half svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.game-switch-half:focus-visible { color: var(--gold); outline: none; }
+@media (hover: hover) { .game-switch-half:not(:disabled):hover { color: var(--gold); } }
 .game-switch-half:disabled { cursor: default; }
-/* Vote : la moitié choisie en noir sur or, l'autre éteinte. */
-.game-switch.is-left .game-switch-half.is-left,
-.game-switch.is-right .game-switch-half.is-right { color: var(--bg); }
-.game-switch.is-left .game-switch-half.is-left svg,
-.game-switch.is-right .game-switch-half.is-right svg { stroke: var(--bg); }
-.game-switch.is-left .game-switch-half.is-right,
-.game-switch.is-right .game-switch-half.is-left { opacity: 0.35; }
+.game-switch-knob {
+  position: absolute;
+  z-index: 1;
+  top: 4px;
+  left: calc(50% - (var(--h) - 10px) / 2);
+  width: calc(var(--h) - 10px);
+  height: calc(var(--h) - 10px);
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 14px rgba(212, 175, 55, 0.45);
+}
+.game-switch.is-set .game-switch-half { color: transparent; }
 .game-grid .game-heading h1 { font-size: clamp(24px, 2.4vw, 36px); }
 .game-figure { transition: translate var(--t-med) var(--ease-out); }
 @media (hover: hover) { .game-figure:has(.game-figure-vote:not(:disabled):hover) { translate: 0 -6px; } }   /* au doigt, le joueur restait soulevé */
@@ -307,8 +294,26 @@
   /* Interrupteur de vote fixé en bas de l'écran, sous le pouce : toujours à portée, même sur un
      petit téléphone (il passait sous la ligne de flottaison) et depuis les tableaux ; le bas de
      la page lui laisse sa place. */
-  .game-switch { position: fixed; z-index: 7; left: 50%; bottom: calc(14px + var(--safe-bottom)); translate: -50% 0;
-                 width: min(360px, calc(100vw - 32px)); }
+  /* Vote au geste (Game.jsx, Duel) : l'interrupteur est masqué ; rappel du geste en bas de
+     l'écran ; pendant le glissé (--swipe de 0 à 1), le joueur visé grandit, son nom passe à l'or,
+     l'autre s'assombrit. */
+  .game-switch { display: none; }
+  .game .game-duel-page { touch-action: pan-y; }   /* glissé horizontal : le geste de vote ; vertical : défilement */
+  .game-swipe-hint { display: block; position: fixed; z-index: 7; left: 50%; bottom: calc(18px + var(--safe-bottom)); translate: -50% 0; margin: 0;
+                     padding: 10px 18px; border-radius: 999px; white-space: nowrap; pointer-events: none;
+                     background: color-mix(in srgb, var(--panel) 90%, transparent); backdrop-filter: blur(8px);
+                     box-shadow: inset 0 0 0 1px rgba(237, 234, 227, 0.1), 0 8px 24px rgba(0, 0, 0, 0.45);
+                     font-family: var(--font); font-weight: 700; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase;
+                     color: var(--text-secondary); transition: opacity var(--t-med) var(--ease-out); }
+  .game-swipe-hint span { color: var(--gold); margin: 0 6px; }
+  .game-swipe-hint.is-off { opacity: 0; }
+  .game-grid .game-figure .rotation, .game-grid .game-figure .still { transition: scale 0.25s var(--ease-out), filter 0.25s var(--ease-out); }
+  .game-grid.lean-left .game-figure.is-left :is(.rotation, .still),
+  .game-grid.lean-right .game-figure.is-right :is(.rotation, .still) { scale: calc(1 + 0.06 * var(--swipe, 0)); }
+  .game-grid.lean-left .game-figure.is-right :is(.rotation, .still),
+  .game-grid.lean-right .game-figure.is-left :is(.rotation, .still) { filter: brightness(calc(1 - 0.55 * var(--swipe, 0))); }
+  .game-grid.lean-left .game-figure.is-left .player-tag-name,
+  .game-grid.lean-right .game-figure.is-right .player-tag-name { color: var(--gold); }
   .game-duel { padding-bottom: calc(52px + 28px + var(--safe-bottom)); }
 }
 /* Écrans bas (iPhone SE…) : joueurs un peu plus petits, pour que les stats tiennent au-dessus

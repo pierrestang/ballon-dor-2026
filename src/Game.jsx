@@ -10,7 +10,7 @@ import { ClubLogo, Flag } from './Nameplate'
 import { ArcName, Compare, Palmares, PlayerTag, RollDuration, SWAP_REST_S, SwapTurn } from './FinalPlayers'
 import FinalTables from './FinalTables'
 import { TablesDown, TablesUp } from './PageArrows'
-import { usePlexus } from './playerPage'
+import { useNarrow, usePlexus } from './playerPage'
 import { shareRanking } from './shareImage'
 import { fanfare, pad, pick } from './sound'
 import { watchTitle } from './titleFit'
@@ -300,30 +300,24 @@ function Round({ t, a, sizes, reduced, onStart }) {
   )
 }
 
-/** Sélecteur de vote : deux moitiés au nom des joueurs (‹ YAMAL | KANE ›) dans un panneau du
-    site ; clic sur une moitié ou ← / → : la moitié choisie se remplit d'or depuis le centre, l'autre
-    s'assombrit (vote après VOTE_MS). */
+/** Interrupteur de vote sous le titre du duel : un curseur doré au centre d'une piste ; clic sur
+    une moitié ou ← / → : il glisse vers ce joueur, qui est choisi (vote après VOTE_MS). */
+const SWIPE_PX = 80   // mobile : glissé minimal pour voter
+
 function VoteSwitch({ left, right, picked, onVote }) {
   const side = picked === left.id ? -1 : picked === right.id ? 1 : 0
-  const surname = (p) => p.nom.split(' ').at(-1)
   return (
-    <div className={`game-switch${side ? ` is-set is-${side < 0 ? 'left' : 'right'}` : ''}`} role="group" aria-label="Choisir votre favori">
-      {/* Remplissage or de la moitié choisie : glisse depuis le centre. */}
-      <m.span className="game-switch-fill" aria-hidden="true" initial={false}
-              animate={{ scaleX: side ? 1 : 0, x: side < 0 ? '0%' : '100%' }}
-              style={{ originX: side < 0 ? 1 : 0 }}
-              transition={{ duration: 0.35, ease: [0.65, 0, 0.35, 1] }} />
+    <div className={`game-switch${side ? ' is-set' : ''}`} role="group" aria-label="Choisir votre favori">
       <button className="game-switch-half is-left" onClick={() => onVote(left.id)} disabled={!!picked}
               aria-label={`Choisir ${left.nom}`}>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" /></svg>
-        <span>{surname(left)}</span>
       </button>
-      <span className="game-switch-sep" aria-hidden="true" />
       <button className="game-switch-half is-right" onClick={() => onVote(right.id)} disabled={!!picked}
               aria-label={`Choisir ${right.nom}`}>
-        <span>{surname(right)}</span>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" /></svg>
       </button>
+      <m.span className="game-switch-knob" aria-hidden="true" initial={false}
+              animate={{ x: side * 50 }} transition={{ duration: 0.35, ease: [0.65, 0, 0.35, 1] }} />
     </div>
   )
 }
@@ -368,12 +362,52 @@ function Duel({ a, reduced, onVote, picked, tablesRef, mainRef, atTables, onSwap
   const swapNow = () => { setShown([next.a, next.b]); setHeld(null) }
   const swapping = shown[0] !== next.a || shown[1] !== next.b
   const vote = (id) => { if (!swapping) onVote(id) }
+  // Mobile : vote au geste, façon Tinder — on glisse vers le joueur préféré (vers la gauche : celui
+  // de gauche), n'importe où sur la page (joueurs ou tableau, qui recouvre le bas des joueurs).
+  // Pendant le glissé, il grandit un peu, son nom passe à l'or, l'autre s'assombrit
+  // (--swipe : force de 0 à 1, lean-left / lean-right) ; au-delà de SWIPE_PX au lâcher : vote,
+  // sinon retour. Le défilement vertical de la page reste libre (touch-action: pan-y).
+  const narrow = useNarrow()
+  const grid = useRef(null)
+  const drag = useRef(null)
+  const dragged = useRef(false)
+  const [lean, setLean] = useState(0)
+  const setSwipe = (dx) => {
+    grid.current?.style.setProperty('--swipe', Math.min(1, Math.abs(dx) / SWIPE_PX).toFixed(3))
+    setLean(Math.abs(dx) > 12 ? Math.sign(dx) : 0)
+  }
+  const onDown = (e) => {
+    if (!narrow || picked || swapping || e.pointerType === 'mouse') return
+    drag.current = { x: e.clientX, y: e.clientY, dx: 0, on: false }
+  }
+  const onMove = (e) => {
+    const d = drag.current
+    if (!d) return
+    const dx = e.clientX - d.x, dy = e.clientY - d.y
+    if (!d.on) {
+      if (Math.abs(dy) > 12 && Math.abs(dy) > Math.abs(dx)) { drag.current = null; return }   // défilement vertical
+      if (Math.abs(dx) < 12) return
+      d.on = true
+    }
+    d.dx = dx
+    setSwipe(dx)
+  }
+  const onUp = (e) => {
+    const d = drag.current
+    drag.current = null
+    if (!d?.on) return
+    dragged.current = true
+    setSwipe(0)
+    if (e.type !== 'pointercancel' && Math.abs(d.dx) >= SWIPE_PX) vote(d.dx < 0 ? L.id : R.id)
+  }
   useEffect(() => { onSwapping(swapping) }, [swapping])   // le clavier (← →) attend aussi la fin du tour
   // Séquences du duel suivant de la manche chargées à l'avance, pour que la rotation soit prête.
   const upcoming = next.phase === 'ronde' ? a.rounds[next.round - 1][next.duel] : null
   useEffect(() => { upcoming?.forEach((id) => open(id)) }, [upcoming?.join()])
   return (
-    <m.section ref={duelPage} className="game-duel-page" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+    <m.section ref={duelPage} className="game-duel-page" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+               onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp}
+               onClickCapture={(e) => { if (dragged.current) { e.stopPropagation(); e.preventDefault(); dragged.current = false } }}>
       {/* Textes changés au relais de la rotation (onMid, à 90°) : leur défilement dure le reste du
           tour (SWAP_REST_S), textes et vidéo finissent ensemble. */}
       <RollDuration.Provider value={SWAP_REST_S}>
@@ -381,7 +415,8 @@ function Duel({ a, reduced, onVote, picked, tablesRef, mainRef, atTables, onSwap
           noms en arc aux mêmes places et tailles ; titre de la manche au centre de la bande du
           haut (vide sur la page du duel). */}
       <div className="game-duel">
-        <div className={`sticky duel-grid final-players game-grid${shownState(SL.id) === 'won' ? ' is-won-left' : shownState(SR.id) === 'won' ? ' is-won-right' : ''}`}>
+        <div ref={grid} className={`sticky duel-grid final-players game-grid${shownState(SL.id) === 'won' ? ' is-won-left' : shownState(SR.id) === 'won' ? ' is-won-right' : ''}${lean < 0 ? ' lean-left' : lean > 0 ? ' lean-right' : ''}`}
+>
           <div className="game-grid-head">
             <Heading reduced={reduced} title={barrage ? 'BARRAGE' : `MANCHE ${next.round}`}
                      sub={barrage ? next.label.replace('Barrage · ', '').toUpperCase()
@@ -395,6 +430,10 @@ function Duel({ a, reduced, onVote, picked, tablesRef, mainRef, atTables, onSwap
             {/* Pas de clé : les chiffres défilent vers ceux du duel suivant (Counter), comme la Présentation. */}
             <Compare a={SL} b={SR} titles={false} />
             <VoteSwitch left={L} right={R} picked={picked || (swapping ? 'wait' : null)} onVote={vote} />
+            {/* Mobile : rappel du geste de vote (l'interrupteur est masqué). */}
+            <p className={`game-swipe-hint${picked || swapping ? ' is-off' : ''}`} aria-hidden="true">
+              <span>‹</span> Glisse vers ton favori <span>›</span>
+            </p>
           </div>
           <Side player={R} shown={SR} side="right" state={shownState(SR.id)} onVote={() => vote(R.id)} onMid={swapNow} />
           <Palmares player={SR} side="right" />
