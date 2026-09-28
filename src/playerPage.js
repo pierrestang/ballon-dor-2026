@@ -121,3 +121,20 @@ export function usePlayerPage({ pageRef, tablesRef, reduced, onBack, onArrow, on
 
   return { atTables, atTablesRef, toTables, toTop, back }
 }
+
+/** Mobile : le bloc du tableau remonte au niveau du plexus du joueur, par-dessus lui (05-page-duel.css,
+    --plexus) : distance du plexus (PLEXUS de la hauteur de l'image, tête en haut) au bas du
+    joueur, mesurée sur la page (tailles de joueur différentes selon la page et l'écran). */
+const PLEXUS = 0.36
+export function usePlexus(pageRef) {
+  useLayoutEffect(() => {
+    const page = pageRef.current
+    const fig = page?.querySelector('.figure')
+    if (!page || !fig) return
+    const set = () => page.style.setProperty('--plexus', `${Math.round(fig.offsetHeight * (1 - PLEXUS))}px`)
+    set()
+    const ro = new ResizeObserver(set)
+    ro.observe(fig)
+    return () => ro.disconnect()
+  }, [])
+}

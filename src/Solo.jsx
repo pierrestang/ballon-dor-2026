@@ -6,7 +6,7 @@ import Tip from './Tip'
 import { ArcName, Counter, Palmares, PlayerTag, RollDuration, StatsTable, SWAP_S, SwapTurn } from './FinalPlayers'
 import { SingleTable } from './FinalTables'
 import { finalVariants } from './transitions'
-import { useNarrow, usePlayerPage } from './playerPage'
+import { useNarrow, usePlayerPage, usePlexus } from './playerPage'
 import { PageUp, TablesDown, TablesUp } from './PageArrows'
 
 // Page « Présentation des joueurs » : la page du duel (Final.jsx) avec un seul joueur, en grand,
@@ -47,6 +47,7 @@ export default function Solo({ player, nav, reduced, onBack, onStep }) {
   const page = useRef(null)
   const band = useRef(null)
   const tables = useRef(null)
+  usePlexus(page)
   const { atTables, atTablesRef, toTables, toTop, back } = usePlayerPage({
     pageRef: page, tablesRef: tables, reduced, onBack, onArrow: onStep, onSwipe: onStep,
   })

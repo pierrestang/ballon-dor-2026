@@ -10,6 +10,7 @@ import { ClubLogo, Flag } from './Nameplate'
 import { ArcName, Compare, Palmares, PlayerTag, RollDuration, SWAP_REST_S, SwapTurn } from './FinalPlayers'
 import FinalTables from './FinalTables'
 import { TablesDown, TablesUp } from './PageArrows'
+import { usePlexus } from './playerPage'
 import { shareRanking } from './shareImage'
 import { fanfare, pad, pick } from './sound'
 import { watchTitle } from './titleFit'
@@ -341,6 +342,8 @@ function Side({ player, shown, side, state, onVote, onMid }) {
     joueurs (FinalTables). La flèche
     « Voir le tableau détaillé » (ou ↓) descend aux tableaux ; chaque nouveau duel repart du haut. */
 function Duel({ a, reduced, onVote, picked, tablesRef, mainRef, atTables, onSwapping }) {
+  const duelPage = useRef(null)
+  usePlexus(duelPage)   // mobile : tableau remonté au plexus des joueurs (05-page-duel.css)
   const { next } = a
   const barrage = next.phase === 'barrage'
   const L = byId[next.a], R = byId[next.b]
@@ -362,7 +365,7 @@ function Duel({ a, reduced, onVote, picked, tablesRef, mainRef, atTables, onSwap
   const upcoming = next.phase === 'ronde' ? a.rounds[next.round - 1][next.duel] : null
   useEffect(() => { upcoming?.forEach((id) => open(id)) }, [upcoming?.join()])
   return (
-    <m.section className="game-duel-page" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+    <m.section ref={duelPage} className="game-duel-page" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
       {/* Textes changés au relais de la rotation (onMid, à 90°) : leur défilement dure le reste du
           tour (SWAP_REST_S), textes et vidéo finissent ensemble. */}
       <RollDuration.Provider value={SWAP_REST_S}>

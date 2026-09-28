@@ -5,7 +5,7 @@ import { open } from './sequence'
 import FinalPlayers, { RollDuration, SWAP_S } from './FinalPlayers'
 import FinalTables from './FinalTables'
 import { finalVariants } from './transitions'
-import { usePlayerPage } from './playerPage'
+import { usePlayerPage, usePlexus } from './playerPage'
 import { PageUp, TablesDown, TablesUp } from './PageArrows'
 
 // Page du duel (après la sélection des deux joueurs) : identique aux duels de Mon classement
@@ -34,6 +34,7 @@ export default function Final({ pair, nav, reduced, onBack, onStep }) {
     }))
   }, [pair[0].id, pair[1].id])
   const tables = useRef(null)
+  usePlexus(page)
   const { atTables, atTablesRef, toTables, toTop, back } = usePlayerPage({
     pageRef: page, tablesRef: tables, reduced, onBack,
     onArrow: (d) => onStep(d > 0 ? 1 : 0, 1),

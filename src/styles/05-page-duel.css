@@ -275,8 +275,14 @@
   .stats-table { display: grid; gap: 4px; width: 100%; box-sizing: border-box; grid-column: 1 / -1; padding: 8px 12px 12px; }
   .stats-table-slot { position: relative; grid-column: 1; }   /* nom du joueur pour les lecteurs d'écran */
 
-  /* Bloc du tableau : palmarès puis détails par compétition, sous les stats. */
-  :is(.game, .final) .final-tables.details { min-height: 0; justify-content: flex-start; padding: 16px 12px 104px; }
+  /* Bloc du tableau : remonté au niveau du plexus du joueur, par-dessus lui (--plexus : du plexus
+     au bas du joueur, mesuré par usePlexus), en légère transparence (le bas du joueur se devine
+     derrière). */
+  :is(.game, .final) .final-tables.details { min-height: 0; justify-content: flex-start; padding: 16px 12px 104px;
+                                             position: relative; z-index: 2; margin-top: calc(-1 * var(--plexus, 0px) - 16px); }
+  :is(.game, .final) .final-tables .details-panel { background: color-mix(in srgb, var(--panel) 72%, transparent); backdrop-filter: blur(3px); }
+  /* Flèches ‹ › des joueurs : aux épaules, au-dessus du bloc (elles étaient à mi-hauteur, dessous). */
+  :is(.final, .game) .figure-picker .arrow { top: 22%; }
 
   /* Palmarès : deux colonnes, Collectif (logos des compétitions gagnées, puis finales et
      demi-finales perdues, plus sombres) et Individuel (logo, intitulé, compétition dessous) ;
