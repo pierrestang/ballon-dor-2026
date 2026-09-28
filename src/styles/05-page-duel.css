@@ -183,8 +183,7 @@
    intitulé, compétition dessous) ; intitulés sans fond, filet dessous, nombre de titres en chiffre
    italique or ; lignes au fond de carte (32 px au moins, 4 px d'écart). */
 .final-table-palm { display: grid; grid-template-columns: minmax(0, 1fr); row-gap: 20px; }
-.final-table-palm h3 { display: flex; justify-content: space-between; align-items: center; min-height: 30px; box-sizing: border-box; margin: 0 0 8px; padding-bottom: 4px;
-                       border-bottom: 1px solid rgba(237, 234, 227, 0.08);
+.final-table-palm h3 { display: flex; justify-content: space-between; align-items: center; min-height: 30px; box-sizing: border-box; margin: 0 0 8px; padding-bottom: 4px;   /* sans filet (28/09/2026) */
                        font-family: var(--font); font-weight: 700; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-secondary); }
 .final-table-palm h3 b { font-family: var(--serif); font-style: italic; font-weight: 600; font-size: 30px; line-height: 1; letter-spacing: 0; color: var(--gold); }
 .final-table-palm ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; align-content: start; }   /* hauteur réservée (alignement) : lignes calées en haut */
@@ -220,7 +219,7 @@
 
   /* Panneau commun : bloc du tableau, identité, stats de la saison. */
   :is(.game, .final) .final-tables .details-panel { padding: 14px 12px 12px; }
-  .stats-table, .player-tag { border-radius: var(--radius); background: var(--panel); box-shadow: 0 0 0 1px rgba(237, 234, 227, 0.08); }
+  .stats-table, .player-tag { border-radius: var(--radius); background: rgba(237, 234, 227, 0.04); }   /* fond de ligne, comme les scores du grand écran */
 
   /* Identité au-dessus de chaque joueur : écusson et drapeau en médaillon, nom, poste · âge ;
      page du duel et jeu : deux bandeaux de même taille (colonne du joueur, nom sur deux lignes). */
@@ -274,8 +273,8 @@
      au bas du joueur, mesuré par usePlexus), en légère transparence (le bas du joueur se devine
      derrière). */
   :is(.game, .final) .final-tables.details { min-height: 0; justify-content: flex-start; padding: 16px 12px 104px;
-                                             position: relative; z-index: 2; margin-top: calc(-1 * var(--plexus, 0px) - 16px); }
-  :is(.game, .final) .final-tables .details-panel { background: color-mix(in srgb, var(--panel) 88%, transparent); backdrop-filter: blur(3px); }
+                                             position: relative; z-index: 2; margin-top: 0; }   /* sous le joueur : sans panneau, plus de chevauchement (--plexus gardé, inutilisé ici) */
+  :is(.game, .final) .final-tables .details-panel { background: none; box-shadow: none; }   /* pas de panneau : seules les lignes ont un fond */
   /* Flèches ‹ › des joueurs : aux épaules, au-dessus du bloc (elles étaient à mi-hauteur, dessous). */
   :is(.final, .game) .figure-picker .arrow { top: 22%; }
 
@@ -405,7 +404,7 @@
   .figure .player-tag-last:empty { display: none; }
   /* Palmarès aéré, au pas des cartes de stats : lignes plus hautes (suivent la hauteur d'écran), plus d'écart. */
   .palmares .final-table-palm { row-gap: clamp(20px, 3.2vh, 32px); }
-  .palmares .final-table-palm h3 { margin-bottom: 10px; font-size: 13px; border-bottom: 0; }   /* pas de filet : lignes sur le fond de page */
+  .palmares .final-table-palm h3 { margin-bottom: 10px; font-size: 13px; }
   .palmares .final-table-palm ul { gap: clamp(4px, 0.8vh, 8px); }
   .palmares .final-table-palm li { gap: 12px; min-height: clamp(34px, 4.2vh, 44px); padding: 4px 14px 4px 6px; }
   .palmares .final-table-palm-logo { width: 30px; height: 30px; }
