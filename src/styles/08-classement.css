@@ -257,16 +257,16 @@
 /* Tous les textes blancs du joueur choisi passent à l'or en même temps que son nom : poste et
    titres de son palmarès (les places d'honneur gardent leur argent / bronze), ses chiffres des
    stats face à face ; léger décalage de haut en bas. */
-.game-grid :is(.palmares .poste, .palmares .poste-label, .palmares .palm-club-name, .palmares .palm-count, .palmares .award, .compare-row strong, .stats-table-row strong) { transition: color 0.32s var(--ease-out); }
-.game-grid.is-won-left .palmares.is-left :is(.poste, .poste-label, .palm-club-name, .award),
-.game-grid.is-won-right .palmares.is-right :is(.poste, .poste-label, .palm-club-name, .award),
+.game-grid :is(.palmares .poste, .palmares .award, .compare-row strong, .stats-table-row strong) { transition: color 0.32s var(--ease-out); }
+.game-grid.is-won-left .palmares.is-left :is(.poste, .award),
+.game-grid.is-won-right .palmares.is-right :is(.poste, .award),
 .game-grid.is-won-left .compare-row strong:first-child,
 .game-grid.is-won-right .compare-row strong:last-child,
 .game-grid.is-won-left .stats-table-row.is-left strong,
 .game-grid.is-won-right .stats-table-row.is-right strong { color: var(--gold); }   /* stats-table : mobile */
 /* En même temps, les textes du perdant s'assombrissent (même rythme). */
-.game-grid.is-won-right .palmares.is-left :is(.poste, .poste-label, .palm-club-name, .palm-count, .award, h3),
-.game-grid.is-won-left .palmares.is-right :is(.poste, .poste-label, .palm-club-name, .palm-count, .award, h3),
+.game-grid.is-won-right .palmares.is-left :is(.poste, .award, h3),
+.game-grid.is-won-left .palmares.is-right :is(.poste, .award, h3),
 .game-grid.is-won-right .compare-row strong:first-child,
 .game-grid.is-won-left .compare-row strong:last-child,
 .game-grid.is-won-right .stats-table-row.is-left strong,

@@ -10,8 +10,8 @@
 }
 .solo .palmares.is-left { justify-self: end; width: min(300px, 100%); }
 .solo .solo-stats { justify-self: center; align-self: start; gap: clamp(10px, 2.2vh, 22px); }   /* hauteur : Solo.jsx */
-/* Intitulé (deux mots : deux lignes) puis score dessous, centrés. */
-.solo .solo-stats .compare-row { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+/* Intitulé (deux mots : deux lignes) puis score dessous, centrés (mobile : tableau des stats). */
+@media (min-width: 821px) { .solo .solo-stats .compare-row { display: flex; flex-direction: column; align-items: center; gap: 6px; } }
 .solo .solo-stats .compare-row > span { max-width: none; white-space: pre-line; }
 .solo .solo-stats .compare-row strong { text-align: center; }
 .solo .figure-picker .arrow.is-outer-left { left: -14%; }   /* bien écartées du joueur (hors de ses bras) */
@@ -23,13 +23,5 @@
   /* Mobile : le joueur, ses stats sur une ligne, puis son palmarès (comme la page du duel). */
   .solo .solo-grid { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto auto; grid-template-areas: 'figA' 'mid' 'palmA'; padding-top: 146px; row-gap: 20px; }
   .solo .solo-stats { display: grid; grid-template-columns: repeat(4, 1fr); width: 100%; }
-  .solo .palmares.is-left { justify-self: stretch; width: auto; }
-  /* Palmarès : la carte des pages de joueurs (03-duel.css), en-tête sur toute la largeur, puis
-     Collectif et Individuel côte à côte (la colonne unique laissait la moitié droite vide). */
-  .solo .palmares { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 16px; max-height: none; }
-  .solo .palmares .badges { grid-column: 1 / -1; }
-  .solo .palmares .block + .block { margin-top: 0; }
-  .solo .palmares .block h3 { width: 100%; }
-  .solo .palmares .block li { font-size: 14px; }
   .final.solo .final-tables .details-side { width: 100%; }
 }

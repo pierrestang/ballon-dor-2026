@@ -289,16 +289,3 @@
 @media (prefers-reduced-motion: reduce) {
   .pick-spin, .pick-ghost-turn, .pick-float { animation: none; }
 }
-/* Voile sombre des cartes de la file. */
-/* Carte style « Ultimate Team » : blason (épaules hautes incurvées, bas en pointe arrondie,
-   découpe par masque SVG) en or texturé
-   — reflets diagonaux « holographiques », grain métallique (bruit SVG), brossage fin,
-   marbrures — bord biseauté (SVG), brillance, relief (ombre portée via drop-shadow).
-   Géométrie : déborde de 6 % sur les côtés, commence à 40 % de la hauteur de l'image et
-   descend de 28 % dessous — cf. SIDE / TOP / BOTTOM (Carousel.jsx). Aucune marque. */
-/* Bord du blason : arête sombre sur le contour, liseré clair juste dedans, puis filet intérieur
-   doré (clair + ombre) qui suit la même forme — SVG étiré à la carte, traits d'épaisseur fixe. */
-/* Brillance : halo clair en haut, léger assombrissement vers la pointe. */
-/* Buste centré dans la carte, au-dessus du nom (9 % → 71 % de la carte). */
-/* Colonne de gauche : poste, drapeau, club. */
-/* Bas : nom, filet, stats. */

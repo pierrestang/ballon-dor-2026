@@ -66,8 +66,6 @@
 /* Tableaux trop hauts pour leur place : textes, icônes et lignes réduits d'un même facteur
    --k (Final.jsx), sans retirer aucune ligne ni colonne. */
 .final-tables { --k: 1; --z: 1.2; }   /* --z : logos, icônes et textes agrandis de 20 % (27/09/2026) */
-/* Sans la colonne Équipe (ni pièce au-dessus, ni ligne Total) : les colonnes restantes se
-   partagent toute la largeur. */
 /* Colonnes : Équipe, Compétition, 4 scores, Résultat, Individuel. La colonne Individuel suit le
    plus grand nombre de médailles d'une même ligne dans les deux tableaux (has-medals-N) : sans
    ou avec peu de médailles, elle rétrécit et les autres colonnes s'élargissent d'autant. */
@@ -123,9 +121,7 @@
   /* Traitement léger et commun : ombre douce qui détache toutes les formes du fond. */
   filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.6));
 }
-   /* même hauteur que les logos */
 
-/* Page du duel : pas de séparateur sous la dernière ligne des tableaux. */
 /* Page du duel : chaque tableau va du début du logo d'équipe à la droite du dernier score —
    logos d'équipe calés à gauche, colonne Ratio calée à droite (intitulés compris), sans marge
    de cellule sur ces deux bords. */
@@ -179,14 +175,6 @@
   height: calc(44px * var(--k) * var(--z));
   border-top: 1px solid var(--line);
 }
-/* Ligne Total : le plus haut des deux joueurs en or (sauf matches). */
-/* « Total : » centré sous les deux premières colonnes (Équipe, Tournoi). */
-
-/* « Total : » : même police et taille que les scores de la ligne. */
-
-/* « TOTAL : » : même taille que le nom du joueur en tête du tableau. */
-/* « TOTAL : » : même taille et espacement que les intitulés de colonnes. */
-
 /* « TOTAL : » aligné à gauche (bord gauche des logos d'équipe). */
 .final-tables .details-table tfoot th.final-total-label {
   padding-right: 0;
@@ -216,85 +204,35 @@
 .final-tables .details-table th:last-child { padding-right: 6px; }
 /* Infobulle du poste dans l'en-tête des tableaux : dans le flux du texte, sans décalage. */
 .final-table-meta .tip { vertical-align: baseline; }
-/* Bloc unique du joueur (mobile seulement) : ligne du club, pastille des compétitions gagnées,
-   distinctions écrites, distinctions sans compétition. */
-.final-table-palm, .final-table-section, .stats-table, .final-table-crest, .player-tag { display: none; }
-/* Mobile : une carte par compétition (le tableau à 7 colonnes était illisible, intitulés en
-   10 px). Ligne 1 : logo et nom de la compétition, résultat à droite (trophée ou « Demi »…) ;
-   ligne 2 : les 4 stats, intitulé au-dessus du chiffre (data-label), distinctions à droite.
-   Colonne Équipe retirée (même logo à chaque ligne) ; Total sur le même modèle. */
+/* Mobile seulement (masqués sur grand écran) : identité au-dessus du joueur, tableau des stats de
+   la saison, palmarès et intitulé des détails dans le bloc du tableau. */
+.player-tag, .stats-table, .final-table-palm, .final-table-section { display: none; }
+
+/* ------------------------------------------------------------------ */
+/* Mobile (≤ 820 px) : pages de joueurs (page du duel, Présentation,   */
+/* jeu). De haut en bas : identité au-dessus du joueur, stats de la    */
+/* saison, puis un bloc par joueur — palmarès (Collectif, Individuel)  */
+/* et détails par compétition. Identité et stats : même panneau que le */
+/* bloc, comme des morceaux détachés du tableau. Lignes de tableau :   */
+/* 32 px au fond de carte, 4 px d'écart, logo 26 px, 4 chiffres        */
+/* centrés, intitulés une fois en tête.                                */
+/* ------------------------------------------------------------------ */
 @media (max-width: 820px) {
-  .final-tables { --z: 1; }
-  .final-tables .details-table,
-  .final-tables .details-table :is(thead, tbody, tfoot) { display: block; width: 100%; }
-  .final-tables .details-table :is(colgroup, tr.is-pad, .details-team) { display: none; }
-  /* Une ligne par compétition, de la hauteur d'une ligne de Collectif (logo en tuile de 26 px,
-     10 px d'écart, sans fond) : le logo puis les 4 chiffres ; intitulés une seule fois, en tête
-     des colonnes ; ni nom écrit, ni résultat (le palmarès, au-dessus, dit ce qui a été gagné). */
-  .final-tables .details-table tr {
-    display: grid;
-    grid-template-columns: 26px repeat(4, minmax(0, 1fr));
-    align-items: center;
-    column-gap: 10px;
-    height: auto;
-    padding: 0;
-    background: none;
-    border-radius: 0;
-  }
-  .final-tables .details-table :is(thead, tbody, tfoot) tr { height: auto; }   /* l'emporte sur les hauteurs de ligne du grand écran */
-  .final-tables .details-table thead th { padding: 0; text-align: left; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-secondary); }
-  .final-tables .details-table thead th:is(:nth-child(1), :nth-child(7), :nth-child(8)) { display: none; }
-  .final-tables .details-table thead th:nth-child(2) { visibility: hidden; }   /* colonne des logos */
-  .final-tables .details-table thead th:nth-child(n+3) { text-align: center; }   /* intitulés centrés sur les scores */
-  /* Fond de carte sur chaque ligne ; 32 px de haut et 4 px d'écart : même pas (36 px) que les
-     lignes de Collectif. */
-  .final-tables .details-table tbody tr { padding: 3px 10px 3px 3px; border-radius: var(--radius); background: rgba(237, 234, 227, 0.04); }
-  .final-tables .details-table tbody tr + tr { margin-top: 4px; }
-  /* Intitulés : ligne d'en-tête du tableau, sans fond (même retrait, mêmes colonnes que les
-     lignes), intitulés centrés dans sa hauteur. */
-  .final-tables .details-table thead tr { min-height: 28px; margin-bottom: 4px; padding: 0 10px 0 3px; }
-  .final-tables .details-table.details-table :is(tbody, tfoot) tr:not(.is-pad) :is(td, th) { border: 0; }   /* traits des cellules du tableau */
-  .final-tables .details-table :is(td, th) { padding: 0; text-align: left; }
-  .final-tables .details-table th.details-comp { grid-column: 1; display: flex; align-items: center; }
-  .final-tables .details-comp .comp { width: 26px; height: 26px; padding: 3px; box-sizing: border-box; flex: none;
-                                      border-radius: 6px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5); }
-  .final-tables .details-table :is(td.details-result, td.details-indiv) { display: none; }
-  .final-tables .details-table td[data-label] { height: 26px; font-size: 16px; line-height: 26px; font-variant-numeric: tabular-nums; color: var(--text); text-align: center; }
-  .final-tables .details-table td[data-label] .tip { display: inline; line-height: inherit; }   /* ratio en infobulle : même hauteur de ligne */
-  .final-tables .details-table tfoot { display: none; }
-  /* Stats de la saison sous les joueurs (StatsTable) : même tableau que les détails par compétition
-     (bande d'en-tête, lignes de 32 px au fond de carte), la pièce du joueur à la place du logo ;
-     remplace les lignes face à face et les colonnes de la Présentation. */
-  :is(.final, .game) .compare.compare > .compare-row { display: none; }   /* l'emporte sur .solo .solo-stats .compare-row */
-  :is(.final, .game) .compare { gap: 0; padding: 0; width: 100%; }
-  /* Stats de la saison et identité au-dessus du joueur : même panneau que le bloc du tableau (fond
-     --panel, coins, filet de contour, marges), comme des morceaux détachés du tableau. */
+  /* Masqués : nom en arc (remplacé par l'identité), palmarès du grand écran, lignes des stats
+     face à face (remplacées par le tableau des stats), « Voir le tableau détaillé », en-tête du
+     bloc du tableau. */
+  :is(.final, .game) :is(.figure .arc-name, .palmares, .compare > .compare-row, .intro-down.tables-down, .final-table-head) { display: none; }
+
+  /* Panneau commun : bloc du tableau, identité, stats de la saison. */
+  :is(.game, .final) .final-tables .details-panel { padding: 14px 12px 12px; }
   .stats-table, .player-tag { border-radius: var(--radius); background: var(--panel); box-shadow: 0 0 0 1px rgba(237, 234, 227, 0.08); }
-  .stats-table { display: grid; gap: 4px; width: 100%; box-sizing: border-box; grid-column: 1 / -1; padding: 8px 12px 12px; }
-  .stats-table-head, .stats-table-row {
-    display: grid; grid-template-columns: 26px repeat(4, minmax(0, 1fr)); align-items: center; column-gap: 10px;
-    padding: 3px 10px 3px 3px; border-radius: var(--radius);
-  }
-  .stats-table-head { min-height: 28px; padding-top: 0; padding-bottom: 0; }
-  .stats-table-head > span { text-align: center; font-family: var(--font); font-weight: 700; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-secondary); }
-  .stats-table-row { min-height: 32px; box-sizing: border-box; background: rgba(237, 234, 227, 0.04); }
-  .stats-table-row strong { font-family: var(--font); font-weight: 700; font-size: 16px; line-height: 26px; text-align: center;
-                            font-variant-numeric: tabular-nums; color: var(--text); }
-  .stats-table-slot { position: relative; grid-column: 1; }   /* colonne du logo, vide (nom pour les lecteurs d'écran) */   /* pas de total (les stats de la saison sont au-dessus des joueurs) */
-  /* Un seul bloc par joueur : le palmarès séparé et « Voir le tableau détaillé » disparaissent,
-     le tableau suit les stats. */
-  :is(.final, .game) :is(.palmares, .intro-down.tables-down) { display: none; }
-  :is(.game, .final) .final-tables.details { min-height: 0; justify-content: flex-start; padding: 28px 12px 104px; }
-  /* Pas d'en-tête au bloc du tableau : l'identité (écusson, nom, poste · âge) est au-dessus du
-     joueur ; le bloc commence par le palmarès. */
-  :is(.final, .game) .final-table-head { display: none; }
-  /* Au-dessus de chaque joueur : son identité à la place du nom en arc — écusson et drapeau en
-     médaillon, nom, poste en toutes lettres, centrés au-dessus de la tête. */
-  :is(.final, .game) .figure .arc-name { display: none; }
+
+  /* Identité au-dessus de chaque joueur : écusson et drapeau en médaillon, nom, poste · âge ;
+     page du duel et jeu : deux bandeaux de même taille (colonne du joueur, nom sur deux lignes). */
   .player-tag {
     position: absolute; left: 50%; bottom: calc(100% + 6px); translate: -50% 0;
     display: flex; align-items: center; gap: 8px;
-    width: calc(50vw - 18px); min-height: 58px; box-sizing: border-box;   /* deux bandeaux de même taille : largeur de la colonne, hauteur d'un nom sur deux lignes */
+    width: calc(50vw - 18px); min-height: 58px; box-sizing: border-box;
     padding: 7px 12px 7px 8px;
     pointer-events: none;
   }
@@ -308,48 +246,79 @@
   .player-tag-poste { font-family: var(--font); font-weight: 700; font-size: 12px; line-height: 1.15; letter-spacing: 0.05em;
                       text-transform: uppercase; color: var(--text-secondary); }
   .game-figure.is-won .player-tag-name { color: var(--gold); }   /* jeu : le nom du joueur choisi passe à l'or */
-  /* Présentation (un seul joueur) : plus grand. */
-  .solo .player-tag { gap: 12px; width: calc(100vw - 24px); min-height: 0; padding: 10px 16px 10px 12px; }   /* toute la largeur de l'écran */
+  /* Présentation (un seul joueur) : plus grand, toute la largeur de l'écran. */
+  .solo .player-tag { gap: 12px; width: calc(100vw - 24px); min-height: 0; padding: 10px 16px 10px 12px; }
   .solo .player-tag-crest, .solo .player-tag-crest .club { width: 40px; height: 40px; }
   .solo .player-tag-crest .flag { width: 20px; height: 13px; }
   .solo .player-tag-name { font-size: 22px; }
   .solo .player-tag-poste { font-size: 13px; }
-  .final-table-head .final-table-coin { display: none; }
-  .final-table-crest { display: block; position: relative; flex: none; width: 40px; height: 40px; }
-  .final-table-crest .club { width: 40px; height: 40px; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5)); }
-  .final-table-crest .flag { position: absolute; right: -5px; bottom: -3px; width: 18px; height: 12px; object-fit: cover;
-                             border-radius: 2px; box-shadow: 0 0 0 1.5px rgba(8, 8, 10, 0.95); }
-  .final-tables .details-table td.details-indiv { display: none; }   /* distinctions : dans le palmarès */
-  /* Palmarès (au-dessus des détails) : deux colonnes, Collectif (logos des compétitions) et Individuel
-     (logos des compétitions, nom dessous), nombre de titres en chiffre italique or. */
+
+  /* Lignes des tableaux (stats de la saison, détails par compétition) : colonne du logo (26 px)
+     puis les 4 chiffres, centrés. */
+  :is(.stats-table-head, .stats-table-row), .final-tables .details-table :is(thead, tbody) tr {   /* l'emporte sur les hauteurs de ligne du grand écran */
+    display: grid; grid-template-columns: 26px repeat(4, minmax(0, 1fr)); align-items: center; column-gap: 10px;
+    height: auto; padding: 3px 10px 3px 3px; border-radius: var(--radius);
+  }
+  /* Intitulés : une ligne d'en-tête sans fond. */
+  :is(.stats-table-head, .final-tables .details-table thead tr) { min-height: 28px; padding-top: 0; padding-bottom: 0; }
+  :is(.stats-table-head > span, .final-tables .details-table thead th) {
+    padding: 0; text-align: center; font-family: var(--font); font-weight: 700; font-size: 12px;
+    letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-secondary);
+  }
+  /* Lignes : fond de carte, 32 px, 4 px d'écart ; chiffres 16 px. */
+  :is(.stats-table-row, .final-tables .details-table tbody tr) { min-height: 32px; box-sizing: border-box; background: rgba(237, 234, 227, 0.04); }
+  :is(.stats-table-row strong, .final-tables .details-table td[data-label]) {
+    height: 26px; font-family: var(--font); font-weight: 700; font-size: 16px; line-height: 26px; text-align: center;
+    font-variant-numeric: tabular-nums; color: var(--text);
+  }
+
+  /* Stats de la saison (StatsTable) : une ligne par joueur, colonne du logo vide. */
+  :is(.final, .game) .compare { gap: 0; padding: 0; width: 100%; }
+  .stats-table { display: grid; gap: 4px; width: 100%; box-sizing: border-box; grid-column: 1 / -1; padding: 8px 12px 12px; }
+  .stats-table-slot { position: relative; grid-column: 1; }   /* nom du joueur pour les lecteurs d'écran */
+
+  /* Bloc du tableau : palmarès puis détails par compétition, sous les stats. */
+  :is(.game, .final) .final-tables.details { min-height: 0; justify-content: flex-start; padding: 28px 12px 104px; }
+
+  /* Palmarès : deux colonnes, Collectif (logos des compétitions gagnées, puis finales et
+     demi-finales perdues, plus sombres) et Individuel (logo, intitulé, compétition dessous) ;
+     intitulés sans fond, filet dessous, nombre de titres en chiffre italique or ; lignes au fond
+     de carte (32 px au moins, 4 px d'écart). */
   .final-table-palm { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 16px; margin-bottom: 22px; }
-  /* Intitulés COLLECTIF / INDIVIDUEL : sans fond, filet dessous ; le fond est sur les lignes. */
   .final-table-palm h3 { display: flex; justify-content: space-between; align-items: baseline; margin: 0 0 8px; padding-bottom: 6px;
                          border-bottom: 1px solid rgba(237, 234, 227, 0.08);
                          font-family: var(--font); font-weight: 700; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-secondary); }
   .final-table-palm h3 b { font-family: var(--serif); font-style: italic; font-weight: 600; font-size: 22px; line-height: 1; letter-spacing: 0; color: var(--gold); }
-  /* Lignes : fond de carte, comme les lignes des tableaux (32 px au moins, 4 px d'écart). */
   .final-table-palm ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
   .final-table-palm li { display: flex; align-items: center; gap: 10px; min-height: 32px; box-sizing: border-box;
                          padding: 3px 8px 3px 3px; border-radius: var(--radius); background: rgba(237, 234, 227, 0.04); }
   .final-table-palm li > span { min-width: 0; font-family: var(--font); font-weight: 700; font-size: 13px; line-height: 1.15;
                                 letter-spacing: 0.04em; text-transform: uppercase; color: var(--text); }
   .final-table-palm li small { display: block; margin-top: 2px; font-size: 12px; font-weight: 500; letter-spacing: 0.05em; color: var(--text-secondary); }
-  /* Logo de la compétition, en tuile claire (comme dans les cartes de compétition). */
-  .final-table-palm-logo { flex: none; width: 26px; height: 26px; padding: 3px; box-sizing: border-box; object-fit: contain;
-                           border-radius: 6px; background: rgba(244, 241, 234, 0.92); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5); }
-  .final-table-palm li.is-minor { opacity: 0.5; }   /* places d'honneur, finales et demi-finales perdues : plus sombres */
+  .final-table-palm li.is-minor { opacity: 0.5; }   /* places d'honneur, finales et demi-finales perdues */
   .final-table-palm li.is-minor img { filter: grayscale(0.5) drop-shadow(0 1px 2px rgba(0, 0, 0, 0.6)); }
   .final-table-palm-empty { margin: 4px 0 0; font-family: var(--serif); font-style: italic; font-weight: 600; font-size: 17px; color: var(--text-secondary); }
-  /* Intitulé des cartes de compétition. */
+  /* Logo de compétition en tuile claire (palmarès et détails). */
+  :is(.final-table-palm-logo, .final-tables .details-comp .comp) {
+    flex: none; width: 26px; height: 26px; padding: 3px; box-sizing: border-box; object-fit: contain;
+    border-radius: 6px; background: rgba(244, 241, 234, 0.92); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  }
+
+  /* Détails par compétition : intitulé, puis le tableau en lignes (ni nom écrit, ni résultat, ni
+     distinctions, ni total ; colonne Équipe retirée). */
   .final-table-section { display: block; margin: 0 0 10px; font-family: var(--font); font-weight: 700; font-size: 12px;
                          letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-secondary); }
-  /* Nombre de titres : dans le palmarès (plus dans l'en-tête). */
-  .final-table-head .final-table-titles { display: none; }
-  .final-table-head { --nm: 21px; }
-  .final-table-head .final-table-name { white-space: normal; }   /* nom long : sur deux lignes, jamais coupé */
-  .final-table-head .final-table-player { overflow: visible; line-height: 1.05; }
-  :is(.game, .final) .final-tables .details-panel { padding: 14px 12px 12px; }
+  .final-tables { --z: 1; }
+  .final-tables .details-table,
+  .final-tables .details-table :is(thead, tbody) { display: block; width: 100%; }
+  .final-tables .details-table :is(colgroup, tfoot, tr.is-pad, .details-team, td.details-result, td.details-indiv),
+  .final-tables .details-table thead th:is(:nth-child(1), :nth-child(7), :nth-child(8)) { display: none; }
+  .final-tables .details-table thead th:nth-child(2) { visibility: hidden; }   /* colonne des logos */
+  .final-tables .details-table thead tr { margin-bottom: 4px; }
+  .final-tables .details-table tbody tr + tr { margin-top: 4px; }
+  .final-tables .details-table :is(td, th) { padding: 0; }
+  .final-tables .details-table th.details-comp { grid-column: 1; display: flex; align-items: center; }
+  .final-tables .details-table td[data-label] .tip { display: inline; line-height: inherit; }   /* ratio en infobulle : même hauteur de ligne */
 }
 /* Infobulle cachée : sans largeur tant qu'elle n'est pas affichée (elle élargissait les tableaux
    sur mobile). */
@@ -394,8 +363,10 @@
 .final-tables .details-table thead th { color: var(--text-secondary); border-bottom: 0; }
 .final-tables .details-table tbody tr,
 .final-tables .details-table tbody tr.is-pad { border-bottom: 0; }
-.final-tables .details-table tbody tr:not(.is-pad) td,
-.final-tables .details-table tbody tr:not(.is-pad) th { border-top: 1px solid rgba(237, 234, 227, 0.05); }
+@media (min-width: 821px) {   /* mobile : lignes au fond de carte, sans trait */
+  .final-tables .details-table tbody tr:not(.is-pad) td,
+  .final-tables .details-table tbody tr:not(.is-pad) th { border-top: 1px solid rgba(237, 234, 227, 0.05); }
+}
 /* Compétition remportée : ligne dorée (voile + filet à gauche), chiffres en blanc plein. */
 @media (min-width: 821px) { .final-tables .details-table tbody tr.is-won { background: linear-gradient(90deg, rgba(212, 175, 55, 0.26), rgba(212, 175, 55, 0.06) 75%, transparent); } }   /* mobile : sans voile */
 /* Filet or des lignes gagnantes, sans décaler leur contenu : toute la première colonne (intitulé,

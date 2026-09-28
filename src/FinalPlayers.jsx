@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { animate, cubicBezier, useReducedMotion } from 'framer-motion'
-import { FRAMES, ageOf, asset, clubLogo, decimal, kitStyle, medalOf, photoUrl, posteLabel } from './data'
+import { FRAMES, ageOf, asset, clubLogo, decimal, kitStyle, photoUrl, posteLabel } from './data'
 import { frameAt, hasFrames, open, subscribe } from './sequence'
 import Tip from './Tip'
 
@@ -373,9 +373,8 @@ export function Compare({ a, b, titles = true }) {
   )
 }
 
-/** Club, drapeau et poste, puis les titres collectifs et individuels. Sur mobile (03-duel.css),
-    une carte : écusson et drapeau en médaillon, nom du club et poste ; nombre de titres par
-    section ; médaille et compétition de chaque distinction (éléments masqués sur grand écran). */
+/** Club, drapeau et poste, puis les titres collectifs et individuels (grand écran ; sur mobile,
+    le palmarès est dans le bloc du tableau, FinalTables.jsx). */
 export function Palmares({ player, side }) {
   // Au changement de joueur (Présentation, page du duel, jeu) : les lignes restent en place et
   // tous leurs textes défilent ensemble, au rythme des chiffres (Rolling, ROLL), même s'ils ne
@@ -386,7 +385,6 @@ export function Palmares({ player, side }) {
   const shownOnce = useRef(false)
   useEffect(() => { shownOnce.current = true }, [])
   const roll = (text) => <Rolling text={text} trigger={player.id} onMount={shownOnce.current} />
-  const wins = player.individuel.filter((t) => t.rang === 1).length   // distinctions de 1er
   return (
     <div className={`palmares is-${side}`}>
       <div className="badges">
@@ -394,13 +392,10 @@ export function Palmares({ player, side }) {
         <div className="flag-row">
           <Flap trigger={player.id} src={asset(player.drapeau)} alt={player.selection} title={player.selection} className="flag" width="48" height="32" />
           <Tip label={posteLabel(player.poste)}><span className="poste">{roll(player.poste)}</span></Tip>
-          {/* Poste en toutes lettres : Présentation sur mobile (10-presentation.css). */}
-          <span className="poste-label">{roll(posteLabel(player.poste))}</span>
         </div>
-        <span className="palm-club-name">{roll(player.club)}</span>
       </div>
       <div className="block">
-        <h3>Collectif{player.collectif.length > 0 && <b className="palm-count">{player.collectif.length}</b>}</h3>
+        <h3>Collectif</h3>
         {player.collectif.length ? (
           <ul>
             {player.collectif.map((t, i) => (
@@ -415,17 +410,13 @@ export function Palmares({ player, side }) {
         )}
       </div>
       <div className="block">
-        <h3>Individuel{wins > 0 && <b className="palm-count">{wins}</b>}</h3>
+        <h3>Individuel</h3>
         <ul>
           {player.individuel.map((t, i) => (
             // Places d'honneur (2e, 3e) grisées : seuls les titres majeurs (1er) comptent.
             <li key={i} title={t.titre} className={t.rang > 1 ? `is-minor is-rank-${t.rang}` : undefined}>
               <Flap trigger={player.id} className="comp" src={asset(t.logo)} alt={t.competition} loading="lazy" width="36" height="36" />
-              <span className="palm-text">
-                <span className="award">{roll(t.titre.split(' — ')[0])}</span>
-                <span className="palm-sub">{t.competition}</span>
-              </span>
-              {medalOf(t) && <Flap trigger={player.id} className="palm-medal" src={asset(medalOf(t))} alt="" loading="lazy" width="22" height="22" />}
+              <span className="award">{roll(t.titre.split(' — ')[0])}</span>
             </li>
           ))}
         </ul>

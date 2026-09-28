@@ -3,7 +3,7 @@
 // au-dessus du tableau (colonne Équipe et ligne Total remises le 27/09/2026). Le comportement de page
 // (clavier, molette, retour) est dans Final.jsx.
 import { m } from 'framer-motion'
-import { ageOf, asset, clubLogo, coinUrl, decimal, posteLabel } from './data'
+import { ageOf, asset, coinUrl, decimal, posteLabel } from './data'
 import Tip from './Tip'
 import { ClubLogo, Flag } from './Nameplate'
 import { SLIDE } from './transitions'
@@ -162,11 +162,6 @@ function Table({ player, side, medals, sizes }) {
       {/* En-tête éditorial : sa pièce, puis prénom et nom, poste et âge ; titres de la saison. */}
       <m.header className="final-table-head" {...row(0)}>
         <img className="final-table-coin" src={coinUrl(player.id)} alt="" width="64" height="64" />
-        {/* Mobile : l'écusson du club et le drapeau en médaillon, à la place de la pièce. */}
-        <span className="final-table-crest">
-          {clubLogo(player.club) && <img className="club" src={clubLogo(player.club)} alt="" width="52" height="52" />}
-          <img className="flag" src={asset(player.drapeau)} alt="" width="48" height="32" />
-        </span>
         <h2 className="final-table-name">
           <span className="final-table-player">{player.nom}</span>
           <span className="final-table-meta">
