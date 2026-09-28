@@ -297,7 +297,8 @@ def lignes(ws):
 
 def individuel(titre):
     if titre == "Soulier d'or européen":
-        return {"titre": titre, "categorie": "buteur", "rang": 1, "competition": "Europe",
+        # Affiché « Soulier d'or » (demande du propriétaire, 28/09/2026) ; l'Excel garde le nom complet.
+        return {"titre": "Soulier d'or", "categorie": "buteur", "rang": 1, "competition": "Europe",
                 "icone": None, "logo": asset("competitions", "uefa")}
     m = DISTINCTION.match(titre)
     if not m:
