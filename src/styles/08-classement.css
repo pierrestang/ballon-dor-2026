@@ -124,7 +124,7 @@
   .game-pairing .game-draw-coin + .game-draw-coin .game-pairing-name { text-align: left; }
   .game-pairing .game-vs.is-small { top: 50%; font-size: 16px; }
   .game-pairing-halo { inset: -4px 10%; }
-  .game-pairing .game-draw-coin::before { opacity: 0.45; }   /* halo de chaque pièce réduit */
+  .game-pairing .game-draw-coin::before { opacity: 0.25; }   /* halo de chaque pièce réduit */
 }
 @media (min-width: 821px) {
   .game-pairings.is-first { width: min(620px, 100%); }
@@ -137,7 +137,7 @@
   inset: calc(var(--d) * -0.35) calc(var(--d) * -0.3) calc(var(--d) * -0.05);
   z-index: -1;
   background: radial-gradient(ellipse closest-side, var(--halo), transparent);
-  opacity: 0.15;   /* halo très discret */
+  opacity: 0;   /* plus de bande dorée derrière les duels */
   pointer-events: none;
 }
 
