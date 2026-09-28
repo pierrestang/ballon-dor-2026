@@ -3,6 +3,7 @@ import { animate, cubicBezier, useReducedMotion } from 'framer-motion'
 import { FRAMES, ageOf, asset, clubLogo, decimal, kitStyle, photoUrl, posteLabel } from './data'
 import { frameAt, hasFrames, open, subscribe } from './sequence'
 import Tip from './Tip'
+import SeasonPalmares, { palmaresRows } from './SeasonPalmares'
 
 // Copie du bloc des deux joueurs de la page 2 (Duel.jsx), pour la page finale (Final.jsx) :
 // même disposition (palmarès · joueur · stats face à face · joueur · palmarès), même contenu,
@@ -353,60 +354,25 @@ export function Compare({ a, b, titles = true }) {
   )
 }
 
-/** Club, drapeau et poste, puis les titres collectifs et individuels (grand écran ; sur mobile,
-    le palmarès est dans le bloc du tableau, FinalTables.jsx). */
-export function Palmares({ player, side }) {
-  // Au changement de joueur (Présentation, page du duel, jeu) : les lignes restent en place et
-  // tous leurs textes défilent ensemble, au rythme des chiffres (Rolling, ROLL), même s'ils ne
-  // changent pas ; les logos, drapeaux et icônes basculent (Flap) ; lignes en plus : fondu.
-  const club = clubLogo(player.club)
-  // Lignes qui apparaissent (nouveau joueur avec plus de titres) : elles défilent aussi, sauf au
-  // tout premier affichage de la page.
-  const shownOnce = useRef(false)
-  useEffect(() => { shownOnce.current = true }, [])
-  const roll = (text) => <Rolling text={text} trigger={player.id} onMount={shownOnce.current} />
+/** Grand écran : colonne à côté du joueur — son identité (bandeau : nom, poste · âge, écusson et
+    drapeau, comme au-dessus du joueur sur mobile) puis son palmarès au format du mobile
+    (SeasonPalmares). `rows` : lignes réservées par section, pour que les rubriques des deux
+    joueurs s'alignent. Masquée sur mobile (le palmarès y est dans le bloc du tableau). */
+export function SidePanel({ player, side, rows }) {
   return (
     <div className={`palmares is-${side}`}>
-      <div className="badges">
-        {club && <Flap trigger={player.id} src={club} alt={player.club} title={player.club} className="club" width="52" height="52" />}
-        <div className="flag-row">
-          <Flap trigger={player.id} src={asset(player.drapeau)} alt={player.selection} title={player.selection} className="flag" width="48" height="32" />
-          <Tip label={posteLabel(player.poste)}><span className="poste">{roll(player.poste)}</span></Tip>
-        </div>
-      </div>
-      <div className="block">
-        <h3>Collectif</h3>
-        {player.collectif.length ? (
-          <ul>
-            {player.collectif.map((t, i) => (
-              <li key={i}>
-                <Flap trigger={player.id} className="comp" src={asset(t.icone)} alt="" loading="lazy" width="36" height="36" />
-                <span className="award">{roll(t.titre)}</span>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="empty award">{roll('Aucun titre')}</p>
-        )}
-      </div>
-      <div className="block">
-        <h3>Individuel</h3>
-        <ul>
-          {player.individuel.map((t, i) => (
-            // Places d'honneur (2e, 3e) grisées : seuls les titres majeurs (1er) comptent.
-            <li key={i} title={t.titre} className={t.rang > 1 ? `is-minor is-rank-${t.rang}` : undefined}>
-              <Flap trigger={player.id} className="comp" src={asset(t.logo)} alt={t.competition} loading="lazy" width="36" height="36" />
-              <span className="award">{roll(t.titre.split(' — ')[0])}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
+      <PlayerTag player={player} />
+      <SeasonPalmares player={player} minRows={rows} />
     </div>
   )
 }
 
-/** Bloc des deux joueurs : palmarès · joueur · stats · joueur · palmarès. `onStep(side, 1)` :
-    joueur suivant de ce côté (flèches, comme en page 2). */
+/** Lignes à réserver dans chaque section pour aligner deux palmarès. */
+export const pairRows = (a, b) => {
+  const [x, y] = [palmaresRows(a), palmaresRows(b)]
+  return { coll: Math.max(x.coll, y.coll, 1), ind: Math.max(x.ind, y.ind, 1) }
+}
+
 /** `pair` : joueurs des vidéos (changent tout de suite) ; `shown` : joueurs des textes, changés
     par la page quand la rotation commence (`onStart`), pour que textes et vidéo partent ensemble. */
 export default function FinalPlayers({ pair, shown = pair, onStep, onStart }) {
@@ -414,7 +380,7 @@ export default function FinalPlayers({ pair, shown = pair, onStep, onStart }) {
   return (
     <>
       <h2 className="sr-only">{a.nom} contre {b.nom}</h2>
-      <Palmares player={a} side="left" />
+      <SidePanel player={a} side="left" rows={pairRows(a, b)} />
       {[a, b].map((p, i) => (
         <div key={i ? 'right' : 'left'} className={`figure is-${i ? 'right' : 'left'}`} style={kitStyle(p.id)}>
           <ArcName id={p.id} name={p.nom} />
@@ -429,7 +395,7 @@ export default function FinalPlayers({ pair, shown = pair, onStep, onStart }) {
         </div>
       ))}
       <Compare a={a} b={b} titles={false} />
-      <Palmares player={b} side="right" />
+      <SidePanel player={b} side="right" rows={pairRows(a, b)} />
     </>
   )
 }

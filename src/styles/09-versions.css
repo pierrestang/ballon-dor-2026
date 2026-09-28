@@ -25,11 +25,11 @@
 .stage.is-live .stage-mode-side { visibility: hidden; }
 .stage-mode-side:focus-visible { color: var(--text-secondary-hover); }
 @media (hover: hover) { .stage-mode-side:hover { color: var(--text-secondary-hover); } }   /* souris seulement */
-.stage-mode-dots { display: none; }
-/* Mobile : plus de versions voisines sur les bords ; points de pagination sous le titre de la
-   version (dans le bloc de la pièce, agrandi avec elle dans l'intro : tailles en conséquence). */
-@media (max-width: 820px) {
-  .stage-mode-side { display: none; }
+/* Points de pagination des versions sous leur titre (dans le bloc de la pièce, agrandi avec elle
+   dans l'intro : tailles en conséquence) ; mobile : à la place des versions voisines sur les bords,
+   grand écran : en plus (28/09/2026). */
+@media (max-width: 820px) { .stage-mode-side { display: none; } }
+@media all {
   .stage-mode-dots { display: block; position: absolute; pointer-events: none; }
   .stage-mode-dots-row { position: absolute; left: 50%; top: calc(50% + var(--dots-y)); translate: -50% -50%; display: flex; pointer-events: auto; }
   .stage-mode-dots button { display: grid; place-items: center; width: 26px; height: 26px; padding: 0; background: none; border: 0; cursor: pointer; }

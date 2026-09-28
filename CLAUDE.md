@@ -89,6 +89,15 @@ Traitement éditorial : en-tête avec la pièce du joueur, nom, poste et âge, e
 - **Stats de la saison sous les joueurs (mobile)** : `StatsTable` (`FinalPlayers.jsx`, dans `Compare` et `SoloStats`) au format des détails par compétition — bande d'en-tête MATCHES · BUTS · ASSISTS · B+A/MATCH, une ligne par joueur (colonne du logo vide, pour l'alignement ; chiffres qui défilent) ; les lignes face à face et les colonnes de la Présentation sont masquées ; dans le jeu, les chiffres suivent l'or / le gris du vote.
 - **Lot C** : survols réservés à la souris (`@media (hover: hover)` ; au doigt, l'état restait collé : joueur soulevé, bouton plein, icône dorée) — infobulles exceptées ; glisser sur la page du duel : change le joueur du côté où le doigt s'est posé (`onSwipe(d, x)`, `playerPage.js` ; la Présentation l'avait déjà) ; barre du navigateur mobile à la couleur de la version (`THEME_COLOR`, `App.jsx`) ; vibration brève quand une pièce se pose ou qu'on vote (`haptic`, `sound.js`, Android) ; intitulés des stats à 12 px.
 
+## Grand écran harmonisé avec le mobile (28/09/2026)
+
+- **Colonne à côté du joueur** (`SidePanel`, `FinalPlayers.jsx` ; page du duel, Présentation, jeu) : bandeau d'identité (`PlayerTag` : nom, poste · âge, écusson et drapeau) puis palmarès au format du mobile (`SeasonPalmares`, `SeasonPalmares.jsx`, commun aux deux formats) ; sections alignées d'un joueur à l'autre (`pairRows` → `minRows`, lignes réservées). Le nom en arc au-dessus de la tête reste.
+- **Stats face à face** : chaque ligne en carte (fond des lignes de tableau).
+- **Détails par compétition** : une ligne par compétition, logo et 4 chiffres centrés, intitulés une fois en tête ; plus de colonnes Équipe / Résultat / Individuel, de voile or ni de Total (en-tête du tableau — pièce, nom, titres — gardé).
+- **Annonce de manche** en liste comme sur mobile (pièces jusqu'à 84 px). **Menu** : points de pagination sous le titre, en plus des versions voisines sur les bords.
+- Flèches ‹ › des joueurs rapprochées (2 % ; Présentation −4 %) : elles tombaient sur la colonne du palmarès.
+- Pas repris, volontairement : bloc remonté au plexus, sélection du Duel en colonne, curseur de vote (l'interrupteur reste).
+
 ## Charte
 
 - Variables dans `:root` (`00-base.css`) : fond `--bg` + dégradé `--bg-center` (redéfinis par version, `data-theme` : Mon classement noir, Duel nuit bleue, Les candidats vert), texte `--text`, gris `--text-secondary` (6,9:1), or `--gold`, halo `--halo`, panneaux `--panel`, durées `--t-fast/med/slow`, courbes `--ease-out/expo`.

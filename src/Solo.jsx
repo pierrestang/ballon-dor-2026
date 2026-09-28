@@ -3,7 +3,7 @@ import { m } from 'framer-motion'
 import players, { decimal, kitStyle } from './data'
 import { open } from './sequence'
 import Tip from './Tip'
-import { ArcName, Counter, Palmares, PlayerTag, RollDuration, StatsTable, SWAP_S, SwapTurn } from './FinalPlayers'
+import { ArcName, Counter, PlayerTag, RollDuration, SidePanel, StatsTable, SWAP_S, SwapTurn } from './FinalPlayers'
 import { SingleTable } from './FinalTables'
 import { finalVariants } from './transitions'
 import { useNarrow, usePlayerPage, usePlexus } from './playerPage'
@@ -90,7 +90,7 @@ export default function Solo({ player, nav, reduced, onBack, onStep }) {
       <h1 className="sr-only">Les candidats : {player.nom}</h1>
       <div className="final-band">
         <div ref={band} className="sticky duel-grid final-players solo-grid">
-          <Palmares player={shown} side="left" />
+          <SidePanel player={shown} side="left" />
           <div className="figure is-left" style={kitStyle(shown.id)}>
             <ArcName id={shown.id} name={shown.nom} />
             <PlayerTag player={shown} />

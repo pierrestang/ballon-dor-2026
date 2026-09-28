@@ -206,7 +206,33 @@
 .final-table-meta .tip { vertical-align: baseline; }
 /* Mobile seulement (masqués sur grand écran) : identité au-dessus du joueur, tableau des stats de
    la saison, palmarès et intitulé des détails dans le bloc du tableau. */
-.player-tag, .stats-table, .final-table-palm, .final-table-section, .final-table-season { display: none; }
+.player-tag, .stats-table, .final-table-section, .final-table-season { display: none; }
+@media (min-width: 821px) { .final-tables .final-table-palm { display: none; } }   /* grand écran : palmarès à côté du joueur */
+
+/* Palmarès de la saison (SeasonPalmares), mobile et grand écran : Collectif (logos des compétitions
+   gagnées, puis finales, demi-finales et places d'honneur, plus sombres) et Individuel (logo,
+   intitulé, compétition dessous) ; intitulés sans fond, filet dessous, nombre de titres en chiffre
+   italique or ; lignes au fond de carte (32 px au moins, 4 px d'écart). */
+.final-table-palm { display: grid; grid-template-columns: minmax(0, 1fr); row-gap: 20px; }
+.final-table-palm h3 { display: flex; justify-content: space-between; align-items: center; min-height: 30px; box-sizing: border-box; margin: 0 0 8px; padding-bottom: 4px;
+                       border-bottom: 1px solid rgba(237, 234, 227, 0.08);
+                       font-family: var(--font); font-weight: 700; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-secondary); }
+.final-table-palm h3 b { font-family: var(--serif); font-style: italic; font-weight: 600; font-size: 22px; line-height: 1; letter-spacing: 0; color: var(--gold); }
+.final-table-palm ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; align-content: start; }   /* hauteur réservée (alignement) : lignes calées en haut */
+.final-table-palm li { display: flex; align-items: center; gap: 10px; min-height: 32px; box-sizing: border-box;
+                       padding: 3px 8px 3px 3px; border-radius: var(--radius); background: rgba(237, 234, 227, 0.04); }
+.final-table-palm li > span { min-width: 0; font-family: var(--font); font-weight: 700; font-size: 13px; line-height: 1.15;
+                              letter-spacing: 0.04em; text-transform: uppercase; color: var(--text); }
+.final-table-palm li small { display: block; margin-top: 2px; font-size: 12px; font-weight: 500; letter-spacing: 0.05em; color: var(--text-secondary); }
+.final-table-palm li.is-minor { opacity: 0.5; }   /* places d'honneur, finales et demi-finales perdues */
+.final-table-palm li.is-minor img { filter: grayscale(0.5) drop-shadow(0 1px 2px rgba(0, 0, 0, 0.6)); }
+.final-table-palm-empty { margin: 4px 0 0; font-family: var(--serif); font-style: italic; font-weight: 600; font-size: 17px; color: var(--text-secondary); }
+/* Logos des compétitions en tuile claire (palmarès et détails). */
+:is(.final-table-palm-logo, .final-tables .details-comp .comp) {
+  flex: none; width: 26px; height: 26px; padding: 3px; box-sizing: border-box; object-fit: contain;
+  border-radius: 6px; background: rgba(244, 241, 234, 0.92); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
 
 /* ------------------------------------------------------------------ */
 /* Mobile (≤ 820 px) : pages de joueurs (page du duel, Présentation,   */
@@ -284,29 +310,8 @@
   /* Flèches ‹ › des joueurs : aux épaules, au-dessus du bloc (elles étaient à mi-hauteur, dessous). */
   :is(.final, .game) .figure-picker .arrow { top: 22%; }
 
-  /* Palmarès : deux colonnes, Collectif (logos des compétitions gagnées, puis finales et
-     demi-finales perdues, plus sombres) et Individuel (logo, intitulé, compétition dessous) ;
-     intitulés sans fond, filet dessous, nombre de titres en chiffre italique or ; lignes au fond
-     de carte (32 px au moins, 4 px d'écart). */
-  .final-table-palm { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 16px; }
-  .final-table-palm h3 { display: flex; justify-content: space-between; align-items: center; min-height: 30px; box-sizing: border-box; margin: 0 0 8px; padding-bottom: 4px;
-                         border-bottom: 1px solid rgba(237, 234, 227, 0.08);
-                         font-family: var(--font); font-weight: 700; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-secondary); }
-  .final-table-palm h3 b { font-family: var(--serif); font-style: italic; font-weight: 600; font-size: 22px; line-height: 1; letter-spacing: 0; color: var(--gold); }
-  .final-table-palm ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
-  .final-table-palm li { display: flex; align-items: center; gap: 10px; min-height: 32px; box-sizing: border-box;
-                         padding: 3px 8px 3px 3px; border-radius: var(--radius); background: rgba(237, 234, 227, 0.04); }
-  .final-table-palm li > span { min-width: 0; font-family: var(--font); font-weight: 700; font-size: 13px; line-height: 1.15;
-                                letter-spacing: 0.04em; text-transform: uppercase; color: var(--text); }
-  .final-table-palm li small { display: block; margin-top: 2px; font-size: 12px; font-weight: 500; letter-spacing: 0.05em; color: var(--text-secondary); }
-  .final-table-palm li.is-minor { opacity: 0.5; }   /* places d'honneur, finales et demi-finales perdues */
-  .final-table-palm li.is-minor img { filter: grayscale(0.5) drop-shadow(0 1px 2px rgba(0, 0, 0, 0.6)); }
-  .final-table-palm-empty { margin: 4px 0 0; font-family: var(--serif); font-style: italic; font-weight: 600; font-size: 17px; color: var(--text-secondary); }
-  /* Logos des compétitions en tuile claire (palmarès et détails). */
-  :is(.final-table-palm-logo, .final-tables .details-comp .comp) {
-    flex: none; width: 26px; height: 26px; padding: 3px; box-sizing: border-box; object-fit: contain;
-    border-radius: 6px; background: rgba(244, 241, 234, 0.92); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
-  }
+  /* Palmarès dans le bloc du tableau : deux colonnes (Collectif, Individuel). */
+  .final-tables .final-table-palm { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 16px; row-gap: 0; }
 
   /* Écusson et drapeau de l'identité : sans carré blanc, à la taille et à la place des carrés. */
   .player-tag-crest :is(.club, .flag) { width: 24px; height: 24px; padding: 2px; box-sizing: border-box; object-fit: contain;
@@ -414,22 +419,12 @@
 .final-tables .details-table thead th { color: var(--text-secondary); border-bottom: 0; }
 .final-tables .details-table tbody tr,
 .final-tables .details-table tbody tr.is-pad { border-bottom: 0; }
-@media (min-width: 821px) {   /* mobile : lignes au fond de carte, sans trait */
-  .final-tables .details-table tbody tr:not(.is-pad) td,
-  .final-tables .details-table tbody tr:not(.is-pad) th { border-top: 1px solid rgba(237, 234, 227, 0.05); }
-}
-/* Compétition remportée : ligne dorée (voile + filet à gauche), chiffres en blanc plein. */
-@media (min-width: 821px) { .final-tables .details-table tbody tr.is-won { background: linear-gradient(90deg, rgba(212, 175, 55, 0.26), rgba(212, 175, 55, 0.06) 75%, transparent); } }   /* mobile : sans voile */
-/* Filet or des lignes gagnantes, sans décaler leur contenu : toute la première colonne (intitulé,
-   lignes, Total) a le même retrait, les logos et drapeaux restent alignés. */
-@media (min-width: 821px) { .final-tables .details-table tbody tr.is-won > :first-child { box-shadow: inset 2px 0 0 var(--gold); } }   /* mobile : sans filet */
 .final-tables .details-table :is(thead th, tbody td, tfoot th):first-child { padding-left: calc(10px * var(--k) * var(--z)); }
 /* Logo du club et drapeau : même largeur, centrés sur le même axe. */
 .final-tables .details-team .club,
 .final-tables .details-team .flag { width: calc(28px * var(--k) * var(--z)); }
 .final-tables .details-team .club { height: calc(28px * var(--k) * var(--z)); }
 .final-tables .details-team .flag { height: calc(18.7px * var(--k) * var(--z)); }
-@media (min-width: 821px) { .final-tables .details-table tbody tr:not(.is-won) td:not(.details-result):not(.details-indiv) { color: rgba(237, 234, 227, 0.78); } }   /* mobile : toutes les lignes pareilles */
 /* Total : séparé par un filet doré, chiffres plus grands. */
 .final-tables .details-table tfoot tr { border-top: 1px solid rgba(212, 175, 55, 0.35); }
 .final-tables .details-table tfoot td { font-size: calc(clamp(20px, 1.9vw, 30px) * var(--k) * var(--z)); }
@@ -439,4 +434,55 @@
 .final-table-head .final-table-name { font-size: var(--nm); line-height: 1; gap: 0.12em; }
 .final-table-head .final-table-meta { line-height: 1; }
 .final-table-head .final-table-coin { width: calc(var(--nm) * 1.62); height: calc(var(--nm) * 1.62); }   /* hauteur des lettres visibles (capitales), du haut du nom au bas de « BU · 33 ANS » */
+
+/* ------------------------------------------------------------------ */
+/* Grand écran (≥ 821 px), 28/09/2026 : même langage que le mobile —    */
+/* identité en bandeau et palmarès au format mobile dans la colonne à   */
+/* côté du joueur, stats face à face en lignes de tableau, détails par  */
+/* compétition en lignes (logo et 4 chiffres ; plus d'Équipe, de        */
+/* Résultat, d'Individuel, de voile or ni de Total).                    */
+/* ------------------------------------------------------------------ */
+@media (min-width: 821px) {
+  /* Colonne à côté du joueur. */
+  .palmares { width: 100%; max-width: 320px; }
+  .palmares .player-tag {
+    display: flex; flex-direction: row-reverse; justify-content: space-between; align-items: center; gap: 12px;
+    margin-bottom: 22px; padding: 12px 12px 12px 16px;
+    border-radius: var(--radius); background: var(--panel); box-shadow: 0 0 0 1px rgba(237, 234, 227, 0.08);
+  }
+  .palmares .player-tag-crest { flex: none; display: flex; gap: 6px; }
+  .palmares .player-tag-crest :is(.club, .flag) { width: 32px; height: 32px; padding: 2px; box-sizing: border-box; object-fit: contain;
+                                                  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5)); }
+  .palmares .player-tag-text { min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+  .palmares .player-tag-name { font-family: var(--font); font-weight: 700; font-size: 19px; line-height: 1.05; letter-spacing: 0.04em;
+                               text-transform: uppercase; color: var(--text); transition: color 0.32s var(--ease-out); }
+  .palmares .player-tag-poste { font-family: var(--font); font-weight: 700; font-size: 14px; line-height: 1.15; letter-spacing: 0.05em;
+                                text-transform: uppercase; color: var(--text-secondary); }
+  .palmares .final-table-palm li > span { font-size: 14px; }
+
+  /* Stats face à face : chaque ligne en carte, comme les lignes des tableaux. */
+  .compare-row { box-sizing: border-box; padding: 8px 16px; border-radius: var(--radius); background: rgba(237, 234, 227, 0.04); }
+
+  /* Détails par compétition : une ligne par compétition — logo, puis les 4 chiffres centrés ;
+     intitulés une fois, en tête ; fond de carte, 44 px, 6 px d'écart. */
+  .final-tables .details-table,
+  .final-tables .details-table :is(thead, tbody) { display: block; width: 100%; }
+  .final-tables .details-table :is(colgroup, tfoot, tr.is-pad, .details-team, td.details-result, td.details-indiv),
+  .final-tables .details-table thead th:is(:nth-child(1), :nth-child(7), :nth-child(8)) { display: none; }
+  .final-tables .details-table :is(thead, tbody) tr {
+    display: grid; grid-template-columns: 36px repeat(4, minmax(0, 1fr)); align-items: center; column-gap: 12px;
+    height: auto; padding: 4px 14px 4px 4px; border-radius: var(--radius);
+  }
+  .final-tables .details-table thead tr { min-height: 32px; padding-top: 0; padding-bottom: 0; margin-bottom: 6px; }
+  .final-tables .details-table thead th { padding: 0; text-align: center; font-family: var(--font); font-weight: 700; font-size: 13px;
+                                          letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-secondary); }
+  .final-tables .details-table thead th:nth-child(2) { visibility: hidden; font-size: 0; }
+  .final-tables .details-table tbody tr { min-height: 44px; box-sizing: border-box; background: rgba(237, 234, 227, 0.04); }
+  .final-tables .details-table tbody tr + tr { margin-top: 6px; }
+  .final-tables .details-table.details-table :is(td, th) { padding: 0; border: 0; }
+  .final-tables .details-table th.details-comp { grid-column: 1; display: flex; align-items: center; }
+  .final-tables .details-comp .comp { width: 36px; height: 36px; padding: 4px; }
+  .final-tables .details-table td[data-label] { font-family: var(--font); font-weight: 700; font-size: 20px; line-height: 36px; text-align: center;
+                                               font-variant-numeric: tabular-nums; color: var(--text); }
+}
 

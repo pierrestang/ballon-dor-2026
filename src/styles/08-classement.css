@@ -105,9 +105,10 @@
 /* Halo doré derrière chaque duel : une ellipse qui englobe les deux pièces (en plus du halo de
    chaque pièce) ; apparaît avec elles (Game.jsx). */
 .game-pairing-name { display: none; }
-/* Mobile : annonce de manche en liste compacte, un duel par ligne : pièce, nom · VS · nom, pièce
-   (cinq duels empilés en grand débordaient de l'écran, noms en arc à 8 px). */
-@media (max-width: 820px) {
+/* Annonce de manche en liste, un duel par ligne : nom · pièce · VS · pièce · nom (mobile d'abord :
+   cinq duels empilés en grand débordaient de l'écran, noms en arc à 8 px ; grand écran depuis le
+   28/09/2026, tailles plus bas). */
+@media all {
   .game-pairings.is-first { gap: clamp(10px, 2.8vh, 26px); width: min(420px, 100%); }   /* duels espacés en hauteur */
   .game-pairings.is-first .game-pairings-row { flex-direction: column; flex-wrap: nowrap; gap: clamp(10px, 2.8vh, 26px); width: 100%; }
   .game-pairings.is-first .game-pairing { justify-content: space-between; gap: 0; padding: 6px 4px; width: 100%; box-sizing: border-box; }
@@ -123,6 +124,12 @@
   .game-pairing .game-draw-coin + .game-draw-coin .game-pairing-name { text-align: left; }
   .game-pairing .game-vs.is-small { top: 50%; font-size: 16px; }
   .game-pairing-halo { inset: -4px 10%; }
+}
+@media (min-width: 821px) {
+  .game-pairings.is-first { width: min(620px, 100%); }
+  .game-pairing .game-draw-coin { gap: 16px; }
+  .game-pairing-name { font-size: 19px; }
+  .game-pairing .game-vs.is-small { font-size: 22px; }
 }
 .game-pairing-halo {
   position: absolute;
@@ -261,29 +268,26 @@
 /* Tous les textes blancs du joueur choisi passent à l'or en même temps que son nom : poste et
    titres de son palmarès (les places d'honneur gardent leur argent / bronze), ses chiffres des
    stats face à face ; léger décalage de haut en bas. */
-.game-grid :is(.palmares .poste, .palmares .award, .compare-row strong, .stats-table-row strong) { transition: color 0.32s var(--ease-out); }
-.game-grid.is-won-left .palmares.is-left :is(.poste, .award),
-.game-grid.is-won-right .palmares.is-right :is(.poste, .award),
+.game-grid :is(.palmares .player-tag-name, .compare-row strong, .stats-table-row strong) { transition: color 0.32s var(--ease-out); }
+.game-grid .palmares { transition: opacity 0.32s var(--ease-out); }
+/* Joueur choisi : son nom (bandeau de la colonne) et ses chiffres passent à l'or. */
+.game-grid.is-won-left .palmares.is-left .player-tag-name,
+.game-grid.is-won-right .palmares.is-right .player-tag-name,
 .game-grid.is-won-left .compare-row strong:first-child,
 .game-grid.is-won-right .compare-row strong:last-child,
 .game-grid.is-won-left .stats-table-row.is-left strong,
 .game-grid.is-won-right .stats-table-row.is-right strong { color: var(--gold); }   /* stats-table : mobile */
-/* En même temps, les textes du perdant s'assombrissent (même rythme). */
-.game-grid.is-won-right .palmares.is-left :is(.poste, .award, h3),
-.game-grid.is-won-left .palmares.is-right :is(.poste, .award, h3),
+/* En même temps, le perdant s'assombrit : ses chiffres, sa colonne (identité et palmarès). */
 .game-grid.is-won-right .compare-row strong:first-child,
 .game-grid.is-won-left .compare-row strong:last-child,
 .game-grid.is-won-right .stats-table-row.is-left strong,
 .game-grid.is-won-left .stats-table-row.is-right strong { color: #4a4843; }
-.game-grid .palmares h3 { transition: color 0.32s var(--ease-out); }
-/* Places d'honneur (2e, 3e meilleur…) du gagnant : en or comme ses autres titres, sans leur grisé. */
-.game-grid.is-won-left .palmares.is-left .block li.is-minor,
-.game-grid.is-won-right .palmares.is-right .block li.is-minor { filter: none; opacity: 1; }
-.game-grid .palmares li:nth-child(2) .award, .game-grid .compare-row:nth-child(2) strong { transition-delay: 40ms; }
-.game-grid .palmares li:nth-child(3) .award, .game-grid .compare-row:nth-child(3) strong { transition-delay: 80ms; }
-.game-grid .palmares li:nth-child(4) .award, .game-grid .compare-row:nth-child(4) strong { transition-delay: 120ms; }
-.game-grid .palmares li:nth-child(n+5) .award { transition-delay: 160ms; }
-@media (prefers-reduced-motion: reduce) { .game-figure .arc-name tspan, .game-grid :is(.palmares .poste, .palmares .award, .compare-row strong) { transition: none; } }
+.game-grid.is-won-right .palmares.is-left,
+.game-grid.is-won-left .palmares.is-right { opacity: 0.35; }
+.game-grid .compare-row:nth-child(2) strong { transition-delay: 40ms; }
+.game-grid .compare-row:nth-child(3) strong { transition-delay: 80ms; }
+.game-grid .compare-row:nth-child(4) strong { transition-delay: 120ms; }
+@media (prefers-reduced-motion: reduce) { .game-figure .arc-name tspan, .game-grid :is(.palmares, .palmares .player-tag-name, .compare-row strong) { transition: none; } }
 .game-figure-vote:focus-visible { outline: none; }
 .game-figure::before { transition: opacity var(--t-med) var(--ease-out), inset var(--t-med) var(--ease-out); }
 @media (hover: hover) { .game-figure:has(.game-figure-vote:not(:disabled):hover)::before { inset: 8% -18% 4%; } }

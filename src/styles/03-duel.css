@@ -130,8 +130,8 @@
   .figure-picker .arrow:hover { background: none; box-shadow: none; color: #fff; opacity: 1; }
   .figure-picker .arrow:hover svg { filter: drop-shadow(0 0 7px rgba(255, 255, 255, 0.9)); }
 }
-.figure-picker .arrow.is-outer-left { left: -10%; }     /* joueur de gauche : flèche côté bord */
-.figure-picker .arrow.is-outer-right { right: -10%; }   /* joueur de droite : flèche côté bord */
+.figure-picker .arrow.is-outer-left { left: 2%; }     /* joueur de gauche : flèche côté bord, sans empiéter sur la colonne du palmarès */
+.figure-picker .arrow.is-outer-right { right: 2%; }   /* joueur de droite : flèche côté bord */
 .rotation,
 .still { transition: opacity var(--t-fast) var(--ease-out); }
 .rotation.is-hidden { opacity: 0; }
@@ -189,75 +189,11 @@
   align-self: start;
   margin-top: clamp(8px, 4vh, 48px);
   max-width: 300px;
-  max-height: 100%;
-  overflow-y: auto;
 }
 .palmares.is-left { grid-area: palmA; justify-self: stretch; }
 
-/* Joueur de droite : infos alignées sur la droite, en miroir du joueur de gauche. */
-.palmares.is-right {
-  grid-area: palmB;
-  justify-self: stretch;
-  text-align: right;
-}
-.palmares.is-right .badges { align-items: flex-end; }
-.palmares.is-right .flag-row,
-.palmares.is-right .block li { flex-direction: row-reverse; }
-/* Logo du club, dessous le drapeau suivi du poste. */
-.palmares .badges {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 10px;
-  margin-bottom: 18px;
-}
-.flag-row { display: flex; align-items: center; gap: 12px; }
-.poste { font-size: 28px; line-height: 1; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
-.palmares h2 {
-  color: var(--text);
-  font-size: 19px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  margin-bottom: 14px;
-}
-.block + .block { margin-top: 18px; }
-.block h3 {
-  font-size: var(--fs-label);
-  font-weight: 700;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  padding-bottom: 6px;
-  margin-bottom: 8px;
-  border-bottom: 1px solid var(--line);
-  width: 55%;   /* séparateur court */
-}
-.palmares.is-right .block h3 { margin-left: auto; }
-.block ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
-.block li {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 17px;
-  line-height: 1.1;
-}
-.block li span { flex: 1; }
-/* Places d'honneur (2e, 3e) grisées : elles ne comptent pas dans le score. */
-.block li.is-minor { filter: grayscale(0.7) opacity(1); }   /* opacité 0,6 : dans Reveal (Duel.jsx) ;
-   même liste de filtres qu'à l'état effacé, pour que le changement de joueur les fonde */
-/* Titres du palmarès. */
-.award { font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; color: var(--text); }
-.block .comp {
-  width: 28px;
-  height: 28px;
-  padding: 4px;
-  object-fit: contain;
-  flex: none;
-  border-radius: var(--radius);
-  background: rgba(244, 241, 234, 0.92);
-}
-.empty { color: var(--muted); }
+.palmares.is-right { grid-area: palmB; justify-self: stretch; }
+/* Contenu (grand écran) : identité (PlayerTag) puis palmarès (SeasonPalmares), 05-page-duel.css. */
 
 /* Mobile : les deux joueurs côte à côte, leurs stats dessous (tableau des stats, identité et
    palmarès : 05-page-duel.css). */
@@ -297,7 +233,6 @@
    (Flap, FinalPlayers.jsx) ; nouvelles lignes en fondu. */
 .palmares .flap, .player-tag .flap { animation: flap-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) both; transform-origin: 50% 50%; }   /* rythme ROLL */
 @keyframes flap-in { from { transform: perspective(200px) rotateX(-90deg); opacity: 0.2; } to { transform: none; opacity: 1; } }
-.palmares li { animation: game-swap-in 0.4s var(--ease-out) both; }
 @keyframes game-swap-in { from { opacity: 0; } to { opacity: 1; } }
-@media (prefers-reduced-motion: reduce) { .palmares .flap, .palmares li { animation: none; } }
+@media (prefers-reduced-motion: reduce) { :is(.palmares, .player-tag) .flap { animation: none; } }
 

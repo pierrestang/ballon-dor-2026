@@ -7,7 +7,7 @@ import { MODE_FONT, R_MODE } from './Carousel'   // taille et rayon du titre de 
 import { GAME_STORE, OLD_GAME_STORE, setMenuLocked } from './storage'
 import { open } from './sequence'
 import { ClubLogo, Flag } from './Nameplate'
-import { ArcName, Compare, Palmares, PlayerTag, RollDuration, SWAP_REST_S, SwapTurn } from './FinalPlayers'
+import { ArcName, Compare, PlayerTag, RollDuration, SidePanel, SWAP_REST_S, SwapTurn, pairRows } from './FinalPlayers'
 import FinalTables from './FinalTables'
 import { TablesDown, TablesUp } from './PageArrows'
 import { usePlexus } from './playerPage'
@@ -78,7 +78,7 @@ function useSizes() {
     const w = window.innerWidth, h = window.innerHeight
     const mobile = w <= 820
     return {
-      first: Math.round(mobile ? Math.min(w * 0.18, 72, h * 0.09) : Math.min(h * 0.17, w * 0.095)),   // mobile : liste (08-classement.css), pièces selon la hauteur
+      first: Math.round(mobile ? Math.min(w * 0.18, 72, h * 0.09) : Math.min(h * 0.09, 84)),   // annonce de manche en liste (08-classement.css), pièces selon la hauteur
       ceremony: Math.round(Math.min(w, h) * (mobile ? 0.56 : 0.4)),   // pièce de l'intro, un peu réduite pour les arcs
     }
   }
@@ -408,7 +408,7 @@ function Duel({ a, reduced, onVote, picked, tablesRef, mainRef, atTables, onSwap
                      sub={barrage ? next.label.replace('Barrage · ', '').toUpperCase()
                                   : `DUEL ${next.duel} SUR ${a.rounds[next.round - 1].length}`} gold />
           </div>
-          <Palmares player={SL} side="left" />
+          <SidePanel player={SL} side="left" rows={pairRows(SL, SR)} />
           <Side player={L} shown={SL} side="left" state={shownState(SL.id)} onVote={() => vote(L.id)} onMid={swapNow} />
           {/* Au milieu : stats de la saison (sans les titres, déjà dans les palmarès), puis
               l'interrupteur de vote dessous. */}
@@ -419,7 +419,7 @@ function Duel({ a, reduced, onVote, picked, tablesRef, mainRef, atTables, onSwap
             <VoteSlider left={L} right={R} picked={picked || (swapping ? 'wait' : null)} onVote={vote} />
           </div>
           <Side player={R} shown={SR} side="right" state={shownState(SR.id)} onVote={() => vote(R.id)} onMid={swapNow} />
-          <Palmares player={SR} side="right" />
+          <SidePanel player={SR} side="right" rows={pairRows(SL, SR)} />
         </div>
         {/* Tableaux affichés : flèche retournée vers le haut, sans libellé (PageArrows). */}
         {atTables
