@@ -237,7 +237,8 @@
     pointer-events: none;
   }
   /* Écusson du club et drapeau, côte à côte. */
-  .player-tag-crest { flex: none; display: flex; gap: 4px; }
+  .player-tag-crest { flex: none; display: flex; gap: 4px; align-self: flex-end; margin-bottom: 2px; }   /* calés sur le bas du bandeau : alignés d'un joueur à l'autre, quelle que soit la longueur du nom */
+  .solo .player-tag-crest { align-self: center; margin-bottom: 0; }
   .player-tag-text { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
   .player-tag-name { font-family: var(--font); font-weight: 700; font-size: 14px; line-height: 1.05; letter-spacing: 0.04em;
                      text-transform: uppercase; color: var(--text); transition: color 0.32s var(--ease-out); }
