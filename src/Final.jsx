@@ -1,8 +1,8 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { m } from 'framer-motion'
 import players from './data'
 import { open } from './sequence'
-import FinalPlayers from './FinalPlayers'
+import FinalPlayers, { RollDuration, SWAP_S } from './FinalPlayers'
 import FinalTables from './FinalTables'
 import { finalVariants } from './transitions'
 import { usePlayerPage } from './playerPage'
@@ -17,6 +17,12 @@ import { PageUp, TablesDown, TablesUp } from './PageArrows'
 
 export default function Final({ pair, nav, reduced, onBack, onStep }) {
   const page = useRef(null)
+  // Textes et tableaux : les joueurs `shown`, remplacés par `pair` quand la rotation de la vidéo
+  // commence (SwapTurn, onStart) ; leur défilement dure la rotation (RollDuration) : départ et
+  // fin communs.
+  const [shown, setShown] = useState(pair)
+  const pairRef = useRef(pair)
+  pairRef.current = pair
   // Séquences des voisins de chaque joueur (précédent, suivant, l'autre joueur sauté comme dans
   // App.jsx) chargées à l'avance : au changement, la rotation part tout de suite.
   useEffect(() => {
@@ -37,17 +43,20 @@ export default function Final({ pair, nav, reduced, onBack, onStep }) {
   return (
     <m.main ref={page} className="final" custom={nav} variants={finalVariants}
             initial="hidden" animate="shown" exit="exit">
+      <RollDuration.Provider value={SWAP_S}>
       <h1 className="sr-only">Le duel en détail</h1>
       <div className="final-band">
         <div className="sticky duel-grid final-players">
-          <FinalPlayers pair={pair} onStep={(side, d) => { if (!atTablesRef.current) onStep(side, d) }} />
+          <FinalPlayers pair={pair} shown={shown} onStart={() => setShown(pairRef.current)}
+                        onStep={(side, d) => { if (!atTablesRef.current) onStep(side, d) }} />
         </div>
         <TablesDown onClick={toTables} />
       </div>
       <div ref={tables} className="details final-tables">
-        <FinalTables pair={pair} />
+        <FinalTables pair={shown} />
       </div>
       {atTables ? <TablesUp onClick={toTop} /> : <PageUp label="Changer de duel" onClick={back} />}
+      </RollDuration.Provider>
     </m.main>
   )
 }

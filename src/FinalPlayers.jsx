@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { createContext, useContext, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { animate, cubicBezier, useReducedMotion } from 'framer-motion'
 import { FRAMES, ageOf, asset, clubLogo, decimal, kitStyle, photoUrl, posteLabel } from './data'
 import { frameAt, hasFrames, open, subscribe } from './sequence'
@@ -12,6 +12,15 @@ import Tip from './Tip'
 const SWAP = 2       // SwapTurn : fondu entre les deux joueurs sur ±2 images autour du relais
 const SWAP_S = 2     // SwapTurn : durée d'un tour complet (changement de joueur ; arrivée : ¾ de tour en 1,5 s)
 const RELAY = FRAMES / 4   // relais à 90° (de profil) : image 12 sur 48 (28/09/2026)
+const SWAP_EASE = [0.45, 0, 0.55, 1]   // accélération et arrêt doux, vitesse régulière au milieu
+// Temps restant après le relais (s) : la courbe atteint 90° vers 41 % du tour, pas 25 % ;
+// calculé par dichotomie sur la courbe (le jeu y cale le défilement de ses textes).
+export const SWAP_REST_S = (() => {
+  const ease = cubicBezier(...SWAP_EASE)
+  let lo = 0, hi = 1
+  for (let k = 0; k < 30; k++) { const mid = (lo + hi) / 2; if (ease(mid) < RELAY / FRAMES) lo = mid; else hi = mid }
+  return SWAP_S * (1 - lo)
+})()
 
 /** Joueur en vidéo qui tourne (page du duel, Présentation, duels de Mon classement). À l'arrivée,
     la rotation est déjà lancée : elle part de 90° (de profil) et finit le tour jusqu'à la face.
@@ -19,7 +28,11 @@ const RELAY = FRAMES / 4   // relais à 90° (de profil) : image 12 sur 48 (28/0
     prend le relais (bref fondu) et finit le tour jusqu'à sa face. `onMid` : appelé au relais (le
     reste de la page change en même temps, jeu). Mouvement réduit : la photo du nouveau joueur,
     directement. */
-export function SwapTurn({ id, name, onMid }) {
+export function SwapTurn({ id, name, onMid, onStart }) {
+  // onStart : appelé quand le changement commence vraiment (rotation lancée, ou changement direct
+  // si les séquences manquent / mouvement réduit) — la page y lance ses textes (même départ).
+  const startRef = useRef(onStart)
+  startRef.current = onStart
   const reduced = useReducedMotion()
   const canvas = useRef(null)
   const pos = useRef({ from: id, to: id, v: 0 })   // joueurs et position dans le tour (0 → FRAMES)
@@ -66,7 +79,7 @@ export function SwapTurn({ id, name, onMid }) {
     first.current = false
     open(id)
     const offs = [subscribe(from, draw), subscribe(id, draw)]
-    if (reduced) { pos.current = { from: id, to: id, v: 0 }; setStill(id); if (!isFirst) onMid?.(); return () => offs.forEach((f) => f()) }
+    if (reduced) { pos.current = { from: id, to: id, v: 0 }; setStill(id); if (!isFirst) { startRef.current?.(); onMid?.() } return () => offs.forEach((f) => f()) }
     let anim, cancelled = false, mid = false
     const passMid = () => { if (mid) return; mid = true; setStill(id); if (!isFirst) onMid?.() }
     ;(async () => {
@@ -78,16 +91,17 @@ export function SwapTurn({ id, name, onMid }) {
         await new Promise((r) => setTimeout(r, 50))
         if (cancelled) return
       }
-      if (!ready) { pos.current = { from: id, to: id, v: 0 }; passMid(); return }
+      if (!ready) { pos.current = { from: id, to: id, v: 0 }; if (!isFirst) startRef.current?.(); passMid(); return }
       // Arrivée : de 90° à la face (trois quarts de tour, déjà lancé) ; changement : tour complet,
       // relais à 90°.
       const start = isFirst ? RELAY : 0
+      if (!isFirst) startRef.current?.()
       pos.current = { from, to: id, v: start }
       draw()
       setTurning(true)
       anim = animate(start, FRAMES, {
         duration: isFirst ? SWAP_S * 0.75 : SWAP_S,
-        ease: isFirst ? [0.25, 0.5, 0.35, 1] : [0.45, 0, 0.55, 1],   // arrivée : déjà en mouvement, arrêt doux
+        ease: isFirst ? [0.25, 0.5, 0.35, 1] : SWAP_EASE,   // arrivée : déjà en mouvement, arrêt doux
         onUpdate: (v) => {
           pos.current.v = v
           if (v >= RELAY) passMid()
@@ -127,7 +141,13 @@ const rollEase = cubicBezier(...ROLL.ease)
     change pas, il défile. Chaque position passe par des caractères au hasard (lettres, ou
     chiffres pour un texte numérique) et se pose sur la bonne, de gauche à droite, au fil de
     la courbe ROLL ; la longueur passe de l'ancienne à la nouvelle. Mouvement réduit : direct. */
+/** Durée du défilement des textes (s) : 0,6 par défaut ; les pages de joueurs la calent sur la
+    rotation de la vidéo (RollDuration), pour que textes et vidéo finissent ensemble. */
+export const RollDuration = createContext(ROLL.duration)
+export { SWAP_S }
+
 function useRollingText(text, trigger = text, onMount = false) {
+  const duration = useContext(RollDuration)
   const reduced = useReducedMotion()
   const [shown, setShown] = useState(text)
   const prev = useRef({ text, trigger: onMount ? {} : trigger })   // onMount : défile dès l'affichage
@@ -141,7 +161,7 @@ function useRollingText(text, trigger = text, onMount = false) {
     const pool = /^[\d\s,.–-]*$/.test(text) ? ROLL_DIGITS : ROLL_CHARS
     let raf
     const frame = (now) => {
-      const k = rollEase(Math.min(1, (now - t0) / (ROLL.duration * 1000)))
+      const k = rollEase(Math.min(1, (now - t0) / (duration * 1000)))
       const len = Math.round(old.length + (n - old.length) * Math.min(1, k * 2))
       let out = ''
       for (let i = 0; i < len; i++) {
@@ -345,8 +365,10 @@ export function Palmares({ player, side }) {
 
 /** Bloc des deux joueurs : palmarès · joueur · stats · joueur · palmarès. `onStep(side, 1)` :
     joueur suivant de ce côté (flèches, comme en page 2). */
-export default function FinalPlayers({ pair, onStep }) {
-  const [a, b] = pair
+/** `pair` : joueurs des vidéos (changent tout de suite) ; `shown` : joueurs des textes, changés
+    par la page quand la rotation commence (`onStart`), pour que textes et vidéo partent ensemble. */
+export default function FinalPlayers({ pair, shown = pair, onStep, onStart }) {
+  const [a, b] = shown
   return (
     <>
       <h2 className="sr-only">{a.nom} contre {b.nom}</h2>
@@ -355,7 +377,7 @@ export default function FinalPlayers({ pair, onStep }) {
         <div key={i ? 'right' : 'left'} className={`figure is-${i ? 'right' : 'left'}`} style={kitStyle(p.id)}>
           <ArcName id={p.id} name={p.nom} />
           <PlayerTag player={p} />
-          <SwapTurn id={p.id} name={p.nom} />
+          <SwapTurn id={pair[i].id} name={pair[i].nom} onStart={onStart} />
           <div className="figure-picker">
             <button className={`arrow ${i ? 'is-outer-right' : 'is-outer-left'}`}
                     onClick={() => onStep(i, 1)} aria-label="Joueur suivant">

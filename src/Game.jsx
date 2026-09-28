@@ -7,7 +7,7 @@ import { MODE_FONT, R_MODE } from './Carousel'   // taille et rayon du titre de 
 import { GAME_STORE, OLD_GAME_STORE, setMenuLocked } from './storage'
 import { open } from './sequence'
 import { ClubLogo, Flag } from './Nameplate'
-import { ArcName, Compare, Palmares, PlayerTag, SwapTurn } from './FinalPlayers'
+import { ArcName, Compare, Palmares, PlayerTag, RollDuration, SWAP_REST_S, SwapTurn } from './FinalPlayers'
 import FinalTables from './FinalTables'
 import { TablesDown, TablesUp } from './PageArrows'
 import { shareRanking } from './shareImage'
@@ -360,6 +360,9 @@ function Duel({ a, reduced, onVote, picked, tablesRef, mainRef, atTables, onSwap
   useEffect(() => { upcoming?.forEach((id) => open(id)) }, [upcoming?.join()])
   return (
     <m.section className="game-duel-page" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+      {/* Textes changés au relais de la rotation (onMid, à 90°) : leur défilement dure le reste du
+          tour (SWAP_REST_S), textes et vidéo finissent ensemble. */}
+      <RollDuration.Provider value={SWAP_REST_S}>
       {/* Même grille que la page du duel (duel-grid, final-players) : joueurs, palmarès, stats et
           noms en arc aux mêmes places et tailles ; titre de la manche au centre de la bande du
           haut (vide sur la page du duel). */}
@@ -390,6 +393,7 @@ function Duel({ a, reduced, onVote, picked, tablesRef, mainRef, atTables, onSwap
       <div ref={tablesRef} className="details final-tables game-tables">
         <FinalTables pair={[SL, SR]} />
       </div>
+      </RollDuration.Provider>
     </m.section>
   )
 }

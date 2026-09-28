@@ -1,9 +1,9 @@
-import { useEffect, useLayoutEffect, useRef } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { m } from 'framer-motion'
 import players, { decimal, kitStyle } from './data'
 import { open } from './sequence'
 import Tip from './Tip'
-import { ArcName, Counter, Palmares, PlayerTag, StatsTable, SwapTurn } from './FinalPlayers'
+import { ArcName, Counter, Palmares, PlayerTag, RollDuration, StatsTable, SWAP_S, SwapTurn } from './FinalPlayers'
 import { SingleTable } from './FinalTables'
 import { finalVariants } from './transitions'
 import { useNarrow, usePlayerPage } from './playerPage'
@@ -70,6 +70,12 @@ export default function Solo({ player, nav, reduced, onBack, onStep }) {
   }, [narrow, player.id])
 
   const step = (d) => { if (!atTablesRef.current) onStep(d) }
+  // Textes et tableau : le joueur `shown`, remplacé par `player` quand la rotation de la vidéo
+  // commence (SwapTurn, onStart) ; leur défilement dure la rotation (RollDuration) : départ et fin
+  // communs.
+  const [shown, setShown] = useState(player)
+  const playerRef = useRef(player)
+  playerRef.current = player
   // Séquences du joueur précédent et du suivant chargées à l'avance : au changement, la rotation
   // part tout de suite (sinon elle attend la séquence du nouveau joueur).
   useEffect(() => {
@@ -79,14 +85,15 @@ export default function Solo({ player, nav, reduced, onBack, onStep }) {
   return (
     <m.main ref={page} className="final solo" custom={nav} variants={finalVariants}
             initial="hidden" animate="shown" exit="exit">
+      <RollDuration.Provider value={SWAP_S}>
       <h1 className="sr-only">Les candidats : {player.nom}</h1>
       <div className="final-band">
         <div ref={band} className="sticky duel-grid final-players solo-grid">
-          <Palmares player={player} side="left" />
-          <div className="figure is-left" style={kitStyle(player.id)}>
-            <ArcName id={player.id} name={player.nom} />
-            <PlayerTag player={player} />
-            <SwapTurn id={player.id} name={player.nom} />
+          <Palmares player={shown} side="left" />
+          <div className="figure is-left" style={kitStyle(shown.id)}>
+            <ArcName id={shown.id} name={shown.nom} />
+            <PlayerTag player={shown} />
+            <SwapTurn id={player.id} name={player.nom} onStart={() => setShown(playerRef.current)} />
             <div className="figure-picker">
               <button className="arrow is-outer-left" onClick={() => step(-1)} aria-label="Joueur précédent">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" /></svg>
@@ -96,14 +103,15 @@ export default function Solo({ player, nav, reduced, onBack, onStep }) {
               </button>
             </div>
           </div>
-          <SoloStats player={player} />
+          <SoloStats player={shown} />
         </div>
         <TablesDown onClick={toTables} />
       </div>
       <div ref={tables} className="details final-tables">
-        <SingleTable player={player} />
+        <SingleTable player={shown} />
       </div>
       {atTables ? <TablesUp onClick={toTop} label="Voir le joueur" /> : <PageUp label="Les candidats" onClick={back} />}
+      </RollDuration.Provider>
     </m.main>
   )
 }
