@@ -35,6 +35,7 @@ export function usePlayerPage({ pageRef, tablesRef, reduced, onBack, onArrow, on
     const onScroll = () => {
       const vh = window.innerHeight
       pageRef.current?.style.setProperty('--down', Math.min(1, window.scrollY / (vh * 0.5)).toFixed(3))
+      pageRef.current?.style.setProperty('--sy', `${Math.round(window.scrollY)}px`)   // grand écran : bandeaux figés (05-page-duel.css)
       const v = window.scrollY > vh * 0.4
       if (v !== atTablesRef.current) { atTablesRef.current = v; setAtTables(v) }
     }
@@ -135,14 +136,18 @@ export function usePlexus(pageRef) {
     const set = () => {
       page.style.setProperty('--plexus', `${Math.round(fig.offsetHeight * (1 - PLEXUS))}px`)
       // Grand écran, deux joueurs : décalage qui centre le bandeau d'identité sur sa moitié de page (--tag-dx).
+      // Gardé dans l'écran (16 px du bord) si le bandeau est large.
       for (const f of figs) {
         const r = f.getBoundingClientRect(), mid = r.left + r.width / 2, half = innerWidth / 2
-        f.style.setProperty('--tag-dx', figs.length > 1 ? `${Math.round((mid < half ? half / 2 : half * 1.5) - mid)}px` : '0px')
+        const w = f.querySelector('.player-tag')?.offsetWidth ?? 0
+        const want = Math.min(Math.max(mid < half ? half / 2 : half * 1.5, w / 2 + 16), innerWidth - w / 2 - 16)
+        f.style.setProperty('--tag-dx', figs.length > 1 ? `${Math.round(want - mid)}px` : '0px')
       }
     }
     set()
     const ro = new ResizeObserver(set)
     ro.observe(fig)
+    page.querySelectorAll('.player-tag').forEach((t) => ro.observe(t))
     addEventListener('resize', set)
     return () => { ro.disconnect(); removeEventListener('resize', set) }
   }, [])

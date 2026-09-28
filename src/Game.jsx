@@ -520,6 +520,7 @@ export default function Game({ nav, relay, onBack: leave }) {
     setAtTables(el.scrollTop > el.clientHeight * 0.4)
     // Joueurs effacés à mesure qu'on descend vers les tableaux (--down : 0 en haut → 1 à mi-écran).
     el.style.setProperty('--down', Math.min(1, el.scrollTop / (el.clientHeight * 0.5)).toFixed(3))
+    el.style.setProperty('--sy', `${Math.round(el.scrollTop)}px`)   // grand écran : bandeaux et titre figés (05-page-duel.css)
   }
   // Pièce de l'intro à reprendre (App.jsx, classement déjà fait) par l'annonce du Ballon d'Or ;
   // consommée au premier affichage.

@@ -291,3 +291,4 @@ Même jour : grand écran — nom en arc retiré, bandeau d'identité à sa plac
 Même jour (soir) : grand écran — bloc des stats plus compact ; « Assists » → « Passes », « B+A/Match » → « Buts + passes D / match » (deux lignes) ; bandeau d'identité : prénom et nom (en or) sur une ligne, écusson et drapeau en carrés blancs à droite du nom (essais écartés : prénom et nom sur deux lignes, ligne club et pays en toutes lettres).
 Même soir : en-tête des tableaux détaillés (pièce, nom, poste · âge, titres) retiré partout ; grand écran : nom de la compétition à côté de son logo dans les détails.
 Même soir : visuel des scores appliqué partout (plus de panneau autour des blocs, seules les lignes ont un fond) ; sur mobile, le bloc du tableau ne remonte plus sur le joueur (sans panneau, texte illisible sur la vidéo).
+Même soir : grand écran — bandeaux d'identité et titre de manche figés en descendant vers les tableaux, le reste s'efface.

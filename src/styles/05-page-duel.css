@@ -387,12 +387,22 @@
   :is(.final, .game) .figure .arc-name { display: none; }
   .figure .player-tag {
     display: flex; flex-direction: row-reverse; justify-content: flex-end; align-items: center; gap: 20px;
-    position: absolute; left: 50%; bottom: calc(100% + 44px); translate: calc(-50% + var(--tag-dx, 0px)) 0; z-index: 3;   /* --tag-dx : centré sur sa moitié de page (usePlexus) */
+    position: absolute; left: 50%; bottom: calc(100% + 44px); translate: calc(-50% + var(--tag-dx, 0px)) var(--sy, 0px); z-index: 3;   /* --tag-dx : centré sur sa moitié de page (usePlexus) */
     width: max-content; min-width: 300px; max-width: 480px; box-sizing: border-box; padding: 14px 16px 14px 22px;
     border-radius: var(--radius); background: rgba(237, 234, 227, 0.04);   /* fond des lignes de stats au milieu */
     pointer-events: none;
   }
   /* Écusson et drapeau à droite du nom, en carrés blancs. */
+  /* Vers les tableaux : bandeaux d'identité (et titre de la manche) figés à l'écran (--sy : défilement,
+     playerPage.js / Game.jsx) ; tout le reste de la vue des joueurs s'efface (--down) ; les tableaux
+     arrivent dessous. */
+  :is(.final .final-players, .game .game-grid) { overflow: visible; }
+  :is(.final .final-players, .game-grid) .figure { filter: none; z-index: 3; }
+  :is(.final .final-players, .game-grid) :is(.figure > :not(.player-tag), .figure::before, .figure::after, .palmares, .compare, .game-mid) {
+    filter: opacity(calc(1 - var(--down, 0)));
+  }
+  .game-grid-head { position: relative; z-index: 3; translate: 0 var(--sy, 0px); }
+  :is(.game, .final) .final-tables.details { padding-top: 232px; }
   .figure .player-tag-crest { flex: none; display: flex; gap: 8px; align-self: flex-start; }
   .figure .player-tag-crest :is(.club, .flag) { width: 34px; height: 34px; padding: 4px; box-sizing: border-box; object-fit: contain;
                                                 border-radius: 6px; background: rgba(244, 241, 234, 0.92); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5); }
