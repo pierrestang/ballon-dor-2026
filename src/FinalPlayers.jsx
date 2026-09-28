@@ -1,9 +1,8 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { animate, useReducedMotion } from 'framer-motion'
+import { animate, cubicBezier, useReducedMotion } from 'framer-motion'
 import { FRAMES, ageOf, asset, clubLogo, decimal, kitStyle, photoUrl, posteLabel } from './data'
 import { frameAt, hasFrames, open, subscribe } from './sequence'
 import Tip from './Tip'
-import { ARC_FONT, Stamp, stampColor, useStamp } from './Letters'
 
 // Copie du bloc des deux joueurs de la page 2 (Duel.jsx), pour la page finale (Final.jsx) :
 // même disposition (palmarès · joueur · stats face à face · joueur · palmarès), même contenu,
@@ -114,11 +113,58 @@ export function SwapTurn({ id, name, onMid }) {
   )
 }
 
-/** Texte animé à chaque changement de joueur (`trigger`), même s'il est identique : comme le nom
-    des candidats (Stamp, Letters.jsx). */
-function Rolling({ text, trigger, onMount = false }) {
+/** Textes et chiffres des pages de joueurs au changement de joueur (façon tableau d'affichage) : chaque
+    position passe par des lettres au hasard puis se pose sur la bonne, de gauche à droite
+    (0,6 s en tout) ; la longueur passe de l'ancien nom au nouveau. Mouvement réduit : direct. */
+const ROLL_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZÉ'
+const ROLL_DIGITS = '0123456789'
+// Même rythme que le compteur des chiffres (Counter) : 0,6 s, courbe [0.16, 1, 0.3, 1] ; toutes
+// les lettres d'un texte et tous les textes défilent ensemble, sans décalage.
+const ROLL = { duration: 0.6, ease: [0.16, 1, 0.3, 1] }
+const rollEase = cubicBezier(...ROLL.ease)
+
+/** Défilement vers `text` à chaque changement de `trigger` (le joueur) : même si le texte ne
+    change pas, il défile. Chaque position passe par des caractères au hasard (lettres, ou
+    chiffres pour un texte numérique) et se pose sur la bonne, de gauche à droite, au fil de
+    la courbe ROLL ; la longueur passe de l'ancienne à la nouvelle. Mouvement réduit : direct. */
+function useRollingText(text, trigger = text, onMount = false) {
   const reduced = useReducedMotion()
-  return <Stamp text={text} trigger={trigger} onMount={onMount} reduced={reduced} />
+  const [shown, setShown] = useState(text)
+  const prev = useRef({ text, trigger: onMount ? {} : trigger })   // onMount : défile dès l'affichage
+  useEffect(() => {
+    const before = prev.current
+    const old = before.text
+    const changed = before.trigger !== trigger || old !== text
+    prev.current = { text, trigger }
+    if (!changed || reduced) { setShown(text); return }
+    const t0 = performance.now(), n = text.length
+    const pool = /^[\d\s,.–-]*$/.test(text) ? ROLL_DIGITS : ROLL_CHARS
+    let raf
+    const frame = (now) => {
+      const k = rollEase(Math.min(1, (now - t0) / (ROLL.duration * 1000)))
+      const len = Math.round(old.length + (n - old.length) * Math.min(1, k * 2))
+      let out = ''
+      for (let i = 0; i < len; i++) {
+        const settle = 0.2 + (0.8 * (i + 1)) / Math.max(1, n)   // la lettre i se pose à cet instant
+        const target = text[i] ?? ''
+        out += k >= settle || /[\s,.–-]/.test(target) ? target : pool[Math.floor(Math.random() * pool.length)]
+      }
+      setShown(k >= 1 ? text : out)
+      raf = k < 1 ? requestAnimationFrame(frame) : 0
+    }
+    let done = false
+    const frame0 = frame
+    raf = requestAnimationFrame(function run(now) { frame0(now); if (!raf) done = true })
+    // Interrompu avant la fin (effet rejoué en développement, ou texte qui rechange) : on remet
+    // l'état d'avant, pour que le défilement reparte au lieu d'être tenu pour fait.
+    return () => { cancelAnimationFrame(raf); if (!done) prev.current = before }
+  }, [text, trigger, reduced])
+  return shown
+}
+
+/** Texte qui défile à chaque changement de joueur (`trigger`), même s'il est identique. */
+function Rolling({ text, trigger, onMount = false }) {
+  return useRollingText(text, trigger, onMount)
 }
 
 /** Image qui bascule comme une palette de tableau d'affichage à chaque changement de joueur
@@ -149,11 +195,7 @@ export function PlayerTag({ player }) {
 export function ArcName({ id, name: target, letters = false }) {
   // Taille selon le nom final (pas de saut de taille pendant le défilement des lettres).
   const fontSize = Math.min(135, 880 / (target.length * 0.5))
-  // Changement de joueur : animé comme le nom des candidats (useStamp) ; les lettres montent vers
-  // l'extérieur de l'arc (dy cumulés : chaque tspan décale à partir du précédent).
-  const reduced = useReducedMotion()
-  const { text: name, chars } = useStamp(target, id, { reduced })
-  const unit = fontSize / ARC_FONT
+  const name = useRollingText(target, id)
   // letters : une lettre par <tspan>, retard de transition selon la distance au milieu du nom
   // (passage du blanc à l'or du centre vers les bords, duels de Mon classement).
   const mid = (name.length - 1) / 2
@@ -162,11 +204,7 @@ export function ArcName({ id, name: target, letters = false }) {
       <path id={`final-name-${id}`} d="M 80 250 A 520 520 0 0 1 920 250" />
       <text fontSize={fontSize}>
         <textPath href={`#final-name-${id}`} startOffset="50%" textAnchor="middle">
-          {chars ? [...name].map((ch, i) => {
-            const c = chars[i] ?? { off: 0, o: 1 }
-            const dy = -(c.off - (chars[i - 1]?.off ?? 0)) * unit
-            return <tspan key={i} dy={dy} style={{ opacity: c.o, fill: stampColor(c.k) }}>{ch}</tspan>
-          }) : letters ? [...name].map((ch, i) => (
+          {letters ? [...name].map((ch, i) => (
             <tspan key={i} style={{ transitionDelay: `${Math.round(Math.abs(i - mid) * 38)}ms` }}>{ch}</tspan>
           )) : name}
         </textPath>
@@ -194,9 +232,9 @@ function CompareRow({ label, tip, left, right, format, trigger }) {
 /** Chiffre qui défile comme un compteur mécanique vers sa nouvelle valeur quand elle change
     (0,6 s, décélération) ; à l'arrivée et en mouvement réduit, la valeur directement. */
 export function Counter({ value, format = String, trigger, onMount = false }) {
-  // Changement de joueur : le chiffre est frappé comme le nom des candidats (Stamp), plus de compteur.
-  const reduced = useReducedMotion()
-  return <span className="counter"><Stamp text={format(value)} trigger={trigger} onMount={onMount} reduced={reduced} /></span>
+  // Changement de joueur : les chiffres défilent au hasard puis se posent, de gauche à droite
+  // (useRollingText, comme les textes).
+  return <span className="counter">{useRollingText(format(value), trigger, onMount)}</span>
 }
 
 // Stats de la saison, dans le tableau du mobile (StatsTable) : mêmes colonnes que les détails par
