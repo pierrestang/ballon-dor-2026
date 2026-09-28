@@ -257,6 +257,7 @@
 /* Duel prêt : flèche clignotante de l'intro (.intro-down) en bas de l'écran, vers le duel. */
 .pick-go { opacity: 0; visibility: hidden; transition: opacity 0.4s, visibility 0s 0.4s; }
 .pick-go.is-on { opacity: 1; visibility: visible; transition: opacity var(--t-med) var(--ease-out); }
+.stage.is-live .pick-go.is-on { pointer-events: auto; }   /* son calque (.stage-layer) laisse passer les clics : le bouton, lui, doit les prendre */
 
 /* Intro et sélection : une seule scène (Carousel.jsx). Couches plein écran ; la sélection ne
    répond qu'à la fin de la transition (.is-live). */

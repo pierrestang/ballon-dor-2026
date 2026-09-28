@@ -20,7 +20,7 @@ const NAME_BELOW = 0.72   // bas du nom en arc, en diamètres de la pièce sous 
 const BOTTOM_SPACE = 80   // px laissés en bas (grand écran) à l'aide clavier et à la flèche
 const TITLE_MOBILE = 150   // px réservés en haut (mobile) à la flèche « Menu » et au titre « DUEL »
 const BOTTOM_MOBILE = 96   // px réservés en bas (mobile) à « LANCER LE DUEL » et son chevron
-const GROUP_GAP = 28       // mobile : du bas des noms des emplacements au haut de la pièce centrale
+const GROUP_GAP = 28       // mobile : du bas du nom de la pièce centrale au haut des emplacements
 
 // Géométrie de l'écran : diamètre D de la pièce centrale (centre en coinY), diamètre G des pièces
 // fantômes (et des pièces posées), centres des deux emplacements.
@@ -57,8 +57,8 @@ export function useLayout() {
       return { vw, vh, D, G, wide, titleY, coinY, slotY: coinY, slotYReady: coinY, slotX: [vw / 2 - off, vw / 2 + off],
                slotXReady: [vw / 2 - near, vw / 2 + near], ring: ringLayout(vw, vh) }
     }
-    // Mobile : emplacements côte à côte (« VS » entre les deux), pièce dessous ; le groupe entier
-    // (emplacements et leurs noms, écart, pièce et son nom) centré entre le titre (TITLE_MOBILE)
+    // Mobile : pièce en haut, emplacements côte à côte dessous (« VS » entre les deux) ; le groupe
+    // entier (pièce et son nom, écart, emplacements et leurs noms) centré entre le titre (TITLE_MOBILE)
     // et « LANCER LE DUEL » (BOTTOM_MOBILE) — il était calé en haut, 40 % de l'écran vide
     // dessous, et la pièce chevauchait les noms des emplacements sur les petits écrans ;
     // pièces réduites si la place manque.
@@ -69,12 +69,13 @@ export function useLayout() {
     const fit = (room - GROUP_GAP) / ((G + D) * (0.5 + NAME_BELOW))
     if (fit < 1) { G *= fit; D *= fit }
     G = Math.round(G); D = Math.round(D)
+    // Pièce centrale en haut, emplacements « JOUEUR 1 » / « JOUEUR 2 » dessous (28/09/2026).
     const groupH = (G + D) * (0.5 + NAME_BELOW) + GROUP_GAP
-    const slotY = TITLE_MOBILE + Math.max(0, (room - groupH) / 2) + G / 2
-    const coinY = slotY + G * NAME_BELOW + GROUP_GAP + D / 2
+    const coinY = TITLE_MOBILE + Math.max(0, (room - groupH) / 2) + D / 2
+    const slotY = coinY + D * NAME_BELOW + GROUP_GAP + G / 2
     const half = G / 2 + vsGap
     // Duel prêt : la pièce centrale s'efface, les deux pièces descendent au centre de la place libre.
-    const slotYReady = Math.max(slotY, TITLE_MOBILE + room / 2 - (G * NAME_BELOW - G / 2) / 2)
+    const slotYReady = TITLE_MOBILE + room / 2 - (G * NAME_BELOW - G / 2) / 2
     return { vw, vh, D, G, wide, coinY, slotY, slotYReady, slotX: [vw / 2 - half, vw / 2 + half],
              slotXReady: [vw / 2 - half, vw / 2 + half], ring: ringLayout(vw, vh) }
   }

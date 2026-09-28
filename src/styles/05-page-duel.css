@@ -145,7 +145,7 @@
 .final-tables .details-table tfoot th {
   padding-left: 0;
 }
-.final-tables .details-panel { min-width: 0; overflow: hidden; }
+.final-tables .details-panel { min-width: 0; }   /* pas d'overflow: hidden : il coupait les infobulles (intitulés, logos, ratio) */
 .final-tables .details-table { width: 100%; }
 /* Intitulés longs (« Compétition ») : espace de part et d'autre, jamais collés à leurs voisins. */
 .final-tables .details-table thead th {
