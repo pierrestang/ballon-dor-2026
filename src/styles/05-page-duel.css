@@ -245,6 +245,7 @@
   .final-tables .details-table thead th { padding: 0; text-align: left; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-secondary); }
   .final-tables .details-table thead th:is(:nth-child(1), :nth-child(7), :nth-child(8)) { display: none; }
   .final-tables .details-table thead th:nth-child(2) { visibility: hidden; }   /* colonne des logos */
+  .final-tables .details-table thead th:nth-child(n+3) { text-align: center; }   /* intitulés centrés sur les scores */
   /* Fond de carte sur chaque ligne ; 32 px de haut et 4 px d'écart : même pas (36 px) que les
      lignes de Collectif. */
   .final-tables .details-table tbody tr { padding: 3px 10px 3px 3px; border-radius: var(--radius); background: rgba(237, 234, 227, 0.04); }
@@ -259,7 +260,7 @@
   .final-tables .details-comp .comp { width: 26px; height: 26px; padding: 3px; box-sizing: border-box; flex: none;
                                       border-radius: 6px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5); }
   .final-tables .details-table :is(td.details-result, td.details-indiv) { display: none; }
-  .final-tables .details-table td[data-label] { height: 26px; font-size: 16px; line-height: 26px; font-variant-numeric: tabular-nums; color: var(--text); }
+  .final-tables .details-table td[data-label] { height: 26px; font-size: 16px; line-height: 26px; font-variant-numeric: tabular-nums; color: var(--text); text-align: center; }
   .final-tables .details-table td[data-label] .tip { display: inline; line-height: inherit; }   /* ratio en infobulle : même hauteur de ligne */
   .final-tables .details-table tfoot { display: none; }
   /* Stats de la saison sous les joueurs (StatsTable) : même tableau que les détails par compétition
@@ -273,9 +274,9 @@
     padding: 3px 10px 3px 3px; border-radius: var(--radius);
   }
   .stats-table-head { min-height: 28px; padding-top: 0; padding-bottom: 0; background: rgba(237, 234, 227, 0.08); }
-  .stats-table-head > span { font-family: var(--font); font-weight: 700; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-secondary); }
+  .stats-table-head > span { text-align: center; font-family: var(--font); font-weight: 700; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-secondary); }
   .stats-table-row { min-height: 32px; box-sizing: border-box; background: rgba(237, 234, 227, 0.04); }
-  .stats-table-row strong { font-family: var(--font); font-weight: 700; font-size: 16px; line-height: 26px; text-align: left;
+  .stats-table-row strong { font-family: var(--font); font-weight: 700; font-size: 16px; line-height: 26px; text-align: center;
                             font-variant-numeric: tabular-nums; color: var(--text); }
   .stats-table-slot { position: relative; grid-column: 1; }   /* colonne du logo, vide (nom pour les lecteurs d'écran) */   /* pas de total (les stats de la saison sont au-dessus des joueurs) */
   /* Un seul bloc par joueur : le palmarès séparé et « Voir le tableau détaillé » disparaissent,

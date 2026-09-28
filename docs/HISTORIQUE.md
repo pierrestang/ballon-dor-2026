@@ -249,3 +249,4 @@ Même jour : « Soulier d'or européen » affiché « Soulier d'or » partout (p
 Même jour : « CHAMPION » / « VAINQUEUR » sous les titres gagnés retirés (demande) ; seuls « FINALISTE » / « DEMI-FINALISTE » restent sous les lignes atténuées.
 Même jour : stats globales sous les joueurs harmonisées avec le tableau (demande) : `StatsTable`, mêmes colonnes et même rythme (bande d'en-tête 28 px, lignes 32 px au fond de carte, pièce 26 px, chiffres 16 px) ; masquage des lignes face à face renforcé (`.compare.compare`) contre la règle de la Présentation.
 Même jour : intitulés COLLECTIF / INDIVIDUEL du palmarès dans une bande (28 px, fond 8 %, comme l'en-tête des tableaux) ; pièce retirée des lignes des stats de la saison (colonne laissée vide pour l'alignement, nom du joueur pour les lecteurs d'écran).
+Même jour : scores et intitulés centrés dans leurs colonnes (stats de la saison et détails par compétition, mobile).
