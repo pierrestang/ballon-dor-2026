@@ -144,6 +144,52 @@ const rollEase = cubicBezier(...ROLL.ease)
 /** Durée du défilement des textes (s) : 0,6 par défaut ; les pages de joueurs la calent sur la
     rotation de la vidéo (RollDuration), pour que textes et vidéo finissent ensemble. */
 export const RollDuration = createContext(ROLL.duration)
+
+/** Texte affiché au temps u (0 → 1) du défilement de `old` vers `text` : chaque position passe par
+    des caractères au hasard (lettres, ou chiffres pour un texte numérique) et se pose sur la
+    bonne, à intervalles de temps réguliers, de gauche à droite ; la longueur passe de l'ancienne à
+    la nouvelle. */
+function rollString(old, text, u) {
+  const n = text.length
+  const pool = /^[\d\s,.–-]*$/.test(text) ? ROLL_DIGITS : ROLL_CHARS
+  const len = Math.round(old.length + (n - old.length) * Math.min(1, rollEase(u) * 2))
+  let out = ''
+  for (let i = 0; i < len; i++) {
+    // Lettres posées sur le temps linéaire (sur la courbe ralentie, les dernières traînaient).
+    const settle = 0.2 + (0.8 * (i + 1)) / Math.max(1, n)
+    const target = text[i] ?? ''
+    out += u >= settle || /[\s,.–-]/.test(target) ? target : pool[Math.floor(Math.random() * pool.length)]
+  }
+  return u >= 1 ? text : out
+}
+
+/** Même défilement, écrit directement dans la page (sans rendu React à chaque image) : pour les
+    nombreux textes des tableaux. Défile à l'affichage (`onMount`) et à chaque changement de
+    `trigger`. */
+export function RollText({ text, trigger, onMount = false }) {
+  const duration = useContext(RollDuration)
+  const reduced = useReducedMotion()
+  const ref = useRef(null)
+  const prev = useRef({ text, trigger: onMount ? {} : trigger })
+  useLayoutEffect(() => {
+    const el = ref.current
+    const before = prev.current
+    const changed = before.trigger !== trigger || before.text !== text
+    prev.current = { text, trigger }
+    el.textContent = text
+    if (!changed || reduced) return
+    const t0 = performance.now()
+    let raf = 0, done = false
+    const frame = (now) => {
+      const u = Math.min(1, (now - t0) / (duration * 1000))
+      el.textContent = rollString(before.text, text, u)
+      if (u < 1) raf = requestAnimationFrame(frame); else done = true
+    }
+    raf = requestAnimationFrame(frame)
+    return () => { cancelAnimationFrame(raf); if (!done) { prev.current = before; el.textContent = text } }
+  }, [text, trigger, reduced, duration])
+  return <span ref={ref} />
+}
 export { SWAP_S }
 
 function useRollingText(text, trigger = text, onMount = false) {
@@ -157,23 +203,12 @@ function useRollingText(text, trigger = text, onMount = false) {
     const changed = before.trigger !== trigger || old !== text
     prev.current = { text, trigger }
     if (!changed || reduced) { setShown(text); return }
-    const t0 = performance.now(), n = text.length
-    const pool = /^[\d\s,.–-]*$/.test(text) ? ROLL_DIGITS : ROLL_CHARS
+    const t0 = performance.now()
     let raf
     const frame = (now) => {
       const u = Math.min(1, (now - t0) / (duration * 1000))   // temps écoulé (linéaire)
-      const k = rollEase(u)
-      const len = Math.round(old.length + (n - old.length) * Math.min(1, k * 2))
-      let out = ''
-      for (let i = 0; i < len; i++) {
-        // La lettre i se pose à cet instant, à intervalles de temps réguliers (temps linéaire : sur
-        // la courbe ralentie, les dernières lettres traînaient, la dernière surtout).
-        const settle = 0.2 + (0.8 * (i + 1)) / Math.max(1, n)
-        const target = text[i] ?? ''
-        out += u >= settle || /[\s,.–-]/.test(target) ? target : pool[Math.floor(Math.random() * pool.length)]
-      }
-      setShown(k >= 1 ? text : out)
-      raf = k < 1 ? requestAnimationFrame(frame) : 0
+      setShown(rollString(old, text, u))
+      raf = u < 1 ? requestAnimationFrame(frame) : 0
     }
     let done = false
     const frame0 = frame

@@ -5,7 +5,7 @@
 import { m } from 'framer-motion'
 import { ageOf, asset, coinUrl, decimal, posteLabel } from './data'
 import Tip from './Tip'
-import { StatsTable } from './FinalPlayers'
+import { RollText, StatsTable } from './FinalPlayers'
 import { ClubLogo, Flag } from './Nameplate'
 import { SLIDE } from './transitions'
 
@@ -20,14 +20,15 @@ const goalsOnly = (s) => s.contributionsParMatch === null && s.passes === null &
 const ratio = (s) => (goalsOnly(s) ? s.buts / s.matchs : s.contributionsParMatch)
 const RATIO_GOALS_TIP = 'Buts / match (passes non relevées)'
 // Ratio nul (0,00) ou inconnu : « – » (27/09/2026).
-const ratioCell = (s) => {
+const ratioCell = (s, roll = (t) => t) => {
   const r = goalsOnly(s) ? ratio(s) : s.contributionsParMatch
   if (r === null || Math.round(r * 100) === 0) return '–'
-  return goalsOnly(s) ? <Tip label={RATIO_GOALS_TIP}>{decimal(r)}</Tip> : decimal(r)
+  return goalsOnly(s) ? <Tip label={RATIO_GOALS_TIP}>{roll(decimal(r))}</Tip> : roll(decimal(r))
 }
 // Assists non relevées : 0 (27/09/2026).
-const cells = (s) => [s.matchs, s.buts, s.passes ?? 0,
-  ratioCell(s)]
+// roll : habille chaque texte (défilement au changement de joueur, RollText).
+const cells = (s, roll = (t) => t) => [roll(String(s.matchs)), roll(String(s.buts)), roll(String(s.passes ?? 0)),
+  ratioCell(s, roll)]
 
 // Familles alignées d'un tableau à l'autre (27/09/2026) : championnat, coupes nationales
 // (supercoupes comprises), coupes d'Europe et intercontinentales, compétitions internationales
@@ -120,32 +121,34 @@ const nearTitles = (player) => ['Finaliste', '2ème place', 'Demi-finaliste', '3
     distinctions individuelles (logo de la compétition, son nom dessous ; places
     d'honneur atténuées), chacune avec son nombre de titres (distinctions : les 1ers). */
 function Palmares({ player }) {
+  // Textes qui défilent à l'affichage du bloc (recréé à chaque changement de joueur).
+  const roll = (t) => <RollText text={t} trigger={player.id} onMount />
   const coll = collectiveTitles(player)
   const near = nearTitles(player)
   const wins = player.individuel.filter((t) => t.rang === 1).length
   return (
     <m.div className="final-table-palm" {...row(1)}>
       <div className="final-table-palm-col">
-        <h3>Collectif{coll.length > 0 && <b>{coll.length}</b>}</h3>
+        <h3>Collectif{coll.length > 0 && <b>{roll(String(coll.length))}</b>}</h3>
         {coll.length + near.length ? (
           <ul>
             {[...coll, ...near].map((t) => (
               <li key={t.nom} className={t.won ? undefined : 'is-minor'}>
                 <img className="final-table-palm-logo" src={asset(t.logo)} alt="" loading="lazy" width="36" height="36" />
-                <span>{t.nom}{t.sub && <small>{t.sub}</small>}</span>
+                <span>{roll(t.nom)}{t.sub && <small>{roll(t.sub)}</small>}</span>
               </li>
             ))}
           </ul>
         ) : <p className="final-table-palm-empty">Aucun titre</p>}
       </div>
       <div className="final-table-palm-col">
-        <h3>Individuel{wins > 0 && <b>{wins}</b>}</h3>
+        <h3>Individuel{wins > 0 && <b>{roll(String(wins))}</b>}</h3>
         {player.individuel.length ? (
           <ul>
             {player.individuel.map((t) => (
               <li key={t.titre} className={t.rang > 1 ? 'is-minor' : undefined}>
                 <img className="final-table-palm-logo" src={asset(t.logo)} alt="" loading="lazy" width="36" height="36" />
-                <span>{t.titre.split(' — ')[0]}<small>{t.competition}</small></span>
+                <span>{roll(t.titre.split(' — ')[0])}<small>{roll(t.competition)}</small></span>
               </li>
             ))}
           </ul>
@@ -156,6 +159,8 @@ function Palmares({ player }) {
 }
 
 function Table({ player, side, medals, sizes }) {
+  // Chiffres qui défilent à l'affichage du bloc (recréé à chaque changement de joueur).
+  const roll = (t) => <RollText text={t} trigger={player.id} onMount />
   // Lignes du tableau, famille par famille : ses compétitions, puis des lignes vides jusqu'à la
   // taille commune de la famille (sizes).
   const lines = GROUPS.flatMap((g, gi) => {
@@ -169,15 +174,15 @@ function Table({ player, side, medals, sizes }) {
       <m.header className="final-table-head" {...row(0)}>
         <img className="final-table-coin" src={coinUrl(player.id)} alt="" width="64" height="64" />
         <h2 className="final-table-name">
-          <span className="final-table-player">{player.nom}</span>
+          <span className="final-table-player">{roll(player.nom)}</span>
           <span className="final-table-meta">
-            <Tip label={posteLabel(player.poste)}>{player.poste}</Tip>
-            {ageOf(player.id) !== null && <> · {ageOf(player.id)} ans</>}
+            <Tip label={posteLabel(player.poste)}>{roll(player.poste)}</Tip>
+            {ageOf(player.id) !== null && <> · {roll(`${ageOf(player.id)} ans`)}</>}
           </span>
         </h2>
         {/* Aucun titre collectif : rien d'affiché (un « 0 » contredirait les distinctions individuelles). */}
         {totals(player)[4] > 0 && (
-          <span className="final-table-titles"><b>{totals(player)[4]}</b> {totals(player)[4] > 1 ? 'titres' : 'titre'}</span>
+          <span className="final-table-titles"><b>{roll(String(totals(player)[4]))}</b> {totals(player)[4] > 1 ? 'titres' : 'titre'}</span>
         )}
       </m.header>
       {/* Mobile : stats de la saison du joueur, au-dessus de son palmarès (page du duel, Présentation). */}
@@ -218,7 +223,7 @@ function Table({ player, side, medals, sizes }) {
                   </Tip>
                 </th>
                 {/* data-label : intitulé de la colonne, affiché au-dessus du chiffre dans les cartes du mobile. */}
-                {cells(c).map((v, k) => <td key={k} data-label={COLUMNS[k]}>{v}</td>)}
+                {cells(c, roll).map((v, k) => <td key={k} data-label={COLUMNS[k]}>{v}</td>)}
                 {/* Parcours de l'équipe ; titre remporté : le trophée. */}
                 <td className="details-result">
                   {c.trophee ? (
@@ -251,9 +256,9 @@ function Table({ player, side, medals, sizes }) {
               const t = totals(player)
               return (
                 <>
-                  {cells(player.stats).map((v, k) => <td key={k} data-label={COLUMNS[k]}>{v}</td>)}
-                  <td className="details-total-titles" data-label="Titres">{t[4]}</td>
-                  <td className="details-total-indiv" data-label="Distinctions">{t[5]}</td>
+                  {cells(player.stats, roll).map((v, k) => <td key={k} data-label={COLUMNS[k]}>{v}</td>)}
+                  <td className="details-total-titles" data-label="Titres">{roll(String(t[4]))}</td>
+                  <td className="details-total-indiv" data-label="Distinctions">{roll(String(t[5]))}</td>
                 </>
               )
             })()}
