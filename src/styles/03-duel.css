@@ -164,7 +164,7 @@
   width: 100%;
 }
 .compare-row strong {
-  font-size: clamp(30px, 3.2vw, 56px);
+  font-size: clamp(28px, calc(3.2vw - 2px), 54px);
   font-weight: 700;
   line-height: 1;
   font-variant-numeric: tabular-nums;

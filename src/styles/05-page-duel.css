@@ -15,8 +15,6 @@
 @media (min-width: 821px) {
   /* Bas réservé à « Détails des compétitions » (--foot) : les pieds ne le touchent jamais. */
   :is(.final .final-players, .game .game-grid) { --foot: 72px; padding-bottom: var(--foot); --fh: min(calc(100svh - var(--band) - 60px - 56px - var(--foot)), 38vw); }
-  /* Page du duel : stats à la place qu'elles ont au-dessus du curseur de vote du jeu. */
-  .final:not(.solo) .final-players .compare { margin-bottom: calc(52px + clamp(28px, 6vh, 56px)); }
 }
 :is(.final .final-players, .game-grid) .figure { filter: opacity(calc(1 - var(--down, 0))); }   /* filter, pas opacity : la vidéo et la photo gardent leur propre opacité */
 
