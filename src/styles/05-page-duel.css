@@ -514,6 +514,19 @@
   .final-tables .details-table thead th:nth-child(2) { visibility: hidden; font-size: 0; }
   .final-tables .details-table tbody tr { min-height: clamp(34px, 4.2vh, 44px); box-sizing: border-box; background: rgba(237, 234, 227, 0.04); }   /* hauteur des lignes du palmarès */
   .final-tables .details-table tbody tr + tr { margin-top: 6px; }
+  /* Survol d'une carte (stats, palmarès, compétitions, bandeau du nom) : le fond s'éclaire, sans
+     contour (souris seulement). Transitions de .palmares li (03-duel.css) reprises ; pas de
+     transition de translate sur le bandeau du nom (il suit le défilement, --sy). */
+  @media (hover: hover) {
+    :is(.compare-row, .final-table-palm li, .final-tables .details-table tbody tr) {
+      transition: translate var(--t-fast) var(--ease-out), filter var(--t-fast) var(--ease-out),
+                  background-color var(--t-fast) var(--ease-out);
+    }
+    .figure .player-tag { pointer-events: auto; transition: background-color var(--t-fast) var(--ease-out); }
+    :is(.compare-row, .final-table-palm li, .final-tables .details-table tbody tr, .figure .player-tag):hover {
+      background-color: rgba(237, 234, 227, 0.09);
+    }
+  }
   .final-tables .details-table.details-table :is(td, th) { padding: 0; border: 0; }
   .final-tables .details-table th.details-comp { grid-column: 1; display: flex; align-items: center; }
   .final-tables .details-comp .comp { width: 32px; height: 32px; padding: 3px; }

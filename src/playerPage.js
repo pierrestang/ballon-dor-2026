@@ -44,7 +44,7 @@ export function usePlayerPage({ pageRef, tablesRef, reduced, onBack, onArrow, on
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  const scrollTo = (y) => animate(window.scrollY, y, { duration: reduced ? 0 : 0.8, ease: 'easeInOut',
+  const scrollTo = (y) => animate(window.scrollY, y, { duration: reduced ? 0 : 1.2, ease: 'easeInOut',
                                                       onUpdate: (v) => window.scrollTo(0, v) })
   const toTables = () => {
     const el = tablesRef.current

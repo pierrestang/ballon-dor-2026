@@ -29,7 +29,7 @@ export const SWAP_REST_S = (() => {
     prend le relais (bref fondu) et finit le tour jusqu'à sa face. `onMid` : appelé au relais (le
     reste de la page change en même temps, jeu). Mouvement réduit : la photo du nouveau joueur,
     directement. */
-const SPIN_PX = 10   // défilement : pixels par image de la séquence
+const SPIN_PX = 24   // défilement : pixels par image de la séquence (≈ ½ tour sur un écran)
 
 export function SwapTurn({ id, name, onMid, onStart }) {
   // onStart : appelé quand le changement commence vraiment (rotation lancée, ou changement direct

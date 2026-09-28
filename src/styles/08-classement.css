@@ -124,7 +124,11 @@
   .game-pairing .game-draw-coin + .game-draw-coin .game-pairing-name { text-align: left; }
   .game-pairing .game-vs.is-small { top: 50%; font-size: 16px; }
   .game-pairing-halo { inset: -4px 10%; }
-  .game-pairing .game-draw-coin::before { opacity: 0.25; }   /* halo de chaque pièce réduit */
+  .game-pairing-first { color: var(--text); }   /* prénom en blanc, nom en or */
+  /* Halo de chaque pièce : autour de la pièce seule (sur toute la boîte nom + pièce, il faisait
+     une bande orange sur la ligne), et discret. */
+  .game-pairing .game-draw-coin::before { inset: calc(var(--d) * -0.18) auto; right: calc(var(--d) * -0.18); width: calc(var(--d) * 1.36); opacity: 0.12; }
+  .game-pairing .game-draw-coin + .game-draw-coin::before { right: auto; left: calc(var(--d) * -0.18); }
 }
 @media (min-width: 821px) {
   .game-pairings.is-first { width: min(620px, 100%); }

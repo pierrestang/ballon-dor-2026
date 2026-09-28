@@ -253,7 +253,7 @@ function DrawCoin({ id, size, delay, fly }) {
       {/* Mobile : prénom sur la 1re ligne, nom sur la 2e (texte droit à côté de la pièce ; l'arc y
           tombait à 8 px). Un seul mot (« Rodri ») : une ligne. */}
       <span className="game-pairing-name" aria-hidden="true">
-        {byId[id].nom.includes(' ') ? <>{byId[id].nom.split(' ')[0]}<br />{byId[id].nom.split(' ').slice(1).join(' ')}</> : byId[id].nom}
+        {byId[id].nom.includes(' ') ? <><span className="game-pairing-first">{byId[id].nom.split(' ')[0]}</span><br />{byId[id].nom.split(' ').slice(1).join(' ')}</> : byId[id].nom}
       </span>
     </m.div>
   )
