@@ -543,8 +543,8 @@ export default function Carousel({ nav, pair, setPair, onOpen, onGame, onSolo, m
           </button>
         ))}
         <button className={`intro-down pick-go${ready ? ' is-on' : ''}`} onClick={() => onOpen()}
-                disabled={!ready || !live} aria-hidden={!ready} aria-label="Lancer le duel">
-          <span className="intro-down-label is-touch" aria-hidden="true">Lancer le duel</span>
+                disabled={!ready || !live} aria-hidden={!ready} aria-label="Comparer">
+          <span className="intro-down-label is-touch" aria-hidden="true">Comparer</span>
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9l7 7 7-7" /></svg>
         </button>
       </m.div>}

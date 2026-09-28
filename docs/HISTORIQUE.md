@@ -293,3 +293,4 @@ Même soir : en-tête des tableaux détaillés (pièce, nom, poste · âge, titr
 Même soir : visuel des scores appliqué partout (plus de panneau autour des blocs, seules les lignes ont un fond) ; sur mobile, le bloc du tableau ne remonte plus sur le joueur (sans panneau, texte illisible sur la vidéo).
 Même soir : grand écran — bandeaux d'identité et titre de manche figés en descendant vers les tableaux, le reste s'efface.
 Même soir : mobile — bandeau d'identité figé en descendant, fond opaque au-dessus du bloc.
+Même soir : série de retouches (tableaux sous les bandeaux, Présentation rééquilibrée, annonce de manche en or, bande sombre sous les bandeaux figés, « Comparer », curseur réduit).

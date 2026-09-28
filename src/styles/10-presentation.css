@@ -9,7 +9,8 @@
   grid-template-areas: '. . .' 'palmA figA mid';
 }
 .solo .palmares.is-left { justify-self: end; width: min(300px, 100%); }
-.solo .solo-stats { justify-self: center; align-self: start; gap: clamp(10px, 2.2vh, 22px); }   /* hauteur : Solo.jsx */
+.solo .solo-stats { justify-self: start; align-self: start;   /* à la même distance du joueur que le palmarès */
+  gap: clamp(10px, 2.2vh, 22px); }   /* hauteur : Solo.jsx */
 /* Intitulé (deux mots : deux lignes) puis score dessous, centrés (mobile : tableau des stats). */
 @media (min-width: 821px) { .solo .solo-stats .compare-row { display: flex; flex-direction: column; align-items: center; gap: 6px; } }
 .solo .solo-stats .compare-row > span { max-width: none; white-space: pre-line; }
