@@ -158,6 +158,11 @@ function Table({ player, side, medals, sizes }) {
       {/* En-tête éditorial : sa pièce, puis prénom et nom, poste et âge ; titres de la saison. */}
       <m.header className="final-table-head" {...row(0)}>
         <img className="final-table-coin" src={coinUrl(player.id)} alt="" width="64" height="64" />
+        {/* Mobile : l'écusson du club et le drapeau en médaillon, à la place de la pièce. */}
+        <span className="final-table-crest">
+          {clubLogo(player.club) && <img className="club" src={clubLogo(player.club)} alt="" width="52" height="52" />}
+          <img className="flag" src={asset(player.drapeau)} alt="" width="48" height="32" />
+        </span>
         <h2 className="final-table-name">
           <span className="final-table-player">{player.nom}</span>
           <span className="final-table-meta">
@@ -170,18 +175,6 @@ function Table({ player, side, medals, sizes }) {
           <span className="final-table-titles"><b>{totals(player)[4]}</b> {totals(player)[4] > 1 ? 'titres' : 'titre'}</span>
         )}
       </m.header>
-      {/* Mobile : le bloc du joueur réunit tout (le palmarès séparé n'y est plus affiché) : club
-          (écusson et drapeau en médaillon), poste en toutes lettres, nombre de distinctions. */}
-      <m.div className="final-table-club" {...row(0)}>
-        <span className="final-table-crest">
-          {clubLogo(player.club) && <img className="club" src={clubLogo(player.club)} alt="" width="52" height="52" />}
-          <img className="flag" src={asset(player.drapeau)} alt="" width="48" height="32" />
-        </span>
-        <span className="final-table-club-text">
-          <span className="final-table-club-name">{player.club}</span>
-          <span className="final-table-poste">{posteLabel(player.poste)}</span>
-        </span>
-      </m.div>
       <Palmares player={player} />
       <m.h3 className="final-table-section" {...row(1)}>Détails par compétition</m.h3>
       <table className={`details-table has-medals-${medals}`}>

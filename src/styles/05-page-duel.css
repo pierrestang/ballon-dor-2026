@@ -218,7 +218,7 @@
 .final-table-meta .tip { vertical-align: baseline; }
 /* Bloc unique du joueur (mobile seulement) : ligne du club, pastille des compétitions gagnées,
    distinctions écrites, distinctions sans compétition. */
-.final-table-club, .final-table-palm, .final-table-section, .stats-table { display: none; }
+.final-table-palm, .final-table-section, .stats-table, .final-table-crest, .player-tag { display: none; }
 /* Mobile : une carte par compétition (le tableau à 7 colonnes était illisible, intitulés en
    10 px). Ligne 1 : logo et nom de la compétition, résultat à droite (trophée ou « Demi »…) ;
    ligne 2 : les 4 stats, intitulé au-dessus du chiffre (data-label), distinctions à droite.
@@ -250,10 +250,9 @@
      lignes de Collectif. */
   .final-tables .details-table tbody tr { padding: 3px 10px 3px 3px; border-radius: var(--radius); background: rgba(237, 234, 227, 0.04); }
   .final-tables .details-table tbody tr + tr { margin-top: 4px; }
-  /* Intitulés : ligne d'en-tête du tableau, de la forme des lignes (même retrait, mêmes colonnes),
-     fond un peu plus marqué, intitulés centrés dans sa hauteur. */
-  .final-tables .details-table thead tr { min-height: 28px; margin-bottom: 4px; padding: 0 10px 0 3px; border-radius: var(--radius);
-                                          background: rgba(237, 234, 227, 0.08); }
+  /* Intitulés : ligne d'en-tête du tableau, sans fond (même retrait, mêmes colonnes que les
+     lignes), intitulés centrés dans sa hauteur. */
+  .final-tables .details-table thead tr { min-height: 28px; margin-bottom: 4px; padding: 0 10px 0 3px; }
   .final-tables .details-table.details-table :is(tbody, tfoot) tr:not(.is-pad) :is(td, th) { border: 0; }   /* traits des cellules du tableau */
   .final-tables .details-table :is(td, th) { padding: 0; text-align: left; }
   .final-tables .details-table th.details-comp { grid-column: 1; display: flex; align-items: center; }
@@ -273,7 +272,7 @@
     display: grid; grid-template-columns: 26px repeat(4, minmax(0, 1fr)); align-items: center; column-gap: 10px;
     padding: 3px 10px 3px 3px; border-radius: var(--radius);
   }
-  .stats-table-head { min-height: 28px; padding-top: 0; padding-bottom: 0; background: rgba(237, 234, 227, 0.08); }
+  .stats-table-head { min-height: 28px; padding-top: 0; padding-bottom: 0; }
   .stats-table-head > span { text-align: center; font-family: var(--font); font-weight: 700; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-secondary); }
   .stats-table-row { min-height: 32px; box-sizing: border-box; background: rgba(237, 234, 227, 0.04); }
   .stats-table-row strong { font-family: var(--font); font-weight: 700; font-size: 16px; line-height: 26px; text-align: center;
@@ -283,19 +282,40 @@
      le tableau suit les stats. */
   :is(.final, .game) :is(.palmares, .intro-down.tables-down) { display: none; }
   :is(.game, .final) .final-tables.details { min-height: 0; justify-content: flex-start; padding: 28px 12px 104px; }
-  /* En-tête : pièce, nom, poste · âge, titres ; puis la ligne du club (filet or dessous). */
-  .final-table-head { margin-bottom: 12px; padding-bottom: 0; border-bottom: 0; }
-  .final-table-club { display: flex; align-items: center; gap: 12px; margin: 0 0 14px; padding: 0 0 14px 2px;
-                      border-bottom: 1px solid rgba(212, 175, 55, 0.35); }
-  .final-table-crest { position: relative; flex: none; width: 34px; height: 34px; }
-  .final-table-crest .club { width: 34px; height: 34px; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5)); }
+  /* En-tête du tableau : nom, poste · âge (pièce et écusson retirés : l'identité est au-dessus du
+     joueur) ; filet or dessous. */
+  .final-table-head { margin-bottom: 14px; padding-bottom: 14px; }
+  .final-table-head .final-table-crest { display: none; }
+  /* Au-dessus de chaque joueur : son identité à la place du nom en arc — écusson et drapeau en
+     médaillon, nom, poste en toutes lettres, centrés au-dessus de la tête. */
+  :is(.final, .game) .figure .arc-name { display: none; }
+  .player-tag {
+    position: absolute; left: 50%; bottom: calc(100% + 4px); translate: -50% 0;
+    display: flex; align-items: center; gap: 8px;
+    width: max-content; max-width: calc(50vw - 16px);
+    pointer-events: none;
+  }
+  .player-tag-crest { position: relative; flex: none; width: 30px; height: 30px; }
+  .player-tag-crest .club { width: 30px; height: 30px; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5)); }
+  .player-tag-crest .flag { position: absolute; right: -5px; bottom: -3px; width: 16px; height: 11px; object-fit: cover;
+                            border-radius: 2px; box-shadow: 0 0 0 1.5px rgba(8, 8, 10, 0.95); }
+  .player-tag-text { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+  .player-tag-name { font-family: var(--font); font-weight: 700; font-size: 15px; line-height: 1.05; letter-spacing: 0.04em;
+                     text-transform: uppercase; color: var(--text); transition: color 0.32s var(--ease-out); }
+  .player-tag-poste { font-family: var(--font); font-weight: 700; font-size: 12px; line-height: 1.15; letter-spacing: 0.05em;
+                      text-transform: uppercase; color: var(--text-secondary); }
+  .game-figure.is-won .player-tag-name { color: var(--gold); }   /* jeu : le nom du joueur choisi passe à l'or */
+  /* Présentation (un seul joueur) : plus grand. */
+  .solo .player-tag { gap: 12px; max-width: calc(100vw - 32px); }
+  .solo .player-tag-crest, .solo .player-tag-crest .club { width: 40px; height: 40px; }
+  .solo .player-tag-crest .flag { width: 20px; height: 13px; }
+  .solo .player-tag-name { font-size: 22px; }
+  .solo .player-tag-poste { font-size: 13px; }
+  .final-table-head .final-table-coin { display: none; }
+  .final-table-crest { display: block; position: relative; flex: none; width: 40px; height: 40px; }
+  .final-table-crest .club { width: 40px; height: 40px; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5)); }
   .final-table-crest .flag { position: absolute; right: -5px; bottom: -3px; width: 18px; height: 12px; object-fit: cover;
                              border-radius: 2px; box-shadow: 0 0 0 1.5px rgba(8, 8, 10, 0.95); }
-  .final-table-club-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
-  .final-table-club-name { font-family: var(--font); font-weight: 700; font-size: 14px; line-height: 1.1; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text); }
-  .final-table-poste { font-family: var(--font); font-weight: 700; font-size: 12px; line-height: 1.15; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-secondary); }
-  .final-table-club .final-table-titles { font-size: 12px; }
-  .final-table-club .final-table-titles b { font-size: 2em; }
   .final-tables .details-table td.details-indiv { display: none; }   /* distinctions : dans le palmarès */
   /* Palmarès (au-dessus des détails) : deux colonnes, Collectif (logos des compétitions) et Individuel
      (logos des compétitions, nom dessous), nombre de titres en chiffre italique or. */

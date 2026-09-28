@@ -2,7 +2,7 @@ import { useLayoutEffect, useRef, useState } from 'react'
 import { m } from 'framer-motion'
 import { decimal, kitStyle } from './data'
 import Tip from './Tip'
-import { ArcName, Counter, Palmares, StatsTable, Turn } from './FinalPlayers'
+import { ArcName, Counter, Palmares, PlayerTag, StatsTable, Turn } from './FinalPlayers'
 import { SingleTable } from './FinalTables'
 import { finalVariants } from './transitions'
 import { useNarrow, usePlayerPage } from './playerPage'
@@ -80,6 +80,7 @@ export default function Solo({ player, nav, reduced, onBack, onStep }) {
           <Palmares player={player} side="left" />
           <div className="figure is-left" style={kitStyle(player.id)}>
             <ArcName id={player.id} name={player.nom} />
+            <PlayerTag player={player} />
             <Turn key={player.id} id={player.id} name={player.nom} play={entered} />
             <div className="figure-picker">
               <button className="arrow is-outer-left" onClick={() => step(-1)} aria-label="Joueur précédent">

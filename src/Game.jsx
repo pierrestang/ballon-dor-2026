@@ -7,7 +7,7 @@ import { MODE_FONT, R_MODE } from './Carousel'   // taille et rayon du titre de 
 import { GAME_STORE, OLD_GAME_STORE, setMenuLocked } from './storage'
 import { open } from './sequence'
 import { ClubLogo, Flag } from './Nameplate'
-import { ArcName, Compare, Palmares, SwapTurn } from './FinalPlayers'
+import { ArcName, Compare, Palmares, PlayerTag, SwapTurn } from './FinalPlayers'
 import FinalTables from './FinalTables'
 import { TablesDown, TablesUp } from './PageArrows'
 import { shareRanking } from './shareImage'
@@ -326,6 +326,7 @@ function Side({ player, shown, side, state, onVote, onMid }) {
     <m.div className={`figure game-figure is-${side}${state ? ` is-${state}` : ''}`} style={kitStyle(shown.id)}
            animate={{ opacity: state === 'lost' ? 0.3 : 1 }} transition={{ duration: 0.4, ease: EASE }}>
       <ArcName id={`game-${side}-${shown.id}`} name={shown.nom} letters />
+      <PlayerTag player={shown} />
       <SwapTurn id={player.id} name={player.nom} onMid={onMid} />
       <button className="game-figure-vote" onClick={onVote} disabled={!!state} aria-label={`Voter pour ${player.nom}`} />
     </m.div>

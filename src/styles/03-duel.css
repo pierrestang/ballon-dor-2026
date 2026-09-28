@@ -374,7 +374,7 @@
 
 /* Palmarès : images qui basculent comme une palette de tableau d'affichage à leur changement
    (Flap, FinalPlayers.jsx) ; nouvelles lignes en fondu. */
-.palmares .flap { animation: flap-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) both; transform-origin: 50% 50%; }   /* rythme ROLL */
+.palmares .flap, .player-tag .flap { animation: flap-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) both; transform-origin: 50% 50%; }   /* rythme ROLL */
 @keyframes flap-in { from { transform: perspective(200px) rotateX(-90deg); opacity: 0.2; } to { transform: none; opacity: 1; } }
 .palmares li { animation: game-swap-in 0.4s var(--ease-out) both; }
 @keyframes game-swap-in { from { opacity: 0; } to { opacity: 1; } }

@@ -240,6 +240,25 @@ function Rolling({ text, trigger, onMount = false }) {
     (clé : joueur + source ; animation .flap au rythme ROLL, 03-duel.css). */
 const Flap = ({ trigger, ...props }) => <img key={`${trigger}|${props.src}`} {...props} className={`${props.className} flap`} />
 
+/** Identité du joueur au-dessus de sa tête, sur mobile, à la place du nom en arc (05-page-duel.css) :
+    écusson du club avec le drapeau en médaillon, nom, poste en toutes lettres. Masqué sur grand
+    écran. Au changement de joueur, le nom et le poste défilent, les images basculent. */
+export function PlayerTag({ player }) {
+  const club = clubLogo(player.club)
+  return (
+    <div className="player-tag" aria-hidden="true">
+      <span className="player-tag-crest">
+        {club && <Flap trigger={player.id} className="club" src={club} alt="" width="52" height="52" />}
+        <Flap trigger={player.id} className="flag" src={asset(player.drapeau)} alt="" width="48" height="32" />
+      </span>
+      <span className="player-tag-text">
+        <span className="player-tag-name"><Rolling text={player.nom} trigger={player.id} /></span>
+        <span className="player-tag-poste"><Rolling text={posteLabel(player.poste)} trigger={player.id} /></span>
+      </span>
+    </div>
+  )
+}
+
 export function ArcName({ id, name: target, letters = false }) {
   // Taille selon le nom final (pas de saut de taille pendant le défilement des lettres).
   const fontSize = Math.min(135, 880 / (target.length * 0.5))
@@ -424,6 +443,7 @@ export default function FinalPlayers({ pair, onStep, play = false }) {
       {[a, b].map((p, i) => (
         <div key={i ? 'right' : 'left'} className={`figure is-${i ? 'right' : 'left'}`} style={kitStyle(p.id)}>
           <ArcName id={p.id} name={p.nom} />
+          <PlayerTag player={p} />
           <Turn key={p.id} id={p.id} name={p.nom} play={play} />
           <div className="figure-picker">
             <button className={`arrow ${i ? 'is-outer-right' : 'is-outer-left'}`}
