@@ -5,11 +5,14 @@
 import { m } from 'framer-motion'
 import { ageOf, asset, coinUrl, decimal, posteLabel } from './data'
 import Tip from './Tip'
+import { StatsTable } from './FinalPlayers'
 import { ClubLogo, Flag } from './Nameplate'
 import { SLIDE } from './transitions'
 
 // « B+A/Match » (ex-« Ratio », 28/09/2026) : buts + assists par match, détaillé au survol de l'intitulé.
+// SHORT : intitulés courts du mode Duel sur mobile (deux blocs côte à côte).
 const COLUMNS = ['Matches', 'Buts', 'Assists', 'B+A/Match']
+export const SHORT = { Matches: 'M', Buts: 'B', Assists: 'A', 'B+A/Match': 'B+A/M' }
 const HEADER_TIPS = { 'B+A/Match': 'Buts + Assists / match' }
 // Ratio : buts + assists par match. Passes non relevées (« n.r. » : qualifications de la Coupe du
 // monde, supercoupes, certaines coupes) : buts par match à la place, signalé en infobulle.
@@ -100,13 +103,16 @@ const collectiveTitles = (player) => {
   const free = names.filter((n) => !won.some((c) => c.nom === n))
   return won.map((c) => ({ nom: names.includes(c.nom) ? c.nom : free.shift() ?? c.nom, logo: c.logo, won: true }))
 }
-// Puis les finales et demi-finales perdues, en plus sombre (sans compter dans les titres). Une 3e ou
-// 4e place en coupe (Coupe du monde : match pour la 3e place) est une demi-finale perdue ; en
-// championnat, non.
-const nearLabel = (c) => (c.trophee ? null
-  : c.resultat === 'Finale' ? 'Finaliste'
-    : c.resultat === 'Demi-finale' || (c.type !== 'championnat' && /^[34]e$/.test(c.resultat)) ? 'Demi-finaliste' : null)
-const nearTitles = (player) => ['Finaliste', 'Demi-finaliste'].flatMap((label) => player.competitions
+// Puis, en plus sombre (sans compter dans les titres) : finales perdues et 2e place en
+// championnat, demi-finales perdues et 3e place en championnat. Une 3e ou 4e place en coupe
+// (Coupe du monde : match pour la 3e place) est une demi-finale perdue.
+const nearLabel = (c) => {
+  if (c.trophee) return null
+  if (c.type === 'championnat') return c.resultat === '2e' ? '2e place' : c.resultat === '3e' ? '3e place' : null
+  if (c.resultat === 'Finale') return 'Finaliste'
+  return c.resultat === 'Demi-finale' || /^[34]e$/.test(c.resultat) ? 'Demi-finaliste' : null
+}
+const nearTitles = (player) => ['Finaliste', '2e place', 'Demi-finaliste', '3e place'].flatMap((label) => player.competitions
   .filter((c) => nearLabel(c) === label).map((c) => ({ nom: c.nom, logo: c.logo, sub: label })))
 
 /** Palmarès du joueur (mobile), au-dessus des détails par compétition : deux colonnes, titres
@@ -174,6 +180,8 @@ function Table({ player, side, medals, sizes }) {
           <span className="final-table-titles"><b>{totals(player)[4]}</b> {totals(player)[4] > 1 ? 'titres' : 'titre'}</span>
         )}
       </m.header>
+      {/* Mobile : stats de la saison du joueur, au-dessus de son palmarès (page du duel, Présentation). */}
+      <div className="final-table-season"><StatsTable players={[player]} short={SHORT} /></div>
       <Palmares player={player} />
       <m.h3 className="final-table-section" {...row(1)}>Détails par compétition</m.h3>
       <table className={`details-table has-medals-${medals}`}>
@@ -188,7 +196,7 @@ function Table({ player, side, medals, sizes }) {
         <thead>
           <m.tr {...row(1)}>
             {['Équipe', 'Tournoi', ...COLUMNS, 'Résultat', 'Individuel'].map((c) => (
-              <th key={c} scope="col">{HEADER_TIPS[c] ? <Tip label={HEADER_TIPS[c]}>{c}</Tip> : c}</th>
+              <th key={c} scope="col" data-short={SHORT[c]}>{HEADER_TIPS[c] ? <Tip label={HEADER_TIPS[c]}>{c}</Tip> : c}</th>
             ))}
           </m.tr>
         </thead>

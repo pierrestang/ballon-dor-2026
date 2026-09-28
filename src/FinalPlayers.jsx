@@ -331,12 +331,12 @@ const SEASON = [
 /** Stats de la saison sur mobile, au format des détails par compétition (05-page-duel.css) : ligne
     d'en-tête, puis une ligne par joueur (colonne du logo laissée vide, pour l'alignement avec les
     détails ; les 4 chiffres, qui défilent au changement de joueur). Masqué sur grand écran. */
-export function StatsTable({ players }) {
+export function StatsTable({ players, short = {} }) {
   return (
     <div className="stats-table">
       <div className="stats-table-head">
         <span />
-        {SEASON.map((c) => <span key={c.label}>{c.tip ? <Tip label={c.tip}>{c.label}</Tip> : c.label}</span>)}
+        {SEASON.map((c) => <span key={c.label} data-short={short[c.label]}>{c.tip ? <Tip label={c.tip}>{c.label}</Tip> : c.label}</span>)}
       </div>
       {players.map((p, i) => (
         <div key={i} className={`stats-table-row is-${i ? 'right' : 'left'}`}>
