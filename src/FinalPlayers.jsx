@@ -149,7 +149,11 @@ export const RollDuration = createContext(ROLL.duration)
     des caractères au hasard (lettres, ou chiffres pour un texte numérique) et se pose sur la
     bonne, à intervalles de temps réguliers, de gauche à droite ; la longueur passe de l'ancienne à
     la nouvelle. */
-function rollString(old, text, u) {
+const ROLL_TICK_MS = 90   // une lettre au hasard change toutes les 90 ms (à chaque image, elle tournait trop vite)
+// Caractère « au hasard » stable pendant un pas (position i, pas tick) : même tirage d'une image à
+// l'autre tant que le pas ne change pas.
+const pickAt = (pool, i, tick) => pool[Math.abs(Math.imul(i * 7919 + tick * 104729 + 1, 2654435761) >> 7) % pool.length]
+function rollString(old, text, u, tick = 0) {
   const n = text.length
   const pool = /^[\d\s,.–-]*$/.test(text) ? ROLL_DIGITS : ROLL_CHARS
   const len = Math.round(old.length + (n - old.length) * Math.min(1, rollEase(u) * 2))
@@ -158,7 +162,7 @@ function rollString(old, text, u) {
     // Lettres posées sur le temps linéaire (sur la courbe ralentie, les dernières traînaient).
     const settle = 0.2 + (0.8 * (i + 1)) / Math.max(1, n)
     const target = text[i] ?? ''
-    out += u >= settle || /[\s,.–-]/.test(target) ? target : pool[Math.floor(Math.random() * pool.length)]
+    out += u >= settle || /[\s,.–-]/.test(target) ? target : pickAt(pool, i, tick)
   }
   return u >= 1 ? text : out
 }
@@ -182,7 +186,7 @@ export function RollText({ text, trigger, onMount = false }) {
     let raf = 0, done = false
     const frame = (now) => {
       const u = Math.min(1, (now - t0) / (duration * 1000))
-      el.textContent = rollString(before.text, text, u)
+      el.textContent = rollString(before.text, text, u, Math.floor((now - t0) / ROLL_TICK_MS))
       if (u < 1) raf = requestAnimationFrame(frame); else done = true
     }
     raf = requestAnimationFrame(frame)
@@ -207,7 +211,7 @@ function useRollingText(text, trigger = text, onMount = false) {
     let raf
     const frame = (now) => {
       const u = Math.min(1, (now - t0) / (duration * 1000))   // temps écoulé (linéaire)
-      setShown(rollString(old, text, u))
+      setShown(rollString(old, text, u, Math.floor((now - t0) / ROLL_TICK_MS)))
       raf = u < 1 ? requestAnimationFrame(frame) : 0
     }
     let done = false

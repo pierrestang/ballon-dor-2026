@@ -300,22 +300,30 @@ function Round({ t, a, sizes, reduced, onStart }) {
   )
 }
 
-/** Interrupteur de vote sous le titre du duel : un curseur doré au centre d'une piste ; clic sur
-    une moitié ou ← / → : il glisse vers ce joueur, qui est choisi (vote après VOTE_MS). */
+/** Sélecteur de vote : deux moitiés au nom des joueurs (‹ YAMAL | KANE ›) dans un panneau du
+    site ; clic sur une moitié ou ← / → : la moitié choisie se remplit d'or depuis le centre, l'autre
+    s'assombrit (vote après VOTE_MS). */
 function VoteSwitch({ left, right, picked, onVote }) {
   const side = picked === left.id ? -1 : picked === right.id ? 1 : 0
+  const surname = (p) => p.nom.split(' ').at(-1)
   return (
-    <div className={`game-switch${side ? ' is-set' : ''}`} role="group" aria-label="Choisir votre favori">
+    <div className={`game-switch${side ? ` is-set is-${side < 0 ? 'left' : 'right'}` : ''}`} role="group" aria-label="Choisir votre favori">
+      {/* Remplissage or de la moitié choisie : glisse depuis le centre. */}
+      <m.span className="game-switch-fill" aria-hidden="true" initial={false}
+              animate={{ scaleX: side ? 1 : 0, x: side < 0 ? '0%' : '100%' }}
+              style={{ originX: side < 0 ? 1 : 0 }}
+              transition={{ duration: 0.35, ease: [0.65, 0, 0.35, 1] }} />
       <button className="game-switch-half is-left" onClick={() => onVote(left.id)} disabled={!!picked}
               aria-label={`Choisir ${left.nom}`}>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" /></svg>
+        <span>{surname(left)}</span>
       </button>
+      <span className="game-switch-sep" aria-hidden="true" />
       <button className="game-switch-half is-right" onClick={() => onVote(right.id)} disabled={!!picked}
               aria-label={`Choisir ${right.nom}`}>
+        <span>{surname(right)}</span>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" /></svg>
       </button>
-      <m.span className="game-switch-knob" aria-hidden="true" initial={false}
-              animate={{ x: side * 50 }} transition={{ duration: 0.35, ease: [0.65, 0, 0.35, 1] }} />
     </div>
   )
 }
