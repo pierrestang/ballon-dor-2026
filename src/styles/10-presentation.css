@@ -2,6 +2,7 @@
 /* Page « Présentation des joueurs » (Solo.jsx) : la page du duel à un joueur */
 /* ------------------------------------------------------------------ */
 /* Grand écran : palmarès · joueur (en grand) · stats. */
+.poste-label { display: none; }   /* poste en toutes lettres : Présentation, mobile */
 .solo .solo-grid {
   --fh: min(calc(100svh - var(--band) - 40px - 56px - var(--foot, 0px)), 62vw);
   --fcol: calc(var(--fw) * 0.8);
@@ -24,5 +25,14 @@
   .solo .solo-grid { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto auto; grid-template-areas: 'figA' 'mid' 'palmA'; padding-top: 128px; row-gap: 20px; }
   .solo .solo-stats { display: grid; grid-template-columns: repeat(4, 1fr); width: 100%; }
   .solo .palmares.is-left { justify-self: stretch; width: auto; }
+  /* Palmarès : club, drapeau et poste en toutes lettres sur une ligne centrée, puis Collectif et
+     Individuel côte à côte (la colonne unique laissait la moitié droite vide). */
+  .solo .palmares { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 16px; max-height: none; }
+  .solo .palmares .badges { grid-column: 1 / -1; flex-direction: row; align-items: center; justify-content: center; gap: 12px; margin-bottom: 16px; }
+  .solo .palmares .poste { display: none; }
+  .solo .palmares .poste-label { display: inline; font-size: 18px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+  .solo .palmares .block + .block { margin-top: 0; }
+  .solo .palmares .block h3 { width: 100%; }
+  .solo .palmares .block li { font-size: 14px; }
   .final.solo .final-tables .details-side { width: 100%; }
 }

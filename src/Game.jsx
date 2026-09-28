@@ -77,7 +77,7 @@ function useSizes() {
     const w = window.innerWidth, h = window.innerHeight
     const mobile = w <= 820
     return {
-      first: Math.round(mobile ? Math.min(w * 0.17, 72) : Math.min(h * 0.17, w * 0.095)),
+      first: Math.round(mobile ? Math.min(w * 0.13, 52) : Math.min(h * 0.17, w * 0.095)),   // mobile : liste compacte (08-classement.css)
       ceremony: Math.round(Math.min(w, h) * (mobile ? 0.56 : 0.4)),   // pièce de l'intro, un peu réduite pour les arcs
     }
   }
@@ -249,6 +249,8 @@ function DrawCoin({ id, size, delay, fly }) {
     <m.div ref={ref} className="game-draw-coin" style={{ '--d': `${size}px`, x, y, opacity }}>
       <LiveCoin player={byId[id]} rotateY={rotateY} phase={IDS.indexOf(id) * 0.7} />
       <ArcText text={byId[id].nom} side="bottom" className="game-card-name" />
+      {/* Mobile : nom en texte droit, à côté de la pièce (l'arc y tombait à 8 px). */}
+      <span className="game-pairing-name" aria-hidden="true">{byId[id].nom}</span>
     </m.div>
   )
 }

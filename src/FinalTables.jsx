@@ -148,8 +148,11 @@ function Table({ player, side, medals, sizes }) {
                   <Tip label={c.nom}>
                     <img className="comp" src={asset(c.logo)} alt={c.nom} loading="lazy" width="36" height="36" />
                   </Tip>
+                  {/* Nom écrit : cartes du mobile seulement (logo seul sur grand écran). */}
+                  <span className="details-comp-name" aria-hidden="true">{c.nom}</span>
                 </th>
-                {cells(c).map((v, k) => <td key={k}>{v}</td>)}
+                {/* data-label : intitulé de la colonne, affiché au-dessus du chiffre dans les cartes du mobile. */}
+                {cells(c).map((v, k) => <td key={k} data-label={COLUMNS[k]}>{v}</td>)}
                 {/* Parcours de l'équipe ; titre remporté : le trophée. */}
                 <td className="details-result">
                   {c.trophee ? (
@@ -182,9 +185,9 @@ function Table({ player, side, medals, sizes }) {
               const t = totals(player)
               return (
                 <>
-                  {cells(player.stats).map((v, k) => <td key={k}>{v}</td>)}
-                  <td>{t[4]}</td>
-                  <td>{t[5]}</td>
+                  {cells(player.stats).map((v, k) => <td key={k} data-label={COLUMNS[k]}>{v}</td>)}
+                  <td className="details-total-titles" data-label="Titres">{t[4]}</td>
+                  <td className="details-total-indiv" data-label="Distinctions">{t[5]}</td>
                 </>
               )
             })()}

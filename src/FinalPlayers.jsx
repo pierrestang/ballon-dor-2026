@@ -340,6 +340,8 @@ export function Palmares({ player, side }) {
         <div className="flag-row">
           <Flap trigger={player.id} src={asset(player.drapeau)} alt={player.selection} title={player.selection} className="flag" width="48" height="32" />
           <Tip label={posteLabel(player.poste)}><span className="poste">{roll(player.poste)}</span></Tip>
+          {/* Poste en toutes lettres : Présentation sur mobile (10-presentation.css). */}
+          <span className="poste-label">{roll(posteLabel(player.poste))}</span>
         </div>
       </div>
       <div className="block">

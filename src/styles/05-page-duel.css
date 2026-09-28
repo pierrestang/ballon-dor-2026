@@ -215,32 +215,66 @@
 .final-tables .details-table th:last-child { padding-right: 6px; }
 /* Infobulle du poste dans l'en-tête des tableaux : dans le flux du texte, sans décalage. */
 .final-table-meta .tip { vertical-align: baseline; }
-/* Mobile : tableaux lisibles dans 360 px — pas d'agrandissement (--z), textes et icônes à leur
-   taille de base, intitulés abrégés par la police plus petite, médailles plus serrées. */
+.details-comp-name { display: none; }   /* nom écrit : cartes du mobile seulement */
+/* Mobile : une carte par compétition (le tableau à 7 colonnes était illisible, intitulés en
+   10 px). Ligne 1 : logo et nom de la compétition, résultat à droite (trophée ou « Demi »…) ;
+   ligne 2 : les 4 stats, intitulé au-dessus du chiffre (data-label), distinctions à droite.
+   Colonne Équipe retirée (même logo à chaque ligne) ; Total sur le même modèle. */
 @media (max-width: 820px) {
-  .final-tables { --z: 0.82; }
-  .final-tables .details-table thead th { font-size: 10px; letter-spacing: 0; padding-left: 1px; padding-right: 1px; }
-  .final-tables .details-table td { font-size: 15px; }
-  .final-tables .details-table td.details-result { font-size: 11px; }
-  .final-tables .details-indiv img { margin: 0; }
-  /* Largeurs fixes, quel que soit le nombre de médailles (.details-table : l'emporte sur les
-     règles has-medals-N, qui rognaient « Individuel ») ; chaque intitulé tient dans sa colonne. */
-  .final-tables .details-table .details-team-col { width: 10.5%; }
-  .final-tables .details-table .details-comp-col { width: 10.5%; }
-  .final-tables .details-table .details-score { width: 10.5%; }
-  .final-tables .details-table .details-result-col { width: 15%; }
-  .final-tables .details-table .details-indiv-col { width: 22%; }
-  .final-table-name { font-size: 22px; }
-}
-/* Petits téléphones (360 px) : intitulés un peu plus petits pour tenir dans leurs colonnes. */
-@media (max-width: 380px) {
-  .final-tables .details-table thead th { font-size: 9px; }
-}
-@media (max-width: 820px) {
-  /* Lignes vides d'alignement : inutiles quand les tableaux sont empilés (un trou dans le tableau). */
-  .final-tables .details-table tr.is-pad { display: none; }
-  .final-tables .details-table { table-layout: fixed; }
-  .final-tables .details-table thead th { overflow: hidden; text-overflow: clip; }
+  .final-tables { --z: 1; }
+  .final-tables .details-table,
+  .final-tables .details-table :is(thead, tbody, tfoot) { display: block; width: 100%; }
+  .final-tables .details-table :is(colgroup, thead, tr.is-pad, .details-team) { display: none; }
+  .final-tables .details-table :is(tbody, tfoot) tr {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) minmax(72px, auto);
+    grid-template-rows: auto auto;
+    align-items: center;
+    column-gap: 8px;
+    row-gap: 8px;
+    height: auto;
+    padding: 12px 12px 12px 14px;
+    border-radius: var(--radius);
+  }
+  .final-tables .details-table tbody tr + tr { margin-top: 6px; }
+  .final-tables .details-table tbody tr:not(.is-won) { background: rgba(237, 234, 227, 0.03); }
+  .final-tables .details-table.details-table :is(tbody, tfoot) tr:not(.is-pad) :is(td, th) { border: 0; }   /* traits des cellules du tableau */
+  .final-tables .details-table :is(td, th) { padding: 0; text-align: left; }
+  /* Ligne 1 : logo + nom, résultat à droite. */
+  .final-tables .details-table th.details-comp { grid-area: 1 / 1 / 2 / 5; display: flex; align-items: center; gap: 10px; min-width: 0; }
+  .final-tables .details-comp .comp { width: 30px; height: 30px; flex: none; }
+  .final-tables .details-comp-name { display: block; min-width: 0; line-height: 1.1;   /* noms longs : sur deux lignes, jamais coupés */
+                                     font-family: var(--font); font-weight: 700; font-size: 16px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text); }
+  .final-tables .details-table td.details-result { grid-area: 1 / 5; justify-self: end; font-size: 13px; color: var(--text-secondary); letter-spacing: 0.04em; }
+  .final-tables .details-trophy { height: calc(30px * var(--tr, 1)); max-width: 36px; margin: 0; }
+  /* Ligne 2 : stats (intitulé au-dessus, 12 px), distinctions à droite. */
+  .final-tables .details-table td[data-label] { grid-row: 2; font-size: 20px; line-height: 1; font-variant-numeric: tabular-nums; }
+  .final-tables .details-table td[data-label]::before {
+    content: attr(data-label);
+    display: block;
+    margin-bottom: 5px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+  }
+  .final-tables .details-table td.details-indiv { grid-area: 2 / 5; justify-self: end; display: flex; gap: 4px; line-height: 0; }
+  .final-tables .details-indiv img { width: 26px; height: 26px; margin: 0; }
+  .final-tables .details-table td.details-indiv:empty { display: none; }
+  /* Filet or des compétitions gagnées : sur toute la carte. */
+  .final-tables .details-table tbody tr.is-won { box-shadow: inset 2px 0 0 var(--gold); }
+  .final-tables .details-table tbody tr.is-won > :first-child { box-shadow: none; }
+  /* Total : même carte, séparée par le filet doré ; titres et distinctions à droite. */
+  .final-tables .details-table tfoot tr { margin-top: 14px; border-top: 1px solid rgba(212, 175, 55, 0.35); border-radius: 0; padding-top: 14px; }
+  .final-tables .details-table tfoot th.final-total-label { grid-area: 1 / 1 / 2 / 5; font-size: 16px; }
+  .final-tables .details-table tfoot td.details-total-titles { grid-area: 1 / 5; justify-self: end; text-align: right; }
+  .final-tables .details-table tfoot td.details-total-indiv { grid-area: 2 / 5; justify-self: end; text-align: right; }
+  .final-tables .details-table tfoot td[data-label] { font-size: 22px; }
+  .final-table-head { --nm: 21px; }
+  .final-table-head .final-table-name { white-space: normal; }   /* nom long : sur deux lignes, jamais coupé */
+  .final-table-head .final-table-player { overflow: visible; line-height: 1.05; }
+  :is(.game, .final) .final-tables .details-panel { padding: 14px 12px 12px; }
 }
 /* Infobulle cachée : sans largeur tant qu'elle n'est pas affichée (elle élargissait les tableaux
    sur mobile). */

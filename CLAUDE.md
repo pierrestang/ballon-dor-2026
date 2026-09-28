@@ -71,7 +71,7 @@ Traitement éditorial : en-tête avec la pièce du joueur, nom, poste et âge, e
 
 - Aucun titre collectif : pas de « 0 titre » en tête ; palmarès : « AUCUN TITRE » en gris.
 - Passes non relevées (`null`) : ratio en buts par match sur toutes ces lignes, avec infobulle (`goalsOnly`).
-- Mobile (≤ 820 px) : largeurs de colonnes fixes (pas de `has-medals-N`), lignes vides d'alignement masquées.
+- Mobile (≤ 820 px) : **une carte par compétition** (`05-page-duel.css`) : logo et nom (`.details-comp-name`, deux lignes au besoin, jamais coupé), résultat à droite ; les 4 stats avec leur intitulé au-dessus (`data-label`, 12 px), distinctions à droite ; colonne Équipe retirée ; Total sur le même modèle (« Titres », « Distinctions »). Nom en tête sur deux lignes au besoin.
 
 ## Mobile (lot A de l'audit, 28/09/2026)
 
@@ -80,6 +80,7 @@ Traitement éditorial : en-tête avec la pièce du joueur, nom, poste et âge, e
 - **Interrupteur de vote fixé en bas de l'écran** (≤ 820 px), toujours à portée, même depuis les tableaux ; écrans bas (≤ 700 et ≤ 620 px de haut) : joueurs du jeu réduits pour que les stats tiennent au-dessus.
 - **Au doigt** : toucher la pièce de l'intro entre dans la version ; chevrons libellés « ENTRER » et « LANCER LE DUEL » (`.intro-down-label.is-touch`, mobile seulement) ; cibles ≥ 44 px (son, « Quitter la partie », compteur) ; « Ajouter mon classement à la communauté » en bouton (`.game-share.is-comm`).
 - Classement final : sur écran bas, la page défile au lieu de tasser (≤ 700 px de haut).
+- **Lot B** : annonce de manche en liste compacte (un duel par ligne : pièce, nom en texte droit `.game-pairing-name`, « VS », nom, pièce ; pièces 52 px) ; Présentation : club, drapeau et poste en toutes lettres (`.poste-label`, `posteLabel`) sur une ligne, Collectif et Individuel côte à côte.
 
 ## Charte
 
