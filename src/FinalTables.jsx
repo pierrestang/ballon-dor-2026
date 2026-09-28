@@ -181,7 +181,8 @@ function Table({ player, side, medals, sizes }) {
         )}
       </m.header>
       {/* Mobile : stats de la saison du joueur, au-dessus de son palmarès (page du duel, Présentation). */}
-      <div className="final-table-season"><StatsTable players={[player]} short={SHORT} /></div>
+      {/* Le bloc est recréé à chaque changement de joueur : ses chiffres sont frappés à l'affichage. */}
+      <div className="final-table-season"><StatsTable players={[player]} short={SHORT} onMount /></div>
       <Palmares player={player} />
       <m.h3 className="final-table-section" {...row(1)}>Détails par compétition</m.h3>
       <table className={`details-table has-medals-${medals}`}>

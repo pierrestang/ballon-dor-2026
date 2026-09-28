@@ -1,8 +1,9 @@
-import { useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef } from 'react'
 import { m } from 'framer-motion'
-import { decimal, kitStyle } from './data'
+import players, { decimal, kitStyle } from './data'
+import { open } from './sequence'
 import Tip from './Tip'
-import { ArcName, Counter, Palmares, PlayerTag, StatsTable, Turn } from './FinalPlayers'
+import { ArcName, Counter, Palmares, PlayerTag, StatsTable, SwapTurn } from './FinalPlayers'
 import { SingleTable } from './FinalTables'
 import { finalVariants } from './transitions'
 import { useNarrow, usePlayerPage } from './playerPage'
@@ -68,12 +69,16 @@ export default function Solo({ player, nav, reduced, onBack, onStep }) {
     return () => window.removeEventListener('resize', align)
   }, [narrow, player.id])
 
-  const [entered, setEntered] = useState(false)
   const step = (d) => { if (!atTablesRef.current) onStep(d) }
+  // Séquences du joueur précédent et du suivant chargées à l'avance : au changement, la rotation
+  // part tout de suite (sinon elle attend la séquence du nouveau joueur).
+  useEffect(() => {
+    const n = players.length, k = players.findIndex((p) => p.id === player.id)
+    open(players[(k + 1) % n].id); open(players[(k - 1 + n) % n].id)
+  }, [player.id])
   return (
     <m.main ref={page} className="final solo" custom={nav} variants={finalVariants}
-            initial="hidden" animate="shown" exit="exit"
-            onAnimationComplete={(def) => { if (def === 'shown') setEntered(true) }}>
+            initial="hidden" animate="shown" exit="exit">
       <h1 className="sr-only">Les candidats : {player.nom}</h1>
       <div className="final-band">
         <div ref={band} className="sticky duel-grid final-players solo-grid">
@@ -81,7 +86,7 @@ export default function Solo({ player, nav, reduced, onBack, onStep }) {
           <div className="figure is-left" style={kitStyle(player.id)}>
             <ArcName id={player.id} name={player.nom} />
             <PlayerTag player={player} />
-            <Turn key={player.id} id={player.id} name={player.nom} play={entered} />
+            <SwapTurn id={player.id} name={player.nom} />
             <div className="figure-picker">
               <button className="arrow is-outer-left" onClick={() => step(-1)} aria-label="Joueur précédent">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" /></svg>

@@ -1,5 +1,7 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { m } from 'framer-motion'
+import players from './data'
+import { open } from './sequence'
 import FinalPlayers from './FinalPlayers'
 import FinalTables from './FinalTables'
 import { finalVariants } from './transitions'
@@ -15,6 +17,16 @@ import { PageUp, TablesDown, TablesUp } from './PageArrows'
 
 export default function Final({ pair, nav, reduced, onBack, onStep }) {
   const page = useRef(null)
+  // Séquences des voisins de chaque joueur (précédent, suivant, l'autre joueur sauté comme dans
+  // App.jsx) chargées à l'avance : au changement, la rotation part tout de suite.
+  useEffect(() => {
+    const n = players.length, idx = pair.map((p) => players.findIndex((q) => q.id === p.id))
+    idx.forEach((k, side) => [1, -1].forEach((d) => {
+      let x = (k + d + n) % n
+      if (x === idx[1 - side]) x = (x + d + n) % n
+      open(players[x].id)
+    }))
+  }, [pair[0].id, pair[1].id])
   const tables = useRef(null)
   const { atTables, atTablesRef, toTables, toTop, back } = usePlayerPage({
     pageRef: page, tablesRef: tables, reduced, onBack,
@@ -22,16 +34,13 @@ export default function Final({ pair, nav, reduced, onBack, onStep }) {
     // Doigt : glisser sur un joueur le change (moitié de l'écran où le doigt s'est posé).
     onSwipe: (d, x) => onStep(x < window.innerWidth / 2 ? 0 : 1, d),
   })
-  // Tour complet des joueurs à la fin réelle du glissement d'arrivée.
-  const [entered, setEntered] = useState(false)
   return (
     <m.main ref={page} className="final" custom={nav} variants={finalVariants}
-            initial="hidden" animate="shown" exit="exit"
-            onAnimationComplete={(def) => { if (def === 'shown') setEntered(true) }}>
+            initial="hidden" animate="shown" exit="exit">
       <h1 className="sr-only">Le duel en détail</h1>
       <div className="final-band">
         <div className="sticky duel-grid final-players">
-          <FinalPlayers pair={pair} onStep={(side, d) => { if (!atTablesRef.current) onStep(side, d) }} play={entered} />
+          <FinalPlayers pair={pair} onStep={(side, d) => { if (!atTablesRef.current) onStep(side, d) }} />
         </div>
         <TablesDown onClick={toTables} />
       </div>
