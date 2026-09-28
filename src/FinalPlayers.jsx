@@ -246,13 +246,24 @@ export function PlayerTag({ player }) {
         <Flap trigger={player.id} className="flag" src={asset(player.drapeau)} alt="" width="48" height="32" />
       </span>
       <span className="player-tag-text">
-        {/* Grand écran : prénom sur une ligne, nom sur la suivante (05-page-duel.css) ; mobile : une ligne. */}
+        {/* Prénom puis nom ; grand écran : nom en or (05-page-duel.css). */}
         <span className="player-tag-name">
           <span className="player-tag-first"><Rolling text={player.nom.split(' ')[0]} trigger={player.id} /></span>{' '}
           <span className="player-tag-last"><Rolling text={player.nom.split(' ').slice(1).join(' ')} trigger={player.id} /></span>
         </span>
         <span className="player-tag-poste">
           <Rolling text={ageOf(player.id) !== null ? `${player.poste} ·\u00a0${ageOf(player.id)}\u00a0ans` : player.poste} trigger={player.id} />   {/* poste abrégé (BU, AD…) ; « 39 ANS » jamais coupé */}
+        </span>
+        {/* Grand écran : club et pays en lignes, logo en carré blanc (l'écusson et le drapeau du haut y sont masqués). */}
+        <span className="player-tag-meta">
+          <span className="player-tag-line">
+            {club && <Flap trigger={player.id} className="club" src={club} alt="" width="52" height="52" />}
+            <span><Rolling text={player.club} trigger={player.id} /></span>
+          </span>
+          <span className="player-tag-line">
+            <Flap trigger={player.id} className="flag" src={asset(player.drapeau)} alt="" width="48" height="32" />
+            <span><Rolling text={player.selection} trigger={player.id} /></span>
+          </span>
         </span>
       </span>
     </div>
@@ -310,7 +321,7 @@ const SEASON = [
   { label: 'Matches', get: (p) => p.stats.matchs, format: String },
   { label: 'Buts', get: (p) => p.stats.buts, format: String },
   { label: 'Passes', get: (p) => p.stats.passes, format: String },
-  { label: 'Buts\u00a0+\u00a0passes\u00a0D.\n/\u00a0match', tip: 'Buts + passes décisives / match', get: (p) => round2(p.stats.contributionsParMatch), format: decimal },
+  { label: 'Buts\u00a0+\u00a0passes\u00a0D\n/\u00a0match', tip: 'Buts + passes décisives / match', get: (p) => round2(p.stats.contributionsParMatch), format: decimal },
 ]
 
 /** Stats de la saison sur mobile, au format des détails par compétition (05-page-duel.css) : ligne
@@ -344,7 +355,7 @@ export function Compare({ a, b, titles = true }) {
     { label: 'Matches', get: (p) => p.stats.matchs, format: same },
     { label: 'Buts', get: (p) => p.stats.buts, format: same },
     { label: 'Passes', get: (p) => p.stats.passes, format: same },
-    { label: 'Buts\u00a0+\u00a0passes\u00a0D.\n/\u00a0match', tip: 'Buts + passes décisives / match', get: (p) => round2(p.stats.contributionsParMatch),
+    { label: 'Buts\u00a0+\u00a0passes\u00a0D\n/\u00a0match', tip: 'Buts + passes décisives / match', get: (p) => round2(p.stats.contributionsParMatch),
       format: decimal },
   ]
   return (

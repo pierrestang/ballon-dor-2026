@@ -13,9 +13,9 @@ import { SLIDE } from './transitions'
 
 // « B+A/Match » (ex-« Ratio », 28/09/2026) : buts + assists par match, détaillé au survol de l'intitulé.
 // SHORT : intitulés courts du mode Duel sur mobile (deux blocs côte à côte).
-const COLUMNS = ['Matches', 'Buts', 'Passes', 'Buts\u00a0+\u00a0passes\u00a0D.\n/\u00a0match']
-export const SHORT = { Matches: 'M', Buts: 'B', Passes: 'P', 'Buts\u00a0+\u00a0passes\u00a0D.\n/\u00a0match': 'B+P/M' }
-const HEADER_TIPS = { 'Buts\u00a0+\u00a0passes\u00a0D.\n/\u00a0match': 'Buts + passes décisives / match' }
+const COLUMNS = ['Matches', 'Buts', 'Passes', 'Buts\u00a0+\u00a0passes\u00a0D\n/\u00a0match']
+export const SHORT = { Matches: 'M', Buts: 'B', Passes: 'P', 'Buts\u00a0+\u00a0passes\u00a0D\n/\u00a0match': 'B+P/M' }
+const HEADER_TIPS = { 'Buts\u00a0+\u00a0passes\u00a0D\n/\u00a0match': 'Buts + passes décisives / match' }
 // Ratio : buts + assists par match. Passes non relevées (« n.r. » : qualifications de la Coupe du
 // monde, supercoupes, certaines coupes) : buts par match à la place, signalé en infobulle.
 const goalsOnly = (s) => s.contributionsParMatch === null && s.passes === null && s.matchs > 0
