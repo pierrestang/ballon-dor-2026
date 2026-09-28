@@ -232,7 +232,7 @@
   }
   /* Écusson du club et drapeau, côte à côte. */
   .player-tag-crest { flex: none; display: flex; gap: 4px; align-self: flex-end; margin-bottom: 2px; }   /* calés sur le bas du bandeau : alignés d'un joueur à l'autre, quelle que soit la longueur du nom */
-  .solo .player-tag-crest { align-self: center; margin-bottom: 0; }
+  .solo .player-tag-crest { margin-bottom: 0; }
   .player-tag-text { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
   .player-tag-name { font-family: var(--font); font-weight: 700; font-size: 14px; line-height: 1.05; letter-spacing: 0.04em;
                      text-transform: uppercase; color: var(--text); transition: color 0.32s var(--ease-out); }
@@ -283,10 +283,19 @@
   /* Palmarès dans le bloc du tableau : deux colonnes (Collectif, Individuel). */
   .final-tables .final-table-palm { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 16px; row-gap: 0; }
 
-  /* Écusson et drapeau de l'identité : sans carré blanc, à la taille et à la place des carrés. */
-  .player-tag-crest :is(.club, .flag) { width: 24px; height: 24px; padding: 2px; box-sizing: border-box; object-fit: contain;
-                                        filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5)); }
-  .solo .player-tag-crest :is(.club, .flag) { width: 40px; height: 40px; padding: 4px; }
+  /* Écusson et drapeau de l'identité en carrés blancs, nom de famille en or (comme le grand écran). */
+  .player-tag-crest :is(.club, .flag) { width: 24px; height: 24px; padding: 3px; box-sizing: border-box; object-fit: contain;
+                                        border-radius: 5px; background: rgba(244, 241, 234, 0.92); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5); }
+  .solo .player-tag-crest :is(.club, .flag) { width: 34px; height: 34px; padding: 4px; border-radius: 6px; }
+  .player-tag-last { color: var(--gold); }
+  /* Présentation : écusson et drapeau juste à droite du nom (grand écran). */
+  .solo .player-tag { justify-content: flex-end; gap: 16px; }
+  .solo .player-tag-crest { align-self: flex-start; }
+  /* Présentation (toute la largeur) : nom de la compétition à côté de son logo, comme le grand écran. */
+  .solo .final-tables .details-table :is(thead, tbody) tr { grid-template-columns: minmax(0, 3.2fr) repeat(4, minmax(0, 1fr)); column-gap: 6px; }   /* intitulés courts (M · B · P · B+P/M) */
+  .solo .final-tables .details-table th.details-comp { gap: 8px; text-align: left; }
+  .solo .final-tables .details-comp-name { display: block; min-width: 0; font-family: var(--font); font-weight: 700; font-size: 12px; line-height: 1.15;
+                                           letter-spacing: 0.04em; text-transform: uppercase; color: var(--text); }
 
   /* Détails par compétition : intitulé, puis le tableau en lignes (ni nom écrit, ni résultat, ni
      distinctions, ni total ; colonne Équipe retirée). */
@@ -334,8 +343,8 @@
   }
   :is(.final:not(.solo), .game) :is(.final-table-palm-logo, .final-tables .details-comp .comp) { width: 22px; height: 22px; padding: 2px; }
   :is(.final:not(.solo), .game) :is(.stats-table-row strong, .final-tables .details-table td[data-label]) { font-size: 14px; }
-  :is(.final:not(.solo), .game) :is(.stats-table-head > span, .final-tables .details-table thead th)[data-short] { font-size: 0; letter-spacing: 0; }
-  :is(.final:not(.solo), .game) :is(.stats-table-head > span, .final-tables .details-table thead th)[data-short]::after {
+  :is(:is(.final:not(.solo), .game) :is(.stats-table-head > span, .final-tables .details-table thead th), .solo .final-tables .details-table thead th)[data-short] { font-size: 0; letter-spacing: 0; }
+  :is(:is(.final:not(.solo), .game) :is(.stats-table-head > span, .final-tables .details-table thead th), .solo .final-tables .details-table thead th)[data-short]::after {
     content: attr(data-short); font-size: 12px; letter-spacing: 0.04em;
   }
 
