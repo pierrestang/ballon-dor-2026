@@ -239,3 +239,5 @@ Même jour : distinctions dissociées des détails par compétition (demande du 
 Même jour, palmarès mobile : trophées de la colonne Collectif puis médailles de la colonne Individuel remplacés par les logos des compétitions (tuile claire, comme les cartes), à la demande du propriétaire ; finales et demi-finales perdues ajoutées à Collectif après les titres, plus sombres (opacité 0,5, comme les places d'honneur), « FINALISTE » / « DEMI-FINALISTE » dessous, hors du compte des titres.
 
 Même jour : cartes « Détails par compétition » réduites à une ligne (demande du propriétaire) : logo + 4 stats, nom écrit et résultat retirés (code supprimé : `.details-comp-name`, `.details-won`) ; « TOTAL » dans la colonne du logo.
+
+Même jour : sur mobile, plus de voile ni de filet or sur les lignes des compétitions gagnées, et plus d'atténuation des autres lignes (règles d'origine limitées au grand écran, `min-width: 821px`) ; mot « TOTAL » masqué (`visibility: hidden`, la colonne garde sa largeur).

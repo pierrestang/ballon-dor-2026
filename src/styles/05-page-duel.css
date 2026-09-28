@@ -239,7 +239,7 @@
     border-radius: var(--radius);
   }
   .final-tables .details-table tbody tr + tr { margin-top: 6px; }
-  .final-tables .details-table tbody tr:not(.is-won) { background: rgba(237, 234, 227, 0.03); }
+  .final-tables .details-table tbody tr { background: rgba(237, 234, 227, 0.03); }   /* toutes pareilles, gagnées comprises */
   .final-tables .details-table.details-table :is(tbody, tfoot) tr:not(.is-pad) :is(td, th) { border: 0; }   /* traits des cellules du tableau */
   .final-tables .details-table :is(td, th) { padding: 0; text-align: left; }
   .final-tables .details-table th.details-comp { grid-column: 1; display: flex; align-items: center; }
@@ -256,12 +256,10 @@
     text-transform: uppercase;
     color: var(--text-secondary);
   }
-  /* Compétition gagnée : voile et filet or sur toute la ligne. */
-  .final-tables .details-table tbody tr.is-won { box-shadow: inset 2px 0 0 var(--gold); }
-  .final-tables .details-table tbody tr.is-won > :first-child { box-shadow: none; }
-  /* Total : même ligne, « TOTAL » à la place du logo, séparée par le filet doré. */
+  /* Total : même ligne, séparée par le filet doré ; sans le mot « TOTAL » (sa colonne reste vide,
+     les chiffres restent alignés sur ceux des compétitions). */
   .final-tables .details-table tfoot tr { margin-top: 14px; border-top: 1px solid rgba(212, 175, 55, 0.35); border-radius: 0; padding-top: 14px; }
-  .final-tables .details-table.details-table tfoot th.final-total-label { grid-column: 1; font-size: 13px; padding-left: 0; }
+  .final-tables .details-table.details-table tfoot th.final-total-label { grid-column: 1; visibility: hidden; }
   .final-tables .details-table tfoot td:is(.details-total-titles, .details-total-indiv) { display: none; }   /* comptés dans le palmarès */
   .final-tables .details-table tfoot td[data-label] { font-size: 22px; }
   /* Un seul bloc par joueur : le palmarès séparé et « Voir le tableau détaillé » disparaissent,
@@ -356,17 +354,17 @@
 .final-tables .details-table tbody tr:not(.is-pad) td,
 .final-tables .details-table tbody tr:not(.is-pad) th { border-top: 1px solid rgba(237, 234, 227, 0.05); }
 /* Compétition remportée : ligne dorée (voile + filet à gauche), chiffres en blanc plein. */
-.final-tables .details-table tbody tr.is-won { background: linear-gradient(90deg, rgba(212, 175, 55, 0.26), rgba(212, 175, 55, 0.06) 75%, transparent); }
+@media (min-width: 821px) { .final-tables .details-table tbody tr.is-won { background: linear-gradient(90deg, rgba(212, 175, 55, 0.26), rgba(212, 175, 55, 0.06) 75%, transparent); } }   /* mobile : sans voile */
 /* Filet or des lignes gagnantes, sans décaler leur contenu : toute la première colonne (intitulé,
    lignes, Total) a le même retrait, les logos et drapeaux restent alignés. */
-.final-tables .details-table tbody tr.is-won > :first-child { box-shadow: inset 2px 0 0 var(--gold); }
+@media (min-width: 821px) { .final-tables .details-table tbody tr.is-won > :first-child { box-shadow: inset 2px 0 0 var(--gold); } }   /* mobile : sans filet */
 .final-tables .details-table :is(thead th, tbody td, tfoot th):first-child { padding-left: calc(10px * var(--k) * var(--z)); }
 /* Logo du club et drapeau : même largeur, centrés sur le même axe. */
 .final-tables .details-team .club,
 .final-tables .details-team .flag { width: calc(28px * var(--k) * var(--z)); }
 .final-tables .details-team .club { height: calc(28px * var(--k) * var(--z)); }
 .final-tables .details-team .flag { height: calc(18.7px * var(--k) * var(--z)); }
-.final-tables .details-table tbody tr:not(.is-won) td:not(.details-result):not(.details-indiv) { color: rgba(237, 234, 227, 0.78); }
+@media (min-width: 821px) { .final-tables .details-table tbody tr:not(.is-won) td:not(.details-result):not(.details-indiv) { color: rgba(237, 234, 227, 0.78); } }   /* mobile : toutes les lignes pareilles */
 /* Total : séparé par un filet doré, chiffres plus grands. */
 .final-tables .details-table tfoot tr { border-top: 1px solid rgba(212, 175, 55, 0.35); }
 .final-tables .details-table tfoot td { font-size: calc(clamp(20px, 1.9vw, 30px) * var(--k) * var(--z)); }
