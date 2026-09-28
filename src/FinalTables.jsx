@@ -100,10 +100,14 @@ const collectiveTitles = (player) => {
   const free = names.filter((n) => !won.some((c) => c.nom === n))
   return won.map((c) => ({ nom: names.includes(c.nom) ? c.nom : free.shift() ?? c.nom, logo: c.logo, won: true }))
 }
-// Puis les finales et demi-finales perdues, en plus sombre (sans compter dans les titres).
-const NEAR = [['Finale', 'Finaliste'], ['Demi-finale', 'Demi-finaliste']]
-const nearTitles = (player) => NEAR.flatMap(([r, label]) => player.competitions
-  .filter((c) => !c.trophee && c.resultat === r).map((c) => ({ nom: c.nom, logo: c.logo, sub: label })))
+// Puis les finales et demi-finales perdues, en plus sombre (sans compter dans les titres). Une 3e ou
+// 4e place en coupe (Coupe du monde : match pour la 3e place) est une demi-finale perdue ; en
+// championnat, non.
+const nearLabel = (c) => (c.trophee ? null
+  : c.resultat === 'Finale' ? 'Finaliste'
+    : c.resultat === 'Demi-finale' || (c.type !== 'championnat' && /^[34]e$/.test(c.resultat)) ? 'Demi-finaliste' : null)
+const nearTitles = (player) => ['Finaliste', 'Demi-finaliste'].flatMap((label) => player.competitions
+  .filter((c) => nearLabel(c) === label).map((c) => ({ nom: c.nom, logo: c.logo, sub: label })))
 
 /** Palmarès du joueur (mobile), au-dessus des détails par compétition : deux colonnes, titres
     collectifs (logo de la compétition ; finales et demi-finales perdues ensuite, atténuées) et
