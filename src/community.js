@@ -1,7 +1,7 @@
 // Classement communautaire du mode « Mon classement » : Firestore appelé en REST (fetch), sans
 // SDK. Chaque classement envoyé est un document anonyme de la collection « classements » :
 // { p_<id_joueur> : position (1 à 10) ×10, date }. Le classement communautaire est la position
-// moyenne de chaque joueur (requêtes d'agrégation : 5 agrégats au plus par requête).
+// moyenne de chaque joueur (requêtes d'agrégation : une moyenne par requête, sans index composite).
 // Configuration : .env (VITE_FIREBASE_PROJECT_ID, VITE_FIREBASE_API_KEY) ; sans elle, la
 // fonctionnalité est désactivée (communityEnabled = false). Règles : firebase/firestore.rules.
 
@@ -39,17 +39,17 @@ const num = (v) => (v ? Number(v.doubleValue ?? v.integerValue ?? NaN) : NaN)
 
 /** Classement communautaire : { count, avg: { id: position moyenne } } (avg absent si aucun envoi). */
 export async function fetchCommunity(ids) {
-  const chunks = []
-  for (let i = 0; i < ids.length; i += 5) chunks.push(ids.slice(i, i + 5))
+  // Une moyenne par requête : plusieurs moyennes dans la même requête exigent un index composite
+  // (erreur 400 « The query requires an index ») ; seule, chacune passe par l'index automatique.
   const parts = await Promise.all([
     aggregate([{ alias: 'n', count: {} }]),
-    ...chunks.map((c) => aggregate(c.map((id, k) => ({ alias: `a${k}`, avg: { field: { fieldPath: field(id) } } })))),
+    ...ids.map((id) => aggregate([{ alias: 'a', avg: { field: { fieldPath: field(id) } } }])),
   ])
   const count = num(parts[0].n) || 0
   const avg = {}
-  chunks.forEach((c, j) => c.forEach((id, k) => {
-    const v = num(parts[j + 1][`a${k}`])
+  ids.forEach((id, k) => {
+    const v = num(parts[k + 1].a)
     if (!Number.isNaN(v)) avg[id] = v
-  }))
+  })
   return { count, avg }
 }
