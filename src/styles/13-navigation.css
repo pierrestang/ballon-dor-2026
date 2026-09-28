@@ -60,7 +60,9 @@
   /* Jusque sous les bandeaux d'identité figés : ce qui passe derrière eux est assombri. Sous les
      bandeaux (z-index 3, plus loin dans la page), au-dessus du bloc du tableau (2). */
   :is(.final, .game)::before { z-index: 3; --bh: 160px; height: calc(var(--bh) + var(--safe-top)); margin-bottom: calc(-1 * var(--bh) - var(--safe-top));
-                               background: linear-gradient(var(--bg) calc(100% - 28px), transparent); }
+                               /* même fond que la page (dégradé fixe) : la bande ne se voit pas, seul le contenu s'efface dessous */
+                               background: radial-gradient(ellipse at 50% 50%, var(--bg-center) 0%, var(--bg) 70%) fixed, var(--bg);
+                               -webkit-mask-image: linear-gradient(#000 calc(100% - 36px), transparent); mask-image: linear-gradient(#000 calc(100% - 36px), transparent); }
   .final.solo::before, .game::before { --bh: 160px; }
 }
 
