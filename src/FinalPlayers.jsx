@@ -246,7 +246,11 @@ export function PlayerTag({ player }) {
         <Flap trigger={player.id} className="flag" src={asset(player.drapeau)} alt="" width="48" height="32" />
       </span>
       <span className="player-tag-text">
-        <span className="player-tag-name"><Rolling text={player.nom} trigger={player.id} /></span>
+        {/* Grand écran : prénom sur une ligne, nom sur la suivante (05-page-duel.css) ; mobile : une ligne. */}
+        <span className="player-tag-name">
+          <span className="player-tag-first"><Rolling text={player.nom.split(' ')[0]} trigger={player.id} /></span>{' '}
+          <span className="player-tag-last"><Rolling text={player.nom.split(' ').slice(1).join(' ')} trigger={player.id} /></span>
+        </span>
         <span className="player-tag-poste">
           <Rolling text={ageOf(player.id) !== null ? `${player.poste} ·\u00a0${ageOf(player.id)}\u00a0ans` : player.poste} trigger={player.id} />   {/* poste abrégé (BU, AD…) ; « 39 ANS » jamais coupé */}
         </span>
