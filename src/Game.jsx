@@ -77,7 +77,7 @@ function useSizes() {
     const w = window.innerWidth, h = window.innerHeight
     const mobile = w <= 820
     return {
-      first: Math.round(mobile ? Math.min(w * 0.13, 52) : Math.min(h * 0.17, w * 0.095)),   // mobile : liste compacte (08-classement.css)
+      first: Math.round(mobile ? Math.min(w * 0.18, 72, h * 0.09) : Math.min(h * 0.17, w * 0.095)),   // mobile : liste (08-classement.css), pièces selon la hauteur
       ceremony: Math.round(Math.min(w, h) * (mobile ? 0.56 : 0.4)),   // pièce de l'intro, un peu réduite pour les arcs
     }
   }

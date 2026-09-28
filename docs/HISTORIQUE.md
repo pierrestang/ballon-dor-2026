@@ -278,3 +278,4 @@ Même jour : menu (intro) sur mobile — le propriétaire n'aimait pas « ‹ DU
 Même jour : annonce de manche (mobile) — prénom et nom passaient sur deux lignes (≈ 100 px par nom) : nom de famille seul, sur une ligne (« KVARATSKHELIA » tient à 360 px), nom complet pour les lecteurs d'écran (nom en arc masqué).
 Même jour : annonce de manche — finalement prénom sur la 1re ligne, nom sur la 2e (demande), chaque ligne sans coupure.
 Même jour : annonce de manche — pièces au centre de part et d'autre du « VS », noms sur les côtés, alignés vers leur pièce (demande).
+Même jour : annonce de manche — pièces agrandies (min(18 vw, 72 px, 9 vh) : 70 px à 390 × 844, 49 px sur SE) et duels espacés (clamp(10 px, 2,8 vh, 26 px)) ; mesuré de 375 × 548 à 430 × 932 : jamais sur « Jouer la manche » (petits écrans : légère défilement, comme avant).

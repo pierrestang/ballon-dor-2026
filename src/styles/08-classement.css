@@ -108,8 +108,8 @@
 /* Mobile : annonce de manche en liste compacte, un duel par ligne : pièce, nom · VS · nom, pièce
    (cinq duels empilés en grand débordaient de l'écran, noms en arc à 8 px). */
 @media (max-width: 820px) {
-  .game-pairings.is-first { gap: 10px; width: min(420px, 100%); }
-  .game-pairings.is-first .game-pairings-row { flex-direction: column; flex-wrap: nowrap; gap: 10px; width: 100%; }
+  .game-pairings.is-first { gap: clamp(10px, 2.8vh, 26px); width: min(420px, 100%); }   /* duels espacés en hauteur */
+  .game-pairings.is-first .game-pairings-row { flex-direction: column; flex-wrap: nowrap; gap: clamp(10px, 2.8vh, 26px); width: 100%; }
   .game-pairings.is-first .game-pairing { justify-content: space-between; gap: 0; padding: 6px 4px; width: 100%; box-sizing: border-box; }
   /* Pièces au centre, de part et d'autre du « VS » ; noms sur les côtés, alignés vers leur pièce. */
   .game-pairing .game-draw-coin { display: flex; flex-direction: row-reverse; align-items: center; gap: 10px; width: 44%; height: var(--d); }
