@@ -30,12 +30,34 @@
 .pick-arrow svg path,
 .figure-picker .arrow svg path { stroke-width: var(--arrow-stroke); }
 
-/* Flèches vers le bas / le haut, près du bord de l'écran ; libellé dessous ou dessus. */
-.intro-down { border: 0; bottom: clamp(6px, 1.5vh, 16px); }
+/* Flèches vers le bas / le haut, près du bord de l'écran (hors des zones réservées de l'iPhone :
+   encoche en haut, barre d'accueil en bas) ; libellé dessous ou dessus. */
+:root { --safe-top: env(safe-area-inset-top, 0px); --safe-bottom: env(safe-area-inset-bottom, 0px); }
+.intro-down { border: 0; bottom: calc(clamp(6px, 1.5vh, 16px) + var(--safe-bottom)); }
 .intro-down:has(.intro-down-label) { display: flex; flex-direction: column; align-items: center; gap: 4px; }
-.intro-down.final-up { top: clamp(6px, 1.5vh, 16px); bottom: auto; }   /* retour : « Menu », « Changer de duel »… */
+.intro-down.final-up { top: calc(clamp(6px, 1.5vh, 16px) + var(--safe-top)); bottom: auto; }   /* retour : « Menu », « Changer de duel »… */
 .intro-down.page-up { z-index: 5; }
-.intro-down.tables-up { position: fixed; top: clamp(6px, 1.5vh, 16px); bottom: auto; z-index: 6; }   /* tableaux affichés : retour aux joueurs, sans libellé */
+.intro-down.tables-up { position: fixed; top: calc(clamp(6px, 1.5vh, 16px) + var(--safe-top)); bottom: auto; z-index: 6; }   /* tableaux affichés : retour aux joueurs, sans libellé */
+/* Libellés des flèches sans libellé sur grand écran (entrer dans une version, lancer le duel) :
+   au doigt, un chevron seul ne dit pas qu'il se touche. */
+.intro-down-label.is-touch { display: none; }
+@media (max-width: 820px) {
+  .intro-down-label.is-touch { display: block; }
+  /* Pages qui défilent : bande en haut, du fond vers le transparent, sous les flèches et le son :
+     le contenu s'efface dessous au lieu de passer sous les boutons. */
+  :is(.final, .game)::before {
+    content: '';
+    position: sticky;
+    top: 0;
+    z-index: 4;
+    display: block;
+    height: calc(84px + var(--safe-top));
+    margin-bottom: calc(-84px - var(--safe-top));
+    background: linear-gradient(var(--bg) 58%, transparent);
+    pointer-events: none;
+    opacity: calc(var(--down, 0) * 6);   /* invisible en haut de page (titre intact), pleine dès ~40 px défilés */
+  }
+}
 
 /* Flèches latérales (pièces de la sélection et des candidats, joueurs) : zone de clic 56 px. */
 .pick-arrow,
@@ -78,10 +100,13 @@
 /* Mobile : icône seule, en haut à droite, sur un fond flouté (en bas, elle couvrait les listes
    et les versions voisines de l'intro) ; « Quitter la partie » du jeu décalée d'autant. */
 @media (max-width: 820px) {
-  .sound-toggle { top: 10px; right: 10px; left: auto; bottom: auto; width: 36px; height: 36px; padding: 0; justify-content: center;
+  .sound-toggle { top: calc(8px + var(--safe-top)); right: 6px; left: auto; bottom: auto; width: 44px; height: 44px; padding: 0; justify-content: center;
                   border-radius: 50%; background: color-mix(in srgb, var(--bg) 70%, transparent); backdrop-filter: blur(6px); }
   .sound-toggle span { display: none; }
-  .game-nav { right: 56px; }
+  /* Compteur et « Quitter la partie » : sur la ligne du son (même centre), cibles de 44 px, bien
+     séparés du son. */
+  .game-nav { top: calc(8px + var(--safe-top)); left: 12px; right: 62px; }
+  .game-link { min-height: 44px; display: inline-flex; align-items: center; padding: 0 4px; }
 }
 
 /* Curseur personnalisé (Cursor.jsx) : point doré + anneau qui le suit ; système masqué. */

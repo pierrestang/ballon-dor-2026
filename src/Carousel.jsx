@@ -35,6 +35,7 @@ const INTRO_VMIN = 0.48   // diamètre de la pièce dans l'intro (48vmin)
 const TRANSITION = { duration: 1.6, ease: [0.33, 0, 0.25, 1] }   // intro ↔ sélection, trajet complet
 const LIVE = 0.97         // au-delà, la sélection répond (clics, clavier)
 const CYCLE_MS = 2000     // intro : un nominé toutes les 2 s
+const NONE = new Set()    // intro : aucun joueur « déjà placé » (la pièce reste touchable)
 
 // Versions du site, au choix sur l'intro (← → / glisser, en boucle) ; titre en arc sous le nom
 // du joueur, plus grand que le nom (MODE_FONT), en or, glitch léger au changement. Ordre :
@@ -497,8 +498,9 @@ export default function Carousel({ nav, pair, setPair, onOpen, onGame, onSolo, m
                             scale: inSelect && ready ? 0.8 : 1 }}
                  transition={snap || soloDest ? { duration: 0 } : { duration: 0.4 }} aria-hidden={(inSelect && ready) || (soloDest && docked)}
                  style={coinBox}>
-            <CenterCoin k={active} dir={dir} placedSet={placed} reduced={reduced} instant={returning || (soloDest && docked)} live={live && duelDest}
-                        btnRef={coinRef} onSelect={() => select(active)} />
+            {/* Intro : toucher la pièce entre dans la version choisie (comme le chevron). */}
+            <CenterCoin k={active} dir={dir} placedSet={intro ? NONE : placed} reduced={reduced} instant={returning || (soloDest && docked)}
+                        live={intro || (live && duelDest)} btnRef={coinRef} onSelect={() => (intro ? enter() : select(active))} />
           </m.div>
           {/* Titre de la version (intro), en arc sous le nom : même taille, en or ; s'efface au
               départ vers la sélection. */}
@@ -531,6 +533,7 @@ export default function Carousel({ nav, pair, setPair, onOpen, onGame, onSolo, m
         ))}
         <button className={`intro-down pick-go${ready ? ' is-on' : ''}`} onClick={() => onOpen()}
                 disabled={!ready || !live} aria-hidden={!ready} aria-label="Lancer le duel">
+          <span className="intro-down-label is-touch" aria-hidden="true">Lancer le duel</span>
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9l7 7 7-7" /></svg>
         </button>
       </m.div>}
@@ -557,6 +560,7 @@ export default function Carousel({ nav, pair, setPair, onOpen, onGame, onSolo, m
         ))}
         <button className="intro-down" onClick={enter} tabIndex={intro ? 0 : -1}
                 aria-hidden={!intro} aria-label={`Entrer : ${MODES[mode].title}`}>
+          <span className="intro-down-label is-touch" aria-hidden="true">Entrer</span>
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9l7 7 7-7" /></svg>
         </button>
       </m.div>

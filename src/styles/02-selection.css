@@ -271,6 +271,7 @@
 .stage:not(.is-live) .pick-arrow,
 .stage:not(.is-live) .pick-coin,
 .stage:not(.is-live) .pick-go { pointer-events: none; }
+.stage.is-intro .pick-coin { pointer-events: auto; }   /* intro : toucher la pièce entre dans la version */
 /* Chevron de l'intro : apparaît avec la pièce, inerte dès qu'on a quitté l'intro. */
 .stage-intro-down .intro-down { pointer-events: auto; opacity: 0;
                                 transition: opacity var(--t-med) var(--ease-out), color var(--t-fast) var(--ease-out); }

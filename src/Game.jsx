@@ -394,7 +394,11 @@ function Duel({ a, reduced, onVote, picked, tablesRef, mainRef, atTables, onSwap
 function Result({ a, reduced, submitted, onSubmit }) {
   const [community, setCommunity] = useState(null)   // { count, avg } | 'error' | null
   const [sending, setSending] = useState(false)
-  const refresh = () => fetchCommunity(IDS).then(setCommunity, () => setCommunity('error'))
+  // Un second essai 1,5 s plus tard avant d'annoncer le classement communautaire indisponible
+  // (onze requêtes en parallèle : un échec réseau passager ne doit pas suffire).
+  const refresh = () => fetchCommunity(IDS)
+    .catch(() => new Promise((r) => setTimeout(r, 1500)).then(() => fetchCommunity(IDS)))
+    .then(setCommunity, () => setCommunity('error'))
   useEffect(() => { if (communityEnabled) refresh() }, [])
   const ok = community && community !== 'error' && community.count > 0
   const commRank = ok ? Object.fromEntries(Object.entries(community.avg).sort((x, y) => x[1] - y[1]).map(([id], i) => [id, i + 1])) : {}
@@ -451,7 +455,7 @@ function Result({ a, reduced, submitted, onSubmit }) {
               : ok ? `Classement communautaire : ${community.count} classement${community.count > 1 ? 's' : ''} (position moyenne ; ▲ : la communauté le classe moins haut que vous).`
                 : community ? 'Aucun classement communautaire pour l’instant : soyez le premier.' : 'Chargement du classement communautaire…'}
           </p>
-          <button className="game-link is-gold" onClick={send} disabled={submitted || sending}>
+          <button className="game-share is-comm" onClick={send} disabled={submitted || sending}>
             {submitted ? 'Classement ajouté' : sending ? 'Envoi…' : 'Ajouter mon classement à la communauté'}
           </button>
         </m.div>

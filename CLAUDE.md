@@ -60,7 +60,7 @@ Intro → trois versions au choix (← / →, bords, glisser ; on ouvre sur **Le
 - **Lumière de scène** : halo à la couleur du maillot derrière chaque joueur en vidéo, qui respire (`kitStyle`, `KITS` dans `data.js` ; `.figure::after`).
 - **Changement de joueur, partout** (Présentation, page du duel, jeu) : noms en arc et textes du palmarès (poste, titres) défilent lettre par lettre vers les nouveaux, même s'ils sont identiques, tous ensemble au rythme des chiffres (`ROLL` : 0,6 s, courbe [0.16, 1, 0.3, 1] ; `useRollingText`, `Rolling`, `FinalPlayers.jsx` ; un chiffre inchangé défile aussi) ; logos, drapeaux et icônes basculent au même rythme comme une palette de tableau d'affichage (`Flap`, `.flap`).
 - **Chiffres des stats** : défilent comme un compteur au changement de joueur (`Counter`, `FinalPlayers.jsx`), sur les trois pages de joueurs : Présentation, page du duel (‹ ›) et duels de Mon classement (au milieu de la rotation, vers les chiffres du duel suivant).
-- **Son** (Web Audio, aucun fichier ; coupé par défaut, bouton « SON » en bas à gauche, sur mobile icône seule en haut à droite ; `SoundToggle.jsx`, `sound.js`) : tintement au survol d'une pièce (une note par joueur, gamme pentatonique de ré, `setCoinNotes`), sélection d'une pièce partout (sélection du duel, retrait, candidats, vote du jeu) : pichenette puis la pièce se pose avec sa note (`pick`, `flip`, `land`), « swoosh » au changement de version sur l'intro (dans le sens du geste), nappe grave pendant l'annonce, accord au n°1 ; ambiance de fond sur tout le site (accord lent et chaud qui respire, baissée pendant l'annonce ; démarre au premier geste si le son était déjà activé).
+- **Son** (Web Audio, aucun fichier ; coupé par défaut, bouton « SON » en bas à gauche, sur mobile icône seule en haut à droite (44 px) ; `SoundToggle.jsx`, `sound.js`) : tintement au survol d'une pièce (une note par joueur, gamme pentatonique de ré, `setCoinNotes`), sélection d'une pièce partout (sélection du duel, retrait, candidats, vote du jeu) : pichenette puis la pièce se pose avec sa note (`pick`, `flip`, `land`), « swoosh » au changement de version sur l'intro (dans le sens du geste), nappe grave pendant l'annonce, accord au n°1 ; ambiance de fond sur tout le site (accord lent et chaud qui respire, baissée pendant l'annonce ; démarre au premier geste si le son était déjà activé).
 - **Curseur** personnalisé (souris, hors mouvement réduit) : point doré + anneau qui grossit sur les éléments cliquables (`Cursor.jsx`).
 - **Image à partager** du classement final, 1080 × 1350 (`shareImage.js`, bouton « PARTAGER MON CLASSEMENT » : partage système sur mobile, sinon téléchargement PNG).
 - **Typographie** : Cormorant Garamond italique 600 (`--serif`) pour les places du classement final et les chiffres de l'image à partager ; pas dans les textes en arc (placement lettre par lettre calculé sur Barlow).
@@ -72,6 +72,14 @@ Traitement éditorial : en-tête avec la pièce du joueur, nom, poste et âge, e
 - Aucun titre collectif : pas de « 0 titre » en tête ; palmarès : « AUCUN TITRE » en gris.
 - Passes non relevées (`null`) : ratio en buts par match sur toutes ces lignes, avec infobulle (`goalsOnly`).
 - Mobile (≤ 820 px) : largeurs de colonnes fixes (pas de `has-medals-N`), lignes vides d'alignement masquées.
+
+## Mobile (lot A de l'audit, 28/09/2026)
+
+- **Zones réservées de l'iPhone** : `--safe-top` / `--safe-bottom` (`env(safe-area-inset-*)`, `13-navigation.css`) ajoutés aux flèches du haut et du bas, au son, au compteur du jeu et à l'interrupteur de vote.
+- **Bande du haut** des pages qui défilent (page du duel, Présentation, jeu ; `:is(.final, .game)::before`, collante, 84 px) : du fond vers le transparent, sous les flèches et le son ; invisible en haut de page, pleine dès qu'on défile (`--down`).
+- **Interrupteur de vote fixé en bas de l'écran** (≤ 820 px), toujours à portée, même depuis les tableaux ; écrans bas (≤ 700 et ≤ 620 px de haut) : joueurs du jeu réduits pour que les stats tiennent au-dessus.
+- **Au doigt** : toucher la pièce de l'intro entre dans la version ; chevrons libellés « ENTRER » et « LANCER LE DUEL » (`.intro-down-label.is-touch`, mobile seulement) ; cibles ≥ 44 px (son, « Quitter la partie », compteur) ; « Ajouter mon classement à la communauté » en bouton (`.game-share.is-comm`).
+- Classement final : sur écran bas, la page défile au lieu de tasser (≤ 700 px de haut).
 
 ## Charte
 
