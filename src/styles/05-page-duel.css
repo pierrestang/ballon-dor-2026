@@ -13,7 +13,7 @@
 .final-band { position: relative; }
 :is(.final .final-players, .game .game-grid) { padding-top: 56px; box-sizing: border-box; }
 @media (min-width: 821px) {
-  /* Bas réservé à « Voir le tableau détaillé » (--foot) : les pieds ne le touchent jamais. */
+  /* Bas réservé à « Détails des compétitions » (--foot) : les pieds ne le touchent jamais. */
   :is(.final .final-players, .game .game-grid) { --foot: 72px; padding-bottom: var(--foot); --fh: min(calc(100svh - var(--band) - 60px - 56px - var(--foot)), 38vw); }
   /* Page du duel : stats à la place qu'elles ont au-dessus du curseur de vote du jeu. */
   .final:not(.solo) .final-players .compare { margin-bottom: calc(52px + clamp(28px, 6vh, 56px)); }
@@ -59,7 +59,7 @@
   :is(.final .final-players, .game-grid) .palmares.is-right { grid-area: palmB; }
   :is(.game, .final) .final-tables .details-grid { flex-direction: column; align-items: stretch; row-gap: 32px; }
   :is(.game, .final) .final-tables .details-side { width: auto; }
-  /* « Voir le tableau détaillé » : sous le palmarès (dans le flux), jamais par-dessus. */
+  /* « Détails des compétitions » : sous le palmarès (dans le flux), jamais par-dessus. */
   .intro-down.tables-down { position: relative; left: auto; bottom: auto; translate: none; margin: 8px auto 0; }
 }
 
@@ -245,7 +245,7 @@
 /* ------------------------------------------------------------------ */
 @media (max-width: 820px) {
   /* Masqués : nom en arc (remplacé par l'identité), palmarès du grand écran, lignes des stats
-     face à face (remplacées par le tableau des stats), « Voir le tableau détaillé », en-tête du
+     face à face (remplacées par le tableau des stats), « Détails des compétitions », en-tête du
      bloc du tableau. */
   :is(.final, .game) :is(.figure .arc-name, .palmares, .compare > .compare-row, .intro-down.tables-down, .final-table-head) { display: none; }
 

@@ -369,7 +369,7 @@ function Side({ player, shown, side, state, onVote, onMid }) {
 /** Duel d'une manche : les éléments de la page du duel (Final.jsx) : palmarès · joueur (vidéo)
     · stats face à face · joueur · palmarès, puis, en bas de page, les tableaux détaillés des deux
     joueurs (FinalTables). La flèche
-    « Voir le tableau détaillé » (ou ↓) descend aux tableaux ; chaque nouveau duel repart du haut. */
+    « Détails des compétitions » (ou ↓) descend aux tableaux ; chaque nouveau duel repart du haut. */
 function Duel({ a, reduced, onVote, picked, tablesRef, mainRef, atTables, onSwapping }) {
   const duelPage = useRef(null)
   usePlexus(duelPage)   // mobile : tableau remonté au plexus des joueurs (05-page-duel.css)
