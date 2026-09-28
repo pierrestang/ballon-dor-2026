@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { animate, cubicBezier, useReducedMotion } from 'framer-motion'
-import { FRAMES, asset, clubLogo, coinUrl, decimal, kitStyle, medalOf, photoUrl, posteLabel } from './data'
+import { FRAMES, asset, clubLogo, decimal, kitStyle, medalOf, photoUrl, posteLabel } from './data'
 import { frameAt, hasFrames, open, subscribe } from './sequence'
 import Tip from './Tip'
 
@@ -308,8 +308,8 @@ const SEASON = [
 ]
 
 /** Stats de la saison sur mobile, au format des détails par compétition (05-page-duel.css) : ligne
-    d'en-tête, puis une ligne par joueur (sa pièce à la place du logo, les 4 chiffres, qui défilent
-    au changement de joueur). Masqué sur grand écran. */
+    d'en-tête, puis une ligne par joueur (colonne du logo laissée vide, pour l'alignement avec les
+    détails ; les 4 chiffres, qui défilent au changement de joueur). Masqué sur grand écran. */
 export function StatsTable({ players }) {
   return (
     <div className="stats-table">
@@ -319,7 +319,7 @@ export function StatsTable({ players }) {
       </div>
       {players.map((p, i) => (
         <div key={i} className={`stats-table-row is-${i ? 'right' : 'left'}`}>
-          <img className="stats-table-coin" src={coinUrl(p.id)} alt={p.nom} width="52" height="52" />
+          <span className="stats-table-slot"><span className="sr-only">{p.nom}</span></span>
           {SEASON.map((c) => <strong key={c.label}><Counter value={c.get(p)} format={c.format} trigger={p.id} /></strong>)}
         </div>
       ))}

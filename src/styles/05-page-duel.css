@@ -277,7 +277,7 @@
   .stats-table-row { min-height: 32px; box-sizing: border-box; background: rgba(237, 234, 227, 0.04); }
   .stats-table-row strong { font-family: var(--font); font-weight: 700; font-size: 16px; line-height: 26px; text-align: left;
                             font-variant-numeric: tabular-nums; color: var(--text); }
-  .stats-table-coin { width: 26px; height: 26px; object-fit: contain; transform: scaleX(-1); filter: drop-shadow(0 0 6px rgba(212, 175, 55, 0.35)); }   /* pas de total (les stats de la saison sont au-dessus des joueurs) */
+  .stats-table-slot { position: relative; grid-column: 1; }   /* colonne du logo, vide (nom pour les lecteurs d'écran) */   /* pas de total (les stats de la saison sont au-dessus des joueurs) */
   /* Un seul bloc par joueur : le palmarès séparé et « Voir le tableau détaillé » disparaissent,
      le tableau suit les stats. */
   :is(.final, .game) :is(.palmares, .intro-down.tables-down) { display: none; }
@@ -299,8 +299,9 @@
   /* Palmarès (au-dessus des détails) : deux colonnes, Collectif (logos des compétitions) et Individuel
      (logos des compétitions, nom dessous), nombre de titres en chiffre italique or. */
   .final-table-palm { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 16px; margin-bottom: 22px; }
-  .final-table-palm h3 { display: flex; justify-content: space-between; align-items: baseline; margin: 0 0 8px; padding-bottom: 6px;
-                         border-bottom: 1px solid rgba(237, 234, 227, 0.08);
+  /* Intitulés COLLECTIF / INDIVIDUEL : bande de l'en-tête des tableaux (28 px, fond 8 %). */
+  .final-table-palm h3 { display: flex; justify-content: space-between; align-items: center; min-height: 28px; box-sizing: border-box;
+                         margin: 0 0 10px; padding: 0 10px; border-radius: var(--radius); background: rgba(237, 234, 227, 0.08);
                          font-family: var(--font); font-weight: 700; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-secondary); }
   .final-table-palm h3 b { font-family: var(--serif); font-style: italic; font-weight: 600; font-size: 22px; line-height: 1; letter-spacing: 0; color: var(--gold); }
   .final-table-palm ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
