@@ -31,7 +31,7 @@
 }
 .game-link, .game-comm, .game-rank-comm {
   font-family: var(--font);
-  font-weight: 700;
+  font-weight: 500;   /* navigation (Quitter la partie, compteur) : trait fin */
   font-size: var(--fs-arrow-label);
   letter-spacing: 0.04em;
   text-transform: uppercase;

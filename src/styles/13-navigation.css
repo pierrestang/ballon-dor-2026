@@ -2,11 +2,11 @@
 /* Navigation et flèches (regroupées à l'audit n° 2, 27/09/2026)         */
 /* ------------------------------------------------------------------ */
 /* Libellés des flèches et versions voisines de l'intro : forme des descriptions sous les titres
-   (Barlow Condensed 700, capitales, gris secondaire). */
+   (Barlow Condensed 500 — trait fin pour la navigation —, capitales, gris secondaire). */
 .stage-mode-side,
 .intro-down-label {
   font-family: var(--font);
-  font-weight: 700;
+  font-weight: 500;   /* navigation : trait fin (28/09/2026) */
   font-size: var(--fs-desc);
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -89,7 +89,7 @@
   cursor: pointer;
   color: var(--text-secondary);
   font-family: var(--font);
-  font-weight: 700;
+  font-weight: 500;
   font-size: var(--fs-arrow-label);
   letter-spacing: 0.08em;
   text-transform: uppercase;
