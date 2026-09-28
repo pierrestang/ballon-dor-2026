@@ -98,6 +98,7 @@
   position: absolute;
   inset: 15% -8% 10%;   /* halo réduit, resserré sur le joueur */
   background: radial-gradient(closest-side, var(--halo), transparent);
+  opacity: 0.5;
   z-index: -1;
 }
 .rotation { width: 100%; height: 100%; display: block; object-fit: contain; }
@@ -221,7 +222,7 @@
   position: absolute;
   inset: 8% -30% 4%;
   z-index: -2;
-  background: radial-gradient(closest-side, color-mix(in srgb, var(--kit, transparent) 30%, transparent), transparent);
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--kit, transparent) 14%, transparent), transparent);   /* lumière de scène discrète */
   animation: kit-breathe 6s ease-in-out infinite;
   pointer-events: none;
 }
