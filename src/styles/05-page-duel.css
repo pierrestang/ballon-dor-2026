@@ -104,6 +104,8 @@
 .final-tables .details-table thead th {
   font-size: calc(13px * var(--k) * var(--z));
 }   /* intitulés agrandis (27/09/2026) */
+/* « Buts + passes D. / match » : sur deux lignes (retour imposé dans l'intitulé). */
+:is(.stats-table-head > span, .details-table thead th) { white-space: pre-line; line-height: 1.1; }
 .final-tables .details-table thead tr { height: calc(38px * var(--k) * var(--z)); }
 .final-tables .details-table tbody tr { height: calc(48px * var(--k) * var(--z)); }
 .final-tables .details-table td { font-size: calc(clamp(18px, 1.7vw, 28px) * var(--k) * var(--z)); }
@@ -494,7 +496,8 @@
   :is(.final:not(.solo), .game) .compare { width: fit-content; justify-self: center; }
   /* Bloc du milieu compact : chiffres plus petits, colonne du libellé plus étroite, cartes plus serrées. */
   :is(.final:not(.solo), .game) .compare { gap: clamp(10px, 1.8vh, 18px); }
-  :is(.final:not(.solo), .game) .compare-row { --label-w: 96px; padding: 10px 22px; column-gap: 16px; }
+  :is(.final:not(.solo), .game) .compare-row > span { max-width: none; }
+  :is(.final:not(.solo), .game) .compare-row { --label-w: 124px; padding: 10px 22px; column-gap: 16px; }
   :is(.final:not(.solo), .game) .compare-row strong { font-size: clamp(24px, 2.4vw, 40px); }
 
   /* Détails par compétition : une ligne par compétition — logo, puis les 4 chiffres centrés ;
