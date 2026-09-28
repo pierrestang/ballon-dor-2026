@@ -326,7 +326,7 @@
      chiffre de chaque joueur de son côté), au-dessus du plexus ; plus de stats dans les blocs. */
   :is(.final:not(.solo), .game) .final-table-season { display: none; }
   .final .final-players:not(.solo-grid) .compare, .game .game-grid .game-mid {
-    display: grid; grid-row: figA; grid-column: figA-start / figB-end; align-self: start; justify-self: center; z-index: 3; margin-top: 10px; }
+    display: grid; grid-row: figA; grid-column: figA-start / figB-end; align-self: start; justify-self: center; z-index: 2; margin-top: 10px; }   /* sous la bande sombre du haut (3) */
   .game .game-grid .game-mid .compare { display: grid; }
   :is(.final .final-players:not(.solo-grid), .game .game-grid) .compare { gap: 4px; width: auto; padding: 0; filter: opacity(calc(1 - var(--down, 0))); }
   :is(.final .final-players:not(.solo-grid), .game .game-grid) .compare > .compare-row { display: grid; --label-w: 44px; column-gap: 6px; width: 148px; padding: 4px 8px;
@@ -340,7 +340,7 @@
   :is(.final:not(.solo), .game) .details-side.is-left { position: relative; z-index: 1; }   /* l'intitulé centré passe au-dessus du bloc de droite */
   :is(.final:not(.solo), .game) .details-side.is-left :is(.final-table-palm h3, .final-table-section) { position: relative; flex-direction: row-reverse; font-size: 0; }
   :is(.final:not(.solo), .game) .details-side.is-left :is(.final-table-palm h3, .final-table-section)::after {
-    content: attr(data-label); position: absolute; left: calc(100% + 12px); top: 50%; translate: -50% -50%; white-space: nowrap;
+    content: attr(data-label); position: absolute; left: calc(100% + 10px); top: 50%; translate: -50% -50%; white-space: nowrap;
     font-size: 12px; letter-spacing: 0.08em; color: var(--text-secondary); }
   :is(.final:not(.solo), .game) .details-side.is-right :is(.final-table-palm h3, .final-table-section) { font-size: 0; }
   .final-table-season .stats-table { padding: 0; background: none; box-shadow: none; }
@@ -360,7 +360,20 @@
   :is(.final:not(.solo), .game) .final-tables .details-side { grid-row: 1 / span 5; display: grid; grid-template-rows: subgrid; width: auto; min-width: 0; }
   :is(.final:not(.solo), .game) .final-tables .details-panel { grid-row: 1 / span 5; display: grid; grid-template-rows: subgrid; align-content: start; padding: 10px 8px; }
   :is(.final:not(.solo), .game) .final-table-palm { display: contents; }
-  :is(.final:not(.solo), .game) .final-table-palm-col { margin-bottom: 20px; }
+  /* Chaque rubrique (Collectif, Individuel, Détails par compétition) : un fond commun aux deux joueurs,
+     d'un bord à l'autre ; rubriques séparées par un espace. */
+  :is(.final:not(.solo), .game) .final-tables .details-grid { column-gap: 0; }
+  :is(.final:not(.solo), .game) .final-tables .details-panel { padding-left: 0; padding-right: 0; }
+  :is(.final:not(.solo), .game) :is(.final-table-palm-col, .final-table-section, .details-table) { background: rgba(237, 234, 227, 0.03); padding-left: 10px; padding-right: 10px; }
+  :is(.final:not(.solo), .game) .final-table-palm-col { margin-bottom: 16px; padding-top: 8px; padding-bottom: 10px; }
+  :is(.final:not(.solo), .game) .final-table-section { margin-bottom: 0; padding-top: 8px; }
+  :is(.final:not(.solo), .game) .details-table { padding-bottom: 10px; box-sizing: border-box; }
+  :is(.final:not(.solo), .game) .details-side.is-left :is(.final-table-palm-col, .final-table-section) { border-radius: var(--radius) 0 0 0; }
+  :is(.final:not(.solo), .game) .details-side.is-left .final-table-palm-col { border-radius: var(--radius) 0 0 var(--radius); }
+  :is(.final:not(.solo), .game) .details-side.is-right .final-table-palm-col { border-radius: 0 var(--radius) var(--radius) 0; }
+  :is(.final:not(.solo), .game) .details-side.is-right .final-table-section { border-radius: 0 var(--radius) 0 0; }
+  :is(.final:not(.solo), .game) .details-side.is-left .details-table { border-radius: 0 0 0 var(--radius); }
+  :is(.final:not(.solo), .game) .details-side.is-right .details-table { border-radius: 0 0 var(--radius) 0; }
   :is(.final:not(.solo), .game) .final-table-palm li { gap: 8px; padding-right: 6px; }
   :is(.final:not(.solo), .game) .final-table-palm li > span { font-size: 12px; }
   :is(.final:not(.solo), .game) :is(.stats-table-head, .stats-table-row, .final-tables .details-table :is(thead, tbody) tr) {
@@ -437,7 +450,12 @@
   }
   .game-grid-head { position: relative; z-index: 3; translate: 0 max(0px, var(--sy, 0px) - var(--tag-lift, 0px)); }   /* monte avec les bandeaux */
   :is(.game, .final) .final-tables.details { padding-top: calc(232px - var(--tag-lift, 0px)); justify-content: flex-start; }   /* tableaux juste sous les bandeaux figés */
-  .game .final-tables.details { padding-top: calc(272px - var(--tag-lift, 0px)); }   /* jeu : sous le titre de la manche figé (« DUEL N SUR 5 ») */
+  .game .final-tables.details { padding-top: calc(272px - var(--tag-lift, 0px)); }
+  /* Moins de vide entre les joueurs et les tableaux : ils remontent sous la vue des joueurs (zone vide
+     transparente aux clics : « Détails des compétitions » reste cliquable). */
+  :is(.game, .final) .final-tables.details { margin-top: -160px; pointer-events: none; }
+  :is(.game, .final) .final-tables.details > * { pointer-events: auto; }
+  :is(.game, .final) .intro-down.tables-down { opacity: calc(1 - var(--down, 0) * 2); }   /* s'efface avec la vue des joueurs (sinon il remonte entre les bandeaux) */   /* jeu : sous le titre de la manche figé (« DUEL N SUR 5 ») */
   .figure .player-tag-crest { flex: none; display: flex; gap: 8px; align-self: flex-start; }
   .figure .player-tag-crest :is(.club, .flag) { width: 34px; height: 34px; padding: 4px; box-sizing: border-box; object-fit: contain;
                                                 border-radius: 6px; background: rgba(244, 241, 234, 0.92); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5); }
