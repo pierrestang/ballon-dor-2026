@@ -54,7 +54,7 @@
 @media (max-width: 820px) {
   /* Mobile : joueurs en grand, stats dessous, puis les palmarès ; tableaux empilés. */
   :is(.final .final-players, .game .game-grid) { height: auto; }
-  .final .final-players:not(.solo-grid) { grid-template-rows: auto auto auto; grid-template-areas: 'figA figB' 'mid mid' 'palmA palmB'; padding-top: 158px; }   /* place de l'identité au-dessus des joueurs */
+  .final .final-players:not(.solo-grid) { grid-template-rows: auto auto auto; grid-template-areas: 'figA figB' 'mid mid' 'palmA palmB'; padding-top: 172px; }   /* place de l'identité au-dessus des joueurs */
   :is(.final .final-players, .game-grid) .palmares.is-left { grid-area: palmA; }
   :is(.final .final-players, .game-grid) .palmares.is-right { grid-area: palmB; }
   :is(.game, .final) .final-tables .details-grid { flex-direction: column; align-items: stretch; row-gap: 32px; }
@@ -231,9 +231,9 @@
      page du duel et jeu : deux bandeaux de même taille (colonne du joueur, nom sur deux lignes). */
   .player-tag {
     position: absolute; left: 50%; bottom: calc(100% + 6px); translate: -50% 0;
-    display: flex; align-items: center; gap: 8px;
+    display: flex; flex-direction: row-reverse; justify-content: space-between; align-items: center; gap: 8px;   /* texte à gauche, écusson et drapeau à droite */
     width: calc(50vw - 18px); min-height: 58px; box-sizing: border-box;
-    padding: 7px 12px 7px 8px;
+    padding: 7px 8px 7px 12px;
     pointer-events: none;
   }
   /* Écusson du club et drapeau, côte à côte. */
@@ -245,7 +245,7 @@
                       text-transform: uppercase; color: var(--text-secondary); }
   .game-figure.is-won .player-tag-name { color: var(--gold); }   /* jeu : le nom du joueur choisi passe à l'or */
   /* Présentation (un seul joueur) : plus grand, toute la largeur de l'écran. */
-  .solo .player-tag { gap: 12px; width: calc(100vw - 24px); min-height: 0; padding: 10px 16px 10px 12px; }
+  .solo .player-tag { gap: 12px; width: calc(100vw - 24px); min-height: 0; padding: 10px 12px 10px 16px; }
   .solo .player-tag-crest { gap: 6px; }
   .solo .player-tag-name { font-size: 22px; }
   .solo .player-tag-poste { font-size: 13px; }
@@ -302,7 +302,7 @@
   }
 
   /* Écusson et drapeau de l'identité : sans carré blanc, à la taille et à la place des carrés. */
-  .player-tag-crest :is(.club, .flag) { width: 28px; height: 28px; padding: 3px; box-sizing: border-box; object-fit: contain;
+  .player-tag-crest :is(.club, .flag) { width: 24px; height: 24px; padding: 2px; box-sizing: border-box; object-fit: contain;
                                         filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5)); }
   .solo .player-tag-crest :is(.club, .flag) { width: 40px; height: 40px; padding: 4px; }
 

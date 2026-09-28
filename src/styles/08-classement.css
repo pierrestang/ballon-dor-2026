@@ -286,7 +286,7 @@
 @media (max-width: 820px) {
   /* Mobile : titre, les deux joueurs, stats, puis les deux palmarès côte à côte. */
   .game .game-grid { height: auto; grid-template-rows: auto auto auto auto; grid-template-areas: 'head head' 'figA figB' 'mid mid' 'palmA palmB'; padding-top: 72px; }
-  .game-grid-head { grid-area: head; margin-bottom: 84px; }   /* place de l'identité au-dessus des joueurs */
+  .game-grid-head { grid-area: head; margin-bottom: 98px; }   /* place de l'identité au-dessus des joueurs */
   /* Interrupteur de vote fixé en bas de l'écran, sous le pouce : toujours à portée, même sur un
      petit téléphone (il passait sous la ligne de flottaison) et depuis les tableaux ; le bas de
      la page lui laisse sa place. */
@@ -299,11 +299,11 @@
    de l'interrupteur de vote. */
 @media (max-width: 820px) and (max-height: 700px) {
   .game .game-grid .figure { height: min(42svh, calc((50vw - 18px) * 1.7778)); }
-  .game-grid-head { margin-bottom: 76px; }
+  .game-grid-head { margin-bottom: 90px; }
 }
 @media (max-width: 820px) and (max-height: 620px) {
   .game .game-grid .figure { height: min(30svh, calc((50vw - 18px) * 1.7778)); }
-  .game-grid-head { margin-bottom: 72px; }
+  .game-grid-head { margin-bottom: 86px; }
   .game .game-grid { padding-top: 60px; }
 }
 
