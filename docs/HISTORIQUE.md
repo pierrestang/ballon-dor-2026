@@ -246,3 +246,4 @@ Même jour : lignes « Détails par compétition » au pas des lignes de Collect
 Même jour : ligne Total retirée des détails par compétition sur mobile (demande ; les totaux de la saison sont déjà dans les stats face à face).
 Même jour : titres collectifs du palmarès nommés dessous (« CHAMPION » / « VAINQUEUR », comme « FINALISTE ») ; intitulés des détails par compétition dans une ligne d'en-tête intégrée au tableau (bande de 28 px, fond 8 %, même retrait et mêmes colonnes que les lignes) au lieu de flotter au-dessus.
 Même jour : « Soulier d'or européen » affiché « Soulier d'or » partout (palmarès, contenu statique) : renommé à la génération (`individuel`, `excel_vers_json.py`), l'Excel garde le nom complet.
+Même jour : « CHAMPION » / « VAINQUEUR » sous les titres gagnés retirés (demande) ; seuls « FINALISTE » / « DEMI-FINALISTE » restent sous les lignes atténuées.

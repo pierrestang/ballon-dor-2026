@@ -98,9 +98,7 @@ const collectiveTitles = (player) => {
   const won = player.competitions.filter((c) => c.trophee)
   const names = player.collectif.map((t) => t.titre)
   const free = names.filter((n) => !won.some((c) => c.nom === n))
-  // Nom du titre dessous : « Champion » (championnat), « Vainqueur » (coupe), comme « Finaliste ».
-  return won.map((c) => ({ nom: names.includes(c.nom) ? c.nom : free.shift() ?? c.nom, logo: c.logo,
-                           sub: c.type === 'championnat' ? 'Champion' : 'Vainqueur', won: true }))
+  return won.map((c) => ({ nom: names.includes(c.nom) ? c.nom : free.shift() ?? c.nom, logo: c.logo, won: true }))
 }
 // Puis les finales et demi-finales perdues, en plus sombre (sans compter dans les titres).
 const NEAR = [['Finale', 'Finaliste'], ['Demi-finale', 'Demi-finaliste']]
