@@ -118,9 +118,9 @@ function Heading({ title, sub, reduced, gold = false }) {
   )
 }
 
-/** « Nouvelle partie » : efface la partie en cours, donc demande une confirmation (second clic
-    dans les 4 s ; sinon le lien revient à son état). */
-function NewGame({ onConfirm }) {
+/** « Quitter la partie » : efface la partie en cours et revient au menu (version Mon classement),
+    donc demande une confirmation (second clic dans les 4 s ; sinon le lien revient à son état). */
+function QuitGame({ onConfirm }) {
   const [armed, setArmed] = useState(false)
   useEffect(() => {
     if (!armed) return
@@ -130,7 +130,7 @@ function NewGame({ onConfirm }) {
   return (
     <button className={`game-link${armed ? ' is-gold' : ''}`} aria-live="polite"
             onClick={() => (armed ? onConfirm() : setArmed(true))} onBlur={() => setArmed(false)}>
-      {armed ? 'Effacer ma partie ? Confirmer' : 'Nouvelle partie'}
+      {armed ? 'Effacer ma partie ? Confirmer' : 'Quitter la partie'}
     </button>
   )
 }
@@ -411,7 +411,7 @@ function Result({ a, reduced, submitted, onSubmit }) {
   }
   return (
     <m.section className="game-screen game-result" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-      <Heading title="MON CLASSEMENT" sub="VOTRE BALLON D'OR 2026" reduced={reduced} gold />
+      <Heading title="MON CLASSEMENT" sub="BALLON D'OR 2026" reduced={reduced} gold />
       {/* Le classement seul (pas de pièces : elles ont été montrées par l'annonce), sur un écran. */}
       <div className="game-result-body">
       <ol className="game-ranking">
@@ -517,7 +517,13 @@ export default function Game({ nav, relay, onBack: leave }) {
       return { ...x, t: u, ui: { ...x.ui, seenRound, submitted: false } }
     })
   }
-  const replay = () => { setG(fresh()); setCeremonyDone(false) }
+  // Partie effacée puis retour au menu : pas de sauvegarde à réécrire (la page se démonte), et le
+  // verrou des duels levé avant de partir.
+  const quit = () => {
+    try { localStorage.removeItem(GAME_STORE) } catch { /* stockage indisponible */ }
+    setMenuLocked(false)
+    leave(false)
+  }
   const start = () => setUi({ seenRound: a.next.round })
   const endCeremony = () => setCeremonyDone(true)
   const onBack = () => leave(!!a.ranking)   // classement fait : retour en fondu (transitions.js)
@@ -581,7 +587,7 @@ export default function Game({ nav, relay, onBack: leave }) {
         {(screen === 'round' || screen === 'duel') && (
           <span className="game-link game-count" aria-live="polite">Duel {Math.min(played + 1, planned)} / {planned}</span>
         )}
-        {!fresh1 && <NewGame onConfirm={replay} />}
+        {!fresh1 && <QuitGame onConfirm={quit} />}
       </nav>
       <AnimatePresence mode="wait">
         {screen === 'round' && <Round key={`round-${a.next.round}-${a.rounds.at(-1).flat().join()}`} t={t} a={a} sizes={sizes}

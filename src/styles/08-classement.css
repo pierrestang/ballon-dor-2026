@@ -17,7 +17,7 @@
 }
 .game::-webkit-scrollbar { display: none; }
 
-/* Lien du coin haut droit (nouveau tirage / nouvelle partie) : forme des libellés des flèches.
+/* Lien du coin haut droit (nouveau tirage / quitter la partie) : forme des libellés des flèches.
    Plus de lien « Accueil » : Échap (et ↑ pendant la ronde 1). */
 .game-nav {
   position: absolute;
@@ -49,7 +49,7 @@
   position: relative;
 }
 .pick-title.game-heading { position: static; }
-.pick-title.game-heading p.is-gold { color: var(--gold); }   /* « DUEL N SUR 5 », « VOTRE BALLON D'OR 2026 » : or uni (les lettres animées ne laissent pas passer un or découpé) */
+.pick-title.game-heading p.is-gold { color: var(--gold); }   /* « DUEL N SUR 5 », « BALLON D'OR 2026 » : or uni (les lettres animées ne laissent pas passer un or découpé) */
 /* Flèche « Accueil » en haut au centre : le contenu commence dessous. */
 .game-up { z-index: 5; }
 .game-screen {
@@ -137,7 +137,7 @@
 }
 @media (prefers-reduced-motion: reduce) { .game-pick-spin { animation: none; } }
 .game-count { pointer-events: none; font-variant-numeric: tabular-nums; }
-.game-nav > :only-child:not(.game-count) { margin-left: auto; }   /* « Nouvelle partie » seule : à droite */
+.game-nav > :only-child:not(.game-count) { margin-left: auto; }   /* « Quitter la partie » seule : à droite */
 
 /* ------------------------------------------------------------------ */
 /* Mon classement : duels des manches, annonce du Ballon d'Or, résultat */
