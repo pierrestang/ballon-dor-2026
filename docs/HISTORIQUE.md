@@ -277,3 +277,4 @@ Même jour : au changement de joueur, le bloc du tableau reste en place (plus de
 Même jour : menu (intro) sur mobile — le propriétaire n'aimait pas « ‹ DUEL » / « MON CLASSEMENT › » dans les coins ; trois pistes proposées (onglets en bas, points de pagination, liste) : points de pagination retenus, sous le titre de la version (dans le bloc de la pièce, agrandi avec elle : points 4 px, trait or 14 px, zone de toucher 26 px, soit ~40 px à l'écran).
 Même jour : annonce de manche (mobile) — prénom et nom passaient sur deux lignes (≈ 100 px par nom) : nom de famille seul, sur une ligne (« KVARATSKHELIA » tient à 360 px), nom complet pour les lecteurs d'écran (nom en arc masqué).
 Même jour : annonce de manche — finalement prénom sur la 1re ligne, nom sur la 2e (demande), chaque ligne sans coupure.
+Même jour : annonce de manche — pièces au centre de part et d'autre du « VS », noms sur les côtés, alignés vers leur pièce (demande).
