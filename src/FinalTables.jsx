@@ -98,7 +98,9 @@ const collectiveTitles = (player) => {
   const won = player.competitions.filter((c) => c.trophee)
   const names = player.collectif.map((t) => t.titre)
   const free = names.filter((n) => !won.some((c) => c.nom === n))
-  return won.map((c) => ({ nom: names.includes(c.nom) ? c.nom : free.shift() ?? c.nom, logo: c.logo }))
+  // Nom du titre dessous : « Champion » (championnat), « Vainqueur » (coupe), comme « Finaliste ».
+  return won.map((c) => ({ nom: names.includes(c.nom) ? c.nom : free.shift() ?? c.nom, logo: c.logo,
+                           sub: c.type === 'championnat' ? 'Champion' : 'Vainqueur', won: true }))
 }
 // Puis les finales et demi-finales perdues, en plus sombre (sans compter dans les titres).
 const NEAR = [['Finale', 'Finaliste'], ['Demi-finale', 'Demi-finaliste']]
@@ -120,7 +122,7 @@ function Palmares({ player }) {
         {coll.length + near.length ? (
           <ul>
             {[...coll, ...near].map((t) => (
-              <li key={t.nom} className={t.sub ? 'is-minor' : undefined}>
+              <li key={t.nom} className={t.won ? undefined : 'is-minor'}>
                 <img className="final-table-palm-logo" src={asset(t.logo)} alt="" loading="lazy" width="36" height="36" />
                 <span>{t.nom}{t.sub && <small>{t.sub}</small>}</span>
               </li>

@@ -242,7 +242,6 @@
     border-radius: 0;
   }
   .final-tables .details-table :is(thead, tbody, tfoot) tr { height: auto; }   /* l'emporte sur les hauteurs de ligne du grand écran */
-  .final-tables .details-table thead tr { margin-bottom: 10px; }
   .final-tables .details-table thead th { padding: 0; text-align: left; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-secondary); }
   .final-tables .details-table thead th:is(:nth-child(1), :nth-child(7), :nth-child(8)) { display: none; }
   .final-tables .details-table thead th:nth-child(2) { visibility: hidden; }   /* colonne des logos */
@@ -250,7 +249,10 @@
      lignes de Collectif. */
   .final-tables .details-table tbody tr { padding: 3px 10px 3px 3px; border-radius: var(--radius); background: rgba(237, 234, 227, 0.04); }
   .final-tables .details-table tbody tr + tr { margin-top: 4px; }
-  .final-tables .details-table thead tr { padding: 0 10px 0 3px; }
+  /* Intitulés : ligne d'en-tête du tableau, de la forme des lignes (même retrait, mêmes colonnes),
+     fond un peu plus marqué, intitulés centrés dans sa hauteur. */
+  .final-tables .details-table thead tr { min-height: 28px; margin-bottom: 4px; padding: 0 10px 0 3px; border-radius: var(--radius);
+                                          background: rgba(237, 234, 227, 0.08); }
   .final-tables .details-table.details-table :is(tbody, tfoot) tr:not(.is-pad) :is(td, th) { border: 0; }   /* traits des cellules du tableau */
   .final-tables .details-table :is(td, th) { padding: 0; text-align: left; }
   .final-tables .details-table th.details-comp { grid-column: 1; display: flex; align-items: center; }

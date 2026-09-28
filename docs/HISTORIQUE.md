@@ -244,3 +244,4 @@ Même jour : sur mobile, plus de voile ni de filet or sur les lignes des compét
 
 Même jour : lignes « Détails par compétition » au pas des lignes de Collectif (36 px) : intitulés sortis des lignes (une ligne d'en-tête, `thead` réaffiché sur mobile), logo en tuile de 26 px, chiffres 16 px sur une ligne ; fond de carte remis à la demande (32 px de haut, 4 px d'écart). « Ratio » renommé « B+A/Match » partout (tableaux, stats face à face, Présentation ; infobulle « Buts + Assists / match » gardée).
 Même jour : ligne Total retirée des détails par compétition sur mobile (demande ; les totaux de la saison sont déjà dans les stats face à face).
+Même jour : titres collectifs du palmarès nommés dessous (« CHAMPION » / « VAINQUEUR », comme « FINALISTE ») ; intitulés des détails par compétition dans une ligne d'en-tête intégrée au tableau (bande de 28 px, fond 8 %, même retrait et mêmes colonnes que les lignes) au lieu de flotter au-dessus.
