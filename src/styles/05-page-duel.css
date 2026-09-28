@@ -461,7 +461,7 @@
   .final-tables .details-table :is(colgroup, tfoot, tr.is-pad, .details-team, td.details-result, td.details-indiv),
   .final-tables .details-table thead th:is(:nth-child(1), :nth-child(7), :nth-child(8)) { display: none; }
   .final-tables .details-table :is(thead, tbody) tr {
-    display: grid; grid-template-columns: minmax(0, 2fr) repeat(4, minmax(0, 1fr)); align-items: center; column-gap: 12px;
+    display: grid; grid-template-columns: minmax(0, 1fr) repeat(4, 72px); align-items: center; column-gap: 8px;   /* colonnes de chiffres resserrées */
     height: auto; padding: 4px 14px 4px 4px; border-radius: var(--radius);
   }
   .final-tables .details-table thead tr { min-height: 32px; padding-top: 0; padding-bottom: 0; margin-bottom: 6px; }
@@ -475,6 +475,7 @@
   .final-tables .details-comp .comp { width: 36px; height: 36px; padding: 4px; }
   :is(.game, .final) .final-tables .details-panel { padding: 0; background: none; box-shadow: none; }   /* pas de panneau : lignes sur le fond de page */
   .final-tables .details-table th.details-comp { gap: 12px; text-align: left; }
+  :is(.game, .final:not(.solo)) .final-tables .details-grid { --tw: min(38vw, 540px); }   /* tableaux plus étroits : de l'air entre les deux */
   .final-tables .details-comp-name { display: block; min-width: 0; font-family: var(--font); font-weight: 700; font-size: 14px; line-height: 1.15;
                                      letter-spacing: 0.04em; text-transform: uppercase; color: var(--text); }
   .final-tables .details-table td[data-label] { font-family: var(--font); font-weight: 700; font-size: 20px; line-height: 36px; text-align: center;
