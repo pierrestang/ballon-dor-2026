@@ -92,7 +92,7 @@ Traitement éditorial : en-tête avec la pièce du joueur, nom, poste et âge, e
 ## Grand écran harmonisé avec le mobile (28/09/2026)
 
 - **Identité au-dessus du joueur, comme sur mobile** : le nom en arc est retiré ; bandeau (`PlayerTag` : nom, poste · âge, écusson et drapeau) sur le fond des lignes de stats du milieu, à sa place (nom 30 px, poste 17 px, écusson et drapeau 44 px). **Colonne à côté du joueur** (`SidePanel`, `FinalPlayers.jsx` ; page du duel, Présentation, jeu) : le palmarès au format du mobile (`SeasonPalmares`, `SeasonPalmares.jsx`, commun aux deux formats), sans espace réservé entre Collectif et Individuel.
-- **Stats face à face** : chaque ligne en carte (fond des lignes de tableau).
+- **Stats face à face** : chaque ligne en carte (fond des lignes de tableau), resserrée sur les chiffres ; colonnes du palmarès resserrées sur le texte le plus long (180 à 320 px), calées sur leur bord d'écran.
 - **Détails par compétition** : une ligne par compétition, logo et 4 chiffres centrés, intitulés une fois en tête ; plus de colonnes Équipe / Résultat / Individuel, de voile or ni de Total (en-tête du tableau — pièce, nom, titres — gardé).
 - **Annonce de manche** en liste comme sur mobile (pièces jusqu'à 84 px). **Menu** : points de pagination sous le titre, en plus des versions voisines sur les bords.
 - Flèches ‹ › des joueurs rapprochées (2 % ; Présentation −4 %) : elles tombaient sur la colonne du palmarès.

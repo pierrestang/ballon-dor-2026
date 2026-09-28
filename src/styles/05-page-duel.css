@@ -444,7 +444,10 @@
 /* ------------------------------------------------------------------ */
 @media (min-width: 821px) {
   /* Colonne à côté du joueur : le palmarès. */
-  .palmares { width: 100%; max-width: 320px; }
+  /* Colonnes resserrées sur le texte le plus long, calées sur leur bord d'écran. */
+  .palmares { width: fit-content; min-width: 180px; max-width: 320px; }
+  .palmares.is-left { justify-self: start; }
+  .palmares.is-right { justify-self: end; }
 
   /* Identité au-dessus du joueur, à la place du nom en arc (masqué) : bandeau nom, poste · âge,
      écusson et drapeau, comme sur mobile, au panneau du tableau. */
@@ -469,6 +472,9 @@
 
   /* Stats face à face : chaque ligne en carte, comme les lignes des tableaux. */
   .compare-row { box-sizing: border-box; padding: 8px 16px; border-radius: var(--radius); background: rgba(237, 234, 227, 0.04); }
+  /* Cartes resserrées sur les chiffres (plus de vide aux extrémités) : colonne à la largeur de la ligne la plus large. */
+  :is(.final:not(.solo), .game) .compare { width: fit-content; justify-self: center; }
+  :is(.final:not(.solo), .game) .compare-row { padding-inline: 28px; }
 
   /* Détails par compétition : une ligne par compétition — logo, puis les 4 chiffres centrés ;
      intitulés une fois, en tête ; fond de carte, 44 px, 6 px d'écart. */
