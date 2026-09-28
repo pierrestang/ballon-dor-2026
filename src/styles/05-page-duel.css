@@ -405,7 +405,7 @@
   .figure .player-tag-last:empty { display: none; }
   /* Palmarès aéré, au pas des cartes de stats : lignes plus hautes (suivent la hauteur d'écran), plus d'écart. */
   .palmares .final-table-palm { row-gap: clamp(20px, 3.2vh, 32px); }
-  .palmares .final-table-palm h3 { margin-bottom: 10px; font-size: 13px; }
+  .palmares .final-table-palm h3 { margin-bottom: 10px; font-size: 13px; border-bottom: 0; }   /* pas de filet : lignes sur le fond de page */
   .palmares .final-table-palm ul { gap: clamp(4px, 0.8vh, 8px); }
   .palmares .final-table-palm li { gap: 12px; min-height: clamp(34px, 4.2vh, 44px); padding: 4px 14px 4px 6px; }
   .palmares .final-table-palm-logo { width: 30px; height: 30px; }
