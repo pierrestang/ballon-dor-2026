@@ -124,7 +124,13 @@ export function flip() {
   src.start(t0); src.stop(t0 + d)
   tone(a, 2400, { type: 'triangle', d: 0.05, v: 0.05 })   // le « tic » du pouce
 }
+/** Vibration brève quand une pièce se pose ou qu'on vote (Android ; iOS l'ignore), son coupé
+    ou non. */
+export function haptic(ms = 12) {
+  try { navigator.vibrate?.(ms) } catch { /* non pris en charge */ }
+}
 export function land(id) {
+  haptic()
   const a = audio()
   if (!a) return
   tone(a, 160, { type: 'sine', d: 0.14, v: 0.14 })   // la pièce touche
@@ -134,7 +140,7 @@ export function land(id) {
 /** Pichenette puis pose au bout de `delay` s (durée du vol ; 0 : tout de suite). */
 export function pick(id, delay = 0.35) {
   flip()
-  if (enabled) setTimeout(() => land(id), delay * 1000)
+  setTimeout(() => (enabled ? land(id) : haptic()), delay * 1000)
 }
 
 let padNodes = null

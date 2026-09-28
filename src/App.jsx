@@ -15,6 +15,9 @@ import Cursor from './Cursor'
 const loadGame = () => import('./Game')
 const Game = lazy(loadGame)
 
+// Couleur de la barre du navigateur mobile par version : --bg de chaque version (11-fonds.css).
+const THEME_COLOR = { game: '#050505', duel: '#04070d', solo: '#040806' }
+
 // requestIdleCallback n'existe pas sur Safari : repli sur un délai.
 const whenIdle = (fn) =>
   'requestIdleCallback' in window
@@ -112,7 +115,12 @@ export default function App() {
   // Fond de la page selon la version (styles.css, data-theme) : sur l'intro, celle choisie ;
   // sinon celle de la page affichée (la sélection et la page du duel : Duel).
   const theme = solo !== null ? 'solo' : game ? 'game' : final ? 'duel' : MODES[mode].id
-  useEffect(() => { document.documentElement.dataset.theme = theme }, [theme])
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme
+    // Barre du navigateur mobile (theme-color) : couleur du bord de la page de cette version
+    // (--bg, 11-fonds.css ; valeurs finales, sans attendre la transition de 0,6 s).
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', THEME_COLOR[theme] ?? THEME_COLOR.game)
+  }, [theme])
 
   // Module du mode « Mon classement » préchargé une fois la page chargée.
   useEffect(() => { if (loaded) loadGame() }, [loaded])

@@ -22,7 +22,8 @@ export function useNarrow() {
 }
 
 /** pageRef : la page (reçoit --down) ; tablesRef : les tableaux ; onBack : page précédente ;
-    onArrow(±1) : ← / → (facultatif) ; onSwipe(±1) : doigt horizontal (facultatif). */
+    onArrow(±1) : ← / → (facultatif) ; onSwipe(±1, x) : doigt horizontal (facultatif ; x : abscisse
+    où le doigt s'est posé, pour savoir de quel joueur il s'agit sur la page du duel). */
 export function usePlayerPage({ pageRef, tablesRef, reduced, onBack, onArrow, onSwipe }) {
   const isPresent = useIsPresent()
   const [atTables, setAtTables] = useState(false)
@@ -102,7 +103,7 @@ export function usePlayerPage({ pageRef, tablesRef, reduced, onBack, onArrow, on
     const onTouchEnd = (e) => {
       if (!touch) return
       const dx = e.changedTouches[0].clientX - touch.x, dy = e.changedTouches[0].clientY - touch.y
-      if (onSwipe && Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) { if (!atTablesRef.current) onSwipe(dx < 0 ? 1 : -1) }
+      if (onSwipe && Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) { if (!atTablesRef.current) onSwipe(dx < 0 ? 1 : -1, touch.x) }
       else if (touch.top && dy > 80) back()
       touch = null
     }

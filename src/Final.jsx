@@ -10,7 +10,8 @@ import { PageUp, TablesDown, TablesUp } from './PageArrows'
 // (27/09/2026). En haut, palmarès · joueur · stats face à face · joueur · palmarès (FinalPlayers,
 // grille de la page du duel) ; dessous, les tableaux détaillés des deux joueurs (FinalTables),
 // en simple défilement : les joueurs s'effacent en descendant (usePlayerPage). ← / → (ou les
-// flèches ‹ › des joueurs) : joueur suivant de ce côté, tant que les joueurs sont affichés.
+// flèches ‹ › des joueurs, ou le doigt qui glisse sur l'un d'eux) : joueur suivant de ce côté,
+// tant que les joueurs sont affichés.
 
 export default function Final({ pair, nav, reduced, onBack, onStep }) {
   const page = useRef(null)
@@ -18,6 +19,8 @@ export default function Final({ pair, nav, reduced, onBack, onStep }) {
   const { atTables, atTablesRef, toTables, toTop, back } = usePlayerPage({
     pageRef: page, tablesRef: tables, reduced, onBack,
     onArrow: (d) => onStep(d > 0 ? 1 : 0, 1),
+    // Doigt : glisser sur un joueur le change (moitié de l'écran où le doigt s'est posé).
+    onSwipe: (d, x) => onStep(x < window.innerWidth / 2 ? 0 : 1, d),
   })
   // Tour complet des joueurs à la fin réelle du glissement d'arrivée.
   const [entered, setEntered] = useState(false)

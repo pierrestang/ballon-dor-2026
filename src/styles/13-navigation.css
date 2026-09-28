@@ -96,7 +96,8 @@
   transition: color var(--t-fast) var(--ease-out);
 }
 .sound-toggle svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
-.sound-toggle:hover, .sound-toggle:focus-visible, .sound-toggle.is-on { color: var(--gold); outline: none; }
+.sound-toggle:focus-visible, .sound-toggle.is-on { color: var(--gold); outline: none; }
+@media (hover: hover) { .sound-toggle:hover { color: var(--gold); } }   /* au doigt, l'icône restait dorée une fois coupée */
 /* Mobile : icône seule, en haut à droite, sur un fond flouté (en bas, elle couvrait les listes
    et les versions voisines de l'intro) ; « Quitter la partie » du jeu décalée d'autant. */
 @media (max-width: 820px) {

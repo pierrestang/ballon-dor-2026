@@ -23,7 +23,8 @@
 .stage-mode-side.is-right { right: clamp(16px, 3vw, 48px); }
 .stage.is-intro-ready .stage-mode-side { opacity: 1; }
 .stage.is-live .stage-mode-side { visibility: hidden; }
-.stage-mode-side:hover, .stage-mode-side:focus-visible { color: var(--text-secondary-hover); }
+.stage-mode-side:focus-visible { color: var(--text-secondary-hover); }
+@media (hover: hover) { .stage-mode-side:hover { color: var(--text-secondary-hover); } }   /* souris seulement */
 @media (max-width: 820px) {
   .stage-mode-side { top: auto; bottom: calc(clamp(12px, 4%, 40px) + 8px); translate: none; font-size: 12px; letter-spacing: 0.06em; }
 }

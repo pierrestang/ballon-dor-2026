@@ -81,6 +81,7 @@ Traitement éditorial : en-tête avec la pièce du joueur, nom, poste et âge, e
 - **Au doigt** : toucher la pièce de l'intro entre dans la version ; chevrons libellés « ENTRER » et « LANCER LE DUEL » (`.intro-down-label.is-touch`, mobile seulement) ; cibles ≥ 44 px (son, « Quitter la partie », compteur) ; « Ajouter mon classement à la communauté » en bouton (`.game-share.is-comm`).
 - Classement final : sur écran bas, la page défile au lieu de tasser (≤ 700 px de haut).
 - **Lot B** : annonce de manche en liste compacte (un duel par ligne : pièce, nom en texte droit `.game-pairing-name`, « VS », nom, pièce ; pièces 52 px) ; Présentation : club, drapeau et poste en toutes lettres (`.poste-label`, `posteLabel`) sur une ligne, Collectif et Individuel côte à côte.
+- **Lot C** : survols réservés à la souris (`@media (hover: hover)` ; au doigt, l'état restait collé : joueur soulevé, bouton plein, icône dorée) — infobulles exceptées ; glisser sur la page du duel : change le joueur du côté où le doigt s'est posé (`onSwipe(d, x)`, `playerPage.js` ; la Présentation l'avait déjà) ; barre du navigateur mobile à la couleur de la version (`THEME_COLOR`, `App.jsx`) ; vibration brève quand une pièce se pose ou qu'on vote (`haptic`, `sound.js`, Android) ; intitulés des stats à 12 px.
 
 ## Charte
 

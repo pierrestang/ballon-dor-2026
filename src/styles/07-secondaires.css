@@ -12,13 +12,15 @@
   opacity: 1;
   transition: color var(--t-fast) var(--ease-out), opacity var(--t-fast) var(--ease-out), visibility 0s;
 }
-.pick-arrow:hover, .pick-arrow:focus-visible,
-.figure-picker .arrow:hover, .figure-picker .arrow:focus-visible,
-.intro-down:hover, .intro-down:focus-visible { color: var(--text-secondary-hover); opacity: 1; }
+.pick-arrow:focus-visible,
+.figure-picker .arrow:focus-visible,
+.intro-down:focus-visible { color: var(--text-secondary-hover); opacity: 1; }
+@media (hover: hover) {   /* survol : souris seulement */
+  .pick-arrow:hover, .figure-picker .arrow:hover, .intro-down:hover { color: var(--text-secondary-hover); opacity: 1; }
+  .pick-arrow:hover svg, .figure-picker .arrow:hover svg { filter: none; }
+}
 .pick-arrow svg,
-.figure-picker .arrow svg,
-.pick-arrow:hover svg,
-.figure-picker .arrow:hover svg { filter: none; }   /* plus de lueur blanche : couleur seule */
+.figure-picker .arrow svg { filter: none; }   /* plus de lueur blanche : couleur seule */
 .pick-arrow svg path, .figure-picker .arrow svg path {
   transition: stroke var(--t-fast) var(--ease-out);
 }

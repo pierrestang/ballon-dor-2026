@@ -240,9 +240,12 @@
 }
 .pick-arrow svg { width: 18px; height: 18px; margin: auto; filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.55)); }
 .pick-arrow svg path { stroke-width: 2; }
-.pick-arrow:hover,
 .pick-arrow:focus-visible { opacity: 1; }
-.pick-arrow:hover svg { filter: drop-shadow(0 0 7px rgba(255, 255, 255, 0.9)); }
+/* Survol : souris seulement (au doigt, l'état de survol restait collé après un toucher). */
+@media (hover: hover) {
+  .pick-arrow:hover { opacity: 1; }
+  .pick-arrow:hover svg { filter: drop-shadow(0 0 7px rgba(255, 255, 255, 0.9)); }
+}
 /* Duel prêt : pièce centrale et flèches effacées, inertes. */
 .pick-arrow.is-gone {
   opacity: 0;

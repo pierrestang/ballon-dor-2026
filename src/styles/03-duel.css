@@ -125,9 +125,11 @@
   transition: opacity var(--t-fast) var(--ease-out);
 }
 .figure-picker .arrow svg { width: 18px; height: 18px; filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.55)); }
-.figure-picker .arrow:hover,
 .figure-picker .arrow:focus-visible { background: none; box-shadow: none; color: #fff; opacity: 1; }
-.figure-picker .arrow:hover svg { filter: drop-shadow(0 0 7px rgba(255, 255, 255, 0.9)); }
+@media (hover: hover) {   /* survol : souris seulement */
+  .figure-picker .arrow:hover { background: none; box-shadow: none; color: #fff; opacity: 1; }
+  .figure-picker .arrow:hover svg { filter: drop-shadow(0 0 7px rgba(255, 255, 255, 0.9)); }
+}
 .figure-picker .arrow.is-outer-left { left: -10%; }     /* joueur de gauche : flèche côté bord */
 .figure-picker .arrow.is-outer-right { right: -10%; }   /* joueur de droite : flèche côté bord */
 .rotation,
@@ -281,7 +283,7 @@
   .figure-picker .arrow.is-outer-right { right: 0; }
   .compare-row strong { font-size: 26px; }
   .compare-row { --label-w: 84px; }
-  .compare-row > span { font-size: 11px; }
+  .compare-row > span { font-size: 12px; }   /* charte : textes ≥ 12 px */
 
   .palmares { max-width: none; max-height: 44svh; align-self: start; justify-self: stretch; }
   .palmares.is-left { grid-area: 3 / 1; }
