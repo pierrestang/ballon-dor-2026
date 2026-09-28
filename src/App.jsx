@@ -44,9 +44,9 @@ export default function App() {
   // l'ancienne page de comparaison et celle des tableaux (assets-source/ancien/).
   const [final, setFinal] = useState(start.page === 'final')
   const [game, setGame] = useState(start.page === 'game')   // mode « Mon classement »
-  // Versions de l'intro (MODES, Carousel.jsx) : 0 Les candidats (par défaut : découvrir les
-  // joueurs d'abord), 1 Duel, 2 Mon classement ; ouverte par un lien, celle de la page.
-  const [mode, setMode] = useState({ solo: 0, final: 1, game: 2 }[start.page] ?? 0)
+  // Versions de l'intro (MODES, Carousel.jsx) : 0 Les candidats, 1 Duel, 2 Mon classement (par
+  // défaut, grand écran et mobile, 28/09/2026) ; ouverte par un lien, celle de la page.
+  const [mode, setMode] = useState({ solo: 0, final: 1, game: 2 }[start.page] ?? 2)
   const [solo, setSolo] = useState(start.solo ?? null)   // page Présentation : index du joueur, ou null
   const [introPlayer, setIntroPlayer] = useState(0)  // joueur de la pièce au retour à l'intro
   // Pièce de l'intro confiée à l'annonce du Ballon d'Or ({ id, x, y, size } : centre et diamètre

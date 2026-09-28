@@ -37,7 +37,7 @@ Vidéos brutes hors projet (`~/videos/`) ; rien d'inutilisé dans `public/` (tou
 
 ## Parcours
 
-Intro → trois versions au choix (← / →, bords, glisser ; on ouvre sur **Les candidats**, pour découvrir les joueurs d'abord) : **Les candidats · Duel · Mon classement**. Entrer : ↓, Entrée, chevron, molette, doigt.
+Intro → trois versions au choix (← / →, bords, glisser ; on ouvre sur **Mon classement**, grand écran et mobile) : **Les candidats · Duel · Mon classement**. Entrer : ↓, Entrée, chevron, molette, doigt.
 
 - **Intro (mobile)** : plus de versions voisines « ‹ DUEL · MON CLASSEMENT › » sur les bords ; trois points de pagination sous le titre de la version (trait or pour l'affichée, `stage-mode-dots`, `Carousel.jsx`, 09-versions.css) ; glisser ou toucher un point change de version.
 - **Intro** : chargeur (trophée, ≤ 3 s ; visiteur qui revient : 4 fois plus court, `bo2026-vu`), puis la pièce du joueur (48vmin), « BALLON D'OR 2026 » en arc au-dessus, nom dessous, titre de la version en or dessous (glitch doux au changement). Un nominé toutes les 2 s.
