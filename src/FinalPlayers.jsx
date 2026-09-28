@@ -305,8 +305,8 @@ export function Counter({ value, format = String, trigger, onMount = false }) {
 const SEASON = [
   { label: 'Matches', get: (p) => p.stats.matchs, format: String },
   { label: 'Buts', get: (p) => p.stats.buts, format: String },
-  { label: 'Assists', get: (p) => p.stats.passes, format: String },
-  { label: 'B+A/Match', tip: 'Buts + Assists / match', get: (p) => round2(p.stats.contributionsParMatch), format: decimal },
+  { label: 'Passes', get: (p) => p.stats.passes, format: String },
+  { label: 'B+A/Match', tip: 'Buts + passes / match', get: (p) => round2(p.stats.contributionsParMatch), format: decimal },
 ]
 
 /** Stats de la saison sur mobile, au format des détails par compétition (05-page-duel.css) : ligne
@@ -339,8 +339,8 @@ export function Compare({ a, b, titles = true }) {
       format: same },
     { label: 'Matches', get: (p) => p.stats.matchs, format: same },
     { label: 'Buts', get: (p) => p.stats.buts, format: same },
-    { label: 'Assists', get: (p) => p.stats.passes, format: same },
-    { label: 'B+A/Match', tip: 'Buts + Assists / match', get: (p) => round2(p.stats.contributionsParMatch),
+    { label: 'Passes', get: (p) => p.stats.passes, format: same },
+    { label: 'B+A/Match', tip: 'Buts + passes / match', get: (p) => round2(p.stats.contributionsParMatch),
       format: decimal },
   ]
   return (

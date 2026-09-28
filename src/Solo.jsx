@@ -21,8 +21,8 @@ const round2 = (n) => Math.round(n * 100) / 100
 const ROWS = [
   { label: 'Matches', value: (p) => p.stats.matchs },
   { label: 'Buts', value: (p) => p.stats.buts },
-  { label: 'Assists', value: (p) => p.stats.passes },
-  { label: 'B+A/Match', tip: 'Buts + Assists / match', value: (p) => p.stats.contributionsParMatch,
+  { label: 'Passes', value: (p) => p.stats.passes },
+  { label: 'B+A/Match', tip: 'Buts + passes / match', value: (p) => p.stats.contributionsParMatch,
     format: (v) => decimal(round2(v)) },
 ]
 

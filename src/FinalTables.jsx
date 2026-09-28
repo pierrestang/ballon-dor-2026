@@ -13,9 +13,9 @@ import { SLIDE } from './transitions'
 
 // « B+A/Match » (ex-« Ratio », 28/09/2026) : buts + assists par match, détaillé au survol de l'intitulé.
 // SHORT : intitulés courts du mode Duel sur mobile (deux blocs côte à côte).
-const COLUMNS = ['Matches', 'Buts', 'Assists', 'B+A/Match']
-export const SHORT = { Matches: 'M', Buts: 'B', Assists: 'A', 'B+A/Match': 'B+A/M' }
-const HEADER_TIPS = { 'B+A/Match': 'Buts + Assists / match' }
+const COLUMNS = ['Matches', 'Buts', 'Passes', 'B+A/Match']
+export const SHORT = { Matches: 'M', Buts: 'B', Passes: 'P', 'B+A/Match': 'B+A/M' }
+const HEADER_TIPS = { 'B+A/Match': 'Buts + passes / match' }
 // Ratio : buts + assists par match. Passes non relevées (« n.r. » : qualifications de la Coupe du
 // monde, supercoupes, certaines coupes) : buts par match à la place, signalé en infobulle.
 const goalsOnly = (s) => s.contributionsParMatch === null && s.passes === null && s.matchs > 0
