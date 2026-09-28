@@ -215,8 +215,6 @@ function Table({ player, side, medals, sizes }) {
                   <Tip label={c.nom}>
                     <img className="comp" src={asset(c.logo)} alt={c.nom} loading="lazy" width="36" height="36" />
                   </Tip>
-                  {/* Nom écrit : cartes du mobile seulement (logo seul sur grand écran). */}
-                  <span className="details-comp-name" aria-hidden="true">{c.nom}</span>
                 </th>
                 {/* data-label : intitulé de la colonne, affiché au-dessus du chiffre dans les cartes du mobile. */}
                 {cells(c).map((v, k) => <td key={k} data-label={COLUMNS[k]}>{v}</td>)}
@@ -226,8 +224,6 @@ function Table({ player, side, medals, sizes }) {
                     <Tip label={trophyLabel(c)}>
                       <img className="details-trophy" src={asset(c.trophee)} alt={trophyLabel(c)}
                            height="36" loading="lazy" onLoad={balanceTrophy} />
-                      {/* Mobile : pastille dorée, trophée et mot. */}
-                      <span className="details-won">{c.type === 'championnat' ? 'Champion' : 'Vainqueur'}</span>
                     </Tip>
                   ) : (
                     <span className="clamp">{shortResult(c.resultat)}</span>

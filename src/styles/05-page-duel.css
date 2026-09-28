@@ -215,10 +215,9 @@
 .final-tables .details-table th:last-child { padding-right: 6px; }
 /* Infobulle du poste dans l'en-tête des tableaux : dans le flux du texte, sans décalage. */
 .final-table-meta .tip { vertical-align: baseline; }
-.details-comp-name { display: none; }   /* nom écrit : cartes du mobile seulement */
 /* Bloc unique du joueur (mobile seulement) : ligne du club, pastille des compétitions gagnées,
    distinctions écrites, distinctions sans compétition. */
-.final-table-club, .final-table-palm, .final-table-section, .details-won { display: none; }
+.final-table-club, .final-table-palm, .final-table-section { display: none; }
 /* Mobile : une carte par compétition (le tableau à 7 colonnes était illisible, intitulés en
    10 px). Ligne 1 : logo et nom de la compétition, résultat à droite (trophée ou « Demi »…) ;
    ligne 2 : les 4 stats, intitulé au-dessus du chiffre (data-label), distinctions à droite.
@@ -228,34 +227,25 @@
   .final-tables .details-table,
   .final-tables .details-table :is(thead, tbody, tfoot) { display: block; width: 100%; }
   .final-tables .details-table :is(colgroup, thead, tr.is-pad, .details-team) { display: none; }
+  /* Une ligne par compétition : son logo, puis les 4 stats (intitulé au-dessus du chiffre) ; ni
+     nom écrit, ni résultat (le palmarès, au-dessus, dit ce qui a été gagné). */
   .final-tables .details-table :is(tbody, tfoot) tr {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    grid-template-rows: auto auto;
+    grid-template-columns: 44px repeat(4, minmax(0, 1fr));
     align-items: center;
     column-gap: 8px;
-    row-gap: 8px;
     height: auto;
-    padding: 12px 12px 12px 14px;
+    padding: 10px 12px 10px 12px;
     border-radius: var(--radius);
   }
   .final-tables .details-table tbody tr + tr { margin-top: 6px; }
   .final-tables .details-table tbody tr:not(.is-won) { background: rgba(237, 234, 227, 0.03); }
   .final-tables .details-table.details-table :is(tbody, tfoot) tr:not(.is-pad) :is(td, th) { border: 0; }   /* traits des cellules du tableau */
   .final-tables .details-table :is(td, th) { padding: 0; text-align: left; }
-  /* Ligne 1 : logo + nom, résultat à droite. */
-  .final-tables .details-table th.details-comp { grid-area: 1 / 1 / 2 / -1; display: flex; align-items: center; gap: 10px; min-width: 0; }
-  .final-tables .details-comp .comp { width: 30px; height: 30px; flex: none; }
-  .final-tables .details-comp-name { display: block; min-width: 0; line-height: 1.1;   /* noms longs : sur deux lignes, jamais coupés */
-                                     font-family: var(--font); font-weight: 700; font-size: 16px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text); }
-  /* Résultat de l'équipe, en haut à droite ; compétition gagnée : « CHAMPION » / « VAINQUEUR » en
-     or (le trophée est dans le palmarès, au-dessus). */
-  .final-tables .details-table th.details-comp { grid-column: 1 / 4; }
-  .final-tables .details-table td.details-result { grid-area: 1 / 4; justify-self: end; align-self: center; text-align: right;
-                                                   font-size: 13px; font-weight: 700; letter-spacing: 0.05em; color: var(--text-secondary); }
-  .final-tables .details-trophy { height: calc(30px * var(--tr, 1)); max-width: 36px; margin: 0; }
-  /* Ligne 2 : stats (intitulé au-dessus, 12 px), distinctions à droite. */
-  .final-tables .details-table td[data-label] { grid-row: 2; font-size: 20px; line-height: 1; font-variant-numeric: tabular-nums; }
+  .final-tables .details-table th.details-comp { grid-column: 1; display: flex; align-items: center; }
+  .final-tables .details-comp .comp { width: 34px; height: 34px; flex: none; }
+  .final-tables .details-table :is(td.details-result, td.details-indiv) { display: none; }
+  .final-tables .details-table td[data-label] { font-size: 20px; line-height: 1; font-variant-numeric: tabular-nums; }
   .final-tables .details-table td[data-label]::before {
     content: attr(data-label);
     display: block;
@@ -266,17 +256,13 @@
     text-transform: uppercase;
     color: var(--text-secondary);
   }
-  .final-tables .details-table td.details-indiv { grid-area: 2 / 5; justify-self: end; display: flex; gap: 4px; line-height: 0; }
-  .final-tables .details-indiv img { width: 26px; height: 26px; margin: 0; }
-  .final-tables .details-table td.details-indiv:empty { display: none; }
-  /* Filet or des compétitions gagnées : sur toute la carte. */
+  /* Compétition gagnée : voile et filet or sur toute la ligne. */
   .final-tables .details-table tbody tr.is-won { box-shadow: inset 2px 0 0 var(--gold); }
   .final-tables .details-table tbody tr.is-won > :first-child { box-shadow: none; }
-  /* Total : même carte, séparée par le filet doré ; titres et distinctions à droite. */
+  /* Total : même ligne, « TOTAL » à la place du logo, séparée par le filet doré. */
   .final-tables .details-table tfoot tr { margin-top: 14px; border-top: 1px solid rgba(212, 175, 55, 0.35); border-radius: 0; padding-top: 14px; }
-  .final-tables .details-table.details-table tfoot th.final-total-label { grid-area: 1 / 1 / 2 / -1; font-size: 16px; padding-left: 0; }
-  /* Titres et distinctions : comptés dans le palmarès, au-dessus. */
-  .final-tables .details-table tfoot td:is(.details-total-titles, .details-total-indiv) { display: none; }
+  .final-tables .details-table.details-table tfoot th.final-total-label { grid-column: 1; font-size: 13px; padding-left: 0; }
+  .final-tables .details-table tfoot td:is(.details-total-titles, .details-total-indiv) { display: none; }   /* comptés dans le palmarès */
   .final-tables .details-table tfoot td[data-label] { font-size: 22px; }
   /* Un seul bloc par joueur : le palmarès séparé et « Voir le tableau détaillé » disparaissent,
      le tableau suit les stats. */
@@ -295,8 +281,6 @@
   .final-table-poste { font-family: var(--font); font-weight: 700; font-size: 12px; line-height: 1.15; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-secondary); }
   .final-table-club .final-table-titles { font-size: 12px; }
   .final-table-club .final-table-titles b { font-size: 2em; }
-  .final-tables .details-result .details-trophy { display: none; }
-  .details-won { display: inline; font-family: var(--font); font-weight: 700; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold); }
   .final-tables .details-table td.details-indiv { display: none; }   /* distinctions : dans le palmarès */
   /* Palmarès (au-dessus des détails) : deux colonnes, Collectif (logos des compétitions) et Individuel
      (logos des compétitions, nom dessous), nombre de titres en chiffre italique or. */
