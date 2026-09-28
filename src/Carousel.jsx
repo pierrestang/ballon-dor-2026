@@ -508,6 +508,17 @@ export default function Carousel({ nav, pair, setPair, onOpen, onGame, onSolo, m
             <GlitchArc text={coinOn ? MODES[mode].title : ''} animate={!reduced} radius={R_MODE}
                        size={MODE_FONT} className="arc-mode" />
           </m.div>
+          {/* Mobile : points de pagination des versions sous leur titre (09-versions.css) — trait or
+              pour la version affichée ; toucher un point change de version (comme le glissé). */}
+          <m.div className="stage-mode-dots" style={{ ...coinBox, opacity: modeOpacity, '--dots-y': `${((R_MODE + 24) * lay.D) / 200}px` }}>
+            <div className="stage-mode-dots-row">
+              {MODES.map((md, k) => (
+                <button key={md.id} className={k === mode ? 'is-on' : undefined} aria-label={`Version : ${md.title}`}
+                        aria-current={k === mode || undefined} tabIndex={intro ? 0 : -1}
+                        onClick={() => { if (k !== mode) changeMode(k - mode) }}><span /></button>
+              ))}
+            </div>
+          </m.div>
           <m.div className="pick-active" aria-hidden="true"
                  initial={false} animate={{ opacity: inSelect && ready ? 0 : 1 }} transition={{ duration: 0.3 }}
                  style={coinBox}>

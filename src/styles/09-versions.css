@@ -25,6 +25,17 @@
 .stage.is-live .stage-mode-side { visibility: hidden; }
 .stage-mode-side:focus-visible { color: var(--text-secondary-hover); }
 @media (hover: hover) { .stage-mode-side:hover { color: var(--text-secondary-hover); } }   /* souris seulement */
+.stage-mode-dots { display: none; }
+/* Mobile : plus de versions voisines sur les bords ; points de pagination sous le titre de la
+   version (dans le bloc de la pièce, agrandi avec elle dans l'intro : tailles en conséquence). */
 @media (max-width: 820px) {
-  .stage-mode-side { top: auto; bottom: calc(clamp(12px, 4%, 40px) + 8px); translate: none; font-size: 12px; letter-spacing: 0.06em; }
+  .stage-mode-side { display: none; }
+  .stage-mode-dots { display: block; position: absolute; pointer-events: none; }
+  .stage-mode-dots-row { position: absolute; left: 50%; top: calc(50% + var(--dots-y)); translate: -50% -50%; display: flex; pointer-events: auto; }
+  .stage-mode-dots button { display: grid; place-items: center; width: 26px; height: 26px; padding: 0; background: none; border: 0; cursor: pointer; }
+  .stage-mode-dots span { display: block; width: 4px; height: 4px; border-radius: 999px; background: var(--text-secondary); opacity: 0.6;
+                          transition: width var(--t-med) var(--ease-out), background-color var(--t-med) var(--ease-out), opacity var(--t-med) var(--ease-out); }
+  .stage-mode-dots .is-on span { width: 14px; background: var(--gold); opacity: 1; }
+  .stage.is-live .stage-mode-dots { visibility: hidden; }
 }
+@media (prefers-reduced-motion: reduce) { .stage-mode-dots span { transition: none; } }
