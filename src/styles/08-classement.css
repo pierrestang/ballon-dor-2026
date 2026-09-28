@@ -116,7 +116,7 @@
   .game-pairing .game-draw-coin > :first-child { width: var(--d); height: var(--d); flex: none; }
   .game-pairing .game-card-name { display: none; }
   .game-pairing-name { display: block; min-width: 0; font-family: var(--font); font-weight: 700; font-size: 14px; line-height: 1.1;
-                       letter-spacing: 0.02em; text-transform: uppercase; color: var(--text); }   /* « KVARATSKHELIA » tient entier */
+                       letter-spacing: 0.02em; text-transform: uppercase; color: var(--text); white-space: nowrap; }   /* nom de famille, une ligne (« KVARATSKHELIA » tient) */
   .game-pairing .game-draw-coin + .game-draw-coin .game-pairing-name { text-align: right; }
   .game-pairing .game-vs.is-small { top: 50%; font-size: 16px; }
   .game-pairing-halo { inset: -4px 10%; }
