@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { animate, cubicBezier, useReducedMotion } from 'framer-motion'
-import { FRAMES, asset, clubLogo, decimal, kitStyle, medalOf, photoUrl, posteLabel } from './data'
+import { FRAMES, asset, clubLogo, coinUrl, decimal, kitStyle, medalOf, photoUrl, posteLabel } from './data'
 import { frameAt, hasFrames, open, subscribe } from './sequence'
 import Tip from './Tip'
 
@@ -298,7 +298,36 @@ export function Counter({ value, format = String, trigger }) {
   return <span className="counter">{same ? <Rolling key={same} text={text} trigger={same} onMount /> : text}</span>
 }
 
-/** Stats au milieu, entre les deux joueurs. */
+// Stats de la saison, dans le tableau du mobile (StatsTable) : mêmes colonnes que les détails par
+// compétition.
+const SEASON = [
+  { label: 'Matches', get: (p) => p.stats.matchs, format: String },
+  { label: 'Buts', get: (p) => p.stats.buts, format: String },
+  { label: 'Assists', get: (p) => p.stats.passes, format: String },
+  { label: 'B+A/Match', tip: 'Buts + Assists / match', get: (p) => round2(p.stats.contributionsParMatch), format: decimal },
+]
+
+/** Stats de la saison sur mobile, au format des détails par compétition (05-page-duel.css) : ligne
+    d'en-tête, puis une ligne par joueur (sa pièce à la place du logo, les 4 chiffres, qui défilent
+    au changement de joueur). Masqué sur grand écran. */
+export function StatsTable({ players }) {
+  return (
+    <div className="stats-table">
+      <div className="stats-table-head">
+        <span />
+        {SEASON.map((c) => <span key={c.label}>{c.tip ? <Tip label={c.tip}>{c.label}</Tip> : c.label}</span>)}
+      </div>
+      {players.map((p, i) => (
+        <div key={i} className={`stats-table-row is-${i ? 'right' : 'left'}`}>
+          <img className="stats-table-coin" src={coinUrl(p.id)} alt={p.nom} width="52" height="52" />
+          {SEASON.map((c) => <strong key={c.label}><Counter value={c.get(p)} format={c.format} trigger={p.id} /></strong>)}
+        </div>
+      ))}
+    </div>
+  )
+}
+
+/** Stats au milieu, entre les deux joueurs (mobile : StatsTable). */
 export function Compare({ a, b, titles = true }) {
   // titles : lignes des titres collectifs et individuels (absentes des duels de Mon classement).
   const rows = [
@@ -318,6 +347,7 @@ export function Compare({ a, b, titles = true }) {
         <CompareRow key={r.label} label={r.label} tip={r.tip} left={r.get(a)} right={r.get(b)}
                     format={r.format} trigger={[a.id, b.id]} />
       ))}
+      <StatsTable players={[a, b]} />
     </div>
   )
 }

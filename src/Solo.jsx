@@ -2,7 +2,7 @@ import { useLayoutEffect, useRef, useState } from 'react'
 import { m } from 'framer-motion'
 import { decimal, kitStyle } from './data'
 import Tip from './Tip'
-import { ArcName, Counter, Palmares, Turn } from './FinalPlayers'
+import { ArcName, Counter, Palmares, StatsTable, Turn } from './FinalPlayers'
 import { SingleTable } from './FinalTables'
 import { finalVariants } from './transitions'
 import { useNarrow, usePlayerPage } from './playerPage'
@@ -36,6 +36,7 @@ function SoloStats({ player }) {
           <strong><Counter value={r.value(player)} format={r.format ?? String} trigger={player.id} /></strong>
         </div>
       ))}
+      <StatsTable players={[player]} />
     </div>
   )
 }

@@ -218,7 +218,7 @@
 .final-table-meta .tip { vertical-align: baseline; }
 /* Bloc unique du joueur (mobile seulement) : ligne du club, pastille des compétitions gagnées,
    distinctions écrites, distinctions sans compétition. */
-.final-table-club, .final-table-palm, .final-table-section { display: none; }
+.final-table-club, .final-table-palm, .final-table-section, .stats-table { display: none; }
 /* Mobile : une carte par compétition (le tableau à 7 colonnes était illisible, intitulés en
    10 px). Ligne 1 : logo et nom de la compétition, résultat à droite (trophée ou « Demi »…) ;
    ligne 2 : les 4 stats, intitulé au-dessus du chiffre (data-label), distinctions à droite.
@@ -261,7 +261,23 @@
   .final-tables .details-table :is(td.details-result, td.details-indiv) { display: none; }
   .final-tables .details-table td[data-label] { height: 26px; font-size: 16px; line-height: 26px; font-variant-numeric: tabular-nums; color: var(--text); }
   .final-tables .details-table td[data-label] .tip { display: inline; line-height: inherit; }   /* ratio en infobulle : même hauteur de ligne */
-  .final-tables .details-table tfoot { display: none; }   /* pas de total (les stats de la saison sont au-dessus des joueurs) */
+  .final-tables .details-table tfoot { display: none; }
+  /* Stats de la saison sous les joueurs (StatsTable) : même tableau que les détails par compétition
+     (bande d'en-tête, lignes de 32 px au fond de carte), la pièce du joueur à la place du logo ;
+     remplace les lignes face à face et les colonnes de la Présentation. */
+  :is(.final, .game) .compare.compare > .compare-row { display: none; }   /* l'emporte sur .solo .solo-stats .compare-row */
+  :is(.final, .game) .compare { gap: 0; padding: 0; width: 100%; }
+  .stats-table { display: grid; gap: 4px; width: 100%; grid-column: 1 / -1; }
+  .stats-table-head, .stats-table-row {
+    display: grid; grid-template-columns: 26px repeat(4, minmax(0, 1fr)); align-items: center; column-gap: 10px;
+    padding: 3px 10px 3px 3px; border-radius: var(--radius);
+  }
+  .stats-table-head { min-height: 28px; padding-top: 0; padding-bottom: 0; background: rgba(237, 234, 227, 0.08); }
+  .stats-table-head > span { font-family: var(--font); font-weight: 700; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-secondary); }
+  .stats-table-row { min-height: 32px; box-sizing: border-box; background: rgba(237, 234, 227, 0.04); }
+  .stats-table-row strong { font-family: var(--font); font-weight: 700; font-size: 16px; line-height: 26px; text-align: left;
+                            font-variant-numeric: tabular-nums; color: var(--text); }
+  .stats-table-coin { width: 26px; height: 26px; object-fit: contain; transform: scaleX(-1); filter: drop-shadow(0 0 6px rgba(212, 175, 55, 0.35)); }   /* pas de total (les stats de la saison sont au-dessus des joueurs) */
   /* Un seul bloc par joueur : le palmarès séparé et « Voir le tableau détaillé » disparaissent,
      le tableau suit les stats. */
   :is(.final, .game) :is(.palmares, .intro-down.tables-down) { display: none; }
