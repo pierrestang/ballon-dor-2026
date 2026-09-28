@@ -301,8 +301,7 @@
 
   /* Détails par compétition : intitulé, puis le tableau en lignes (ni nom écrit, ni résultat, ni
      distinctions, ni total ; colonne Équipe retirée). */
-  .final-table-section { display: flex; align-items: center; min-height: 30px; box-sizing: border-box; margin: 0 0 8px; padding-bottom: 4px;
-                         border-bottom: 1px solid rgba(237, 234, 227, 0.08);   /* filet, comme sous COLLECTIF / INDIVIDUEL */
+  .final-table-section { display: flex; align-items: center; min-height: 30px; box-sizing: border-box; margin: 0 0 8px; padding-bottom: 4px;   /* sans filet */
                          font-family: var(--font); font-weight: 700; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-secondary); }
   .final-tables { --z: 1; }
   .final-tables .details-table,
