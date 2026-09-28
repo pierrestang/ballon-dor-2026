@@ -450,19 +450,19 @@
      écusson et drapeau, comme sur mobile, au panneau du tableau. */
   :is(.final, .game) .figure .arc-name { display: none; }
   .figure .player-tag {
-    display: flex; flex-direction: row-reverse; justify-content: space-between; align-items: center; gap: 14px;
+    display: flex; flex-direction: row-reverse; justify-content: space-between; align-items: center; gap: 20px;
     position: absolute; left: 50%; bottom: calc(100% + 12px); translate: -50% 0; z-index: 3;
-    width: max-content; min-width: 240px; max-width: 360px; box-sizing: border-box; padding: 12px 14px 12px 18px;
+    width: max-content; min-width: 300px; max-width: 480px; box-sizing: border-box; padding: 14px 16px 14px 22px;
     border-radius: var(--radius); background: var(--panel); box-shadow: 0 0 0 1px rgba(237, 234, 227, 0.08);
     pointer-events: none;
   }
-  .figure .player-tag-crest { flex: none; display: flex; gap: 6px; }
-  .figure .player-tag-crest :is(.club, .flag) { width: 34px; height: 34px; padding: 2px; box-sizing: border-box; object-fit: contain;
+  .figure .player-tag-crest { flex: none; display: flex; gap: 8px; }
+  .figure .player-tag-crest :is(.club, .flag) { width: 44px; height: 44px; padding: 2px; box-sizing: border-box; object-fit: contain;
                                                 filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5)); }
-  .figure .player-tag-text { min-width: 0; display: flex; flex-direction: column; gap: 4px; }
-  .figure .player-tag-name { font-family: var(--font); font-weight: 700; font-size: 22px; line-height: 1.05; letter-spacing: 0.04em;
+  .figure .player-tag-text { min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+  .figure .player-tag-name { font-family: var(--font); font-weight: 700; font-size: 30px; line-height: 1.05; letter-spacing: 0.04em;
                              text-transform: uppercase; color: var(--text); white-space: nowrap; transition: color 0.32s var(--ease-out); }
-  .figure .player-tag-poste { font-family: var(--font); font-weight: 700; font-size: 14px; line-height: 1.15; letter-spacing: 0.05em;
+  .figure .player-tag-poste { font-family: var(--font); font-weight: 700; font-size: 17px; line-height: 1.15; letter-spacing: 0.05em;
                               text-transform: uppercase; color: var(--text-secondary); }
   .game-figure.is-won .player-tag-name { color: var(--gold); }   /* jeu : le nom du joueur choisi passe à l'or */
   .palmares .final-table-palm li > span { font-size: 14px; }
