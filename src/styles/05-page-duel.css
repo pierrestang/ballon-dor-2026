@@ -251,7 +251,6 @@
   .final-tables .details-table tbody tr { padding: 3px 10px 3px 3px; border-radius: var(--radius); background: rgba(237, 234, 227, 0.04); }
   .final-tables .details-table tbody tr + tr { margin-top: 4px; }
   .final-tables .details-table thead tr { padding: 0 10px 0 3px; }
-  .final-tables .details-table tfoot tr { padding-left: 3px; padding-right: 10px; }
   .final-tables .details-table.details-table :is(tbody, tfoot) tr:not(.is-pad) :is(td, th) { border: 0; }   /* traits des cellules du tableau */
   .final-tables .details-table :is(td, th) { padding: 0; text-align: left; }
   .final-tables .details-table th.details-comp { grid-column: 1; display: flex; align-items: center; }
@@ -260,12 +259,7 @@
   .final-tables .details-table :is(td.details-result, td.details-indiv) { display: none; }
   .final-tables .details-table td[data-label] { height: 26px; font-size: 16px; line-height: 26px; font-variant-numeric: tabular-nums; color: var(--text); }
   .final-tables .details-table td[data-label] .tip { display: inline; line-height: inherit; }   /* ratio en infobulle : même hauteur de ligne */
-  /* Total : même ligne, sous le filet doré ; sans le mot « TOTAL » (sa colonne reste vide, les
-     chiffres restent alignés sur ceux des compétitions). */
-  .final-tables .details-table tfoot tr { margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(212, 175, 55, 0.35); }
-  .final-tables .details-table.details-table tfoot th.final-total-label { grid-column: 1; visibility: hidden; }
-  .final-tables .details-table tfoot td:is(.details-total-titles, .details-total-indiv) { display: none; }   /* comptés dans le palmarès */
-  .final-tables .details-table tfoot td[data-label] { font-size: 18px; }
+  .final-tables .details-table tfoot { display: none; }   /* pas de total (les stats de la saison sont au-dessus des joueurs) */
   /* Un seul bloc par joueur : le palmarès séparé et « Voir le tableau détaillé » disparaissent,
      le tableau suit les stats. */
   :is(.final, .game) :is(.palmares, .intro-down.tables-down) { display: none; }
