@@ -2,6 +2,7 @@
 // (Final.jsx) : mêmes tableaux, mêmes classes. Allégée à la demande (26/09/2026) : sans la pièce
 // au-dessus du tableau (colonne Équipe et ligne Total remises le 27/09/2026). Le comportement de page
 // (clavier, molette, retour) est dans Final.jsx.
+import { useEffect, useRef } from 'react'
 import { m } from 'framer-motion'
 import { ageOf, asset, coinUrl, decimal, posteLabel } from './data'
 import Tip from './Tip'
@@ -120,20 +121,20 @@ const nearTitles = (player) => ['Finaliste', '2ème place', 'Demi-finaliste', '3
     collectifs (logo de la compétition ; finales et demi-finales perdues ensuite, atténuées) et
     distinctions individuelles (logo de la compétition, son nom dessous ; places
     d'honneur atténuées), chacune avec son nombre de titres (distinctions : les 1ers). */
-function Palmares({ player }) {
-  // Textes qui défilent à l'affichage du bloc (recréé à chaque changement de joueur).
+function Palmares({ player, r }) {
+  // Textes qui défilent au changement de joueur (et à l'apparition d'une ligne).
   const roll = (t) => <RollText text={t} trigger={player.id} onMount />
   const coll = collectiveTitles(player)
   const near = nearTitles(player)
   const wins = player.individuel.filter((t) => t.rang === 1).length
   return (
-    <m.div className="final-table-palm" {...row(1)}>
+    <m.div className="final-table-palm" {...r(1)}>
       <div className="final-table-palm-col">
         <h3>Collectif{coll.length > 0 && <b>{roll(String(coll.length))}</b>}</h3>
         {coll.length + near.length ? (
           <ul>
-            {[...coll, ...near].map((t) => (
-              <li key={t.nom} className={t.won ? undefined : 'is-minor'}>
+            {[...coll, ...near].map((t, i) => (
+              <li key={i} className={t.won ? undefined : 'is-minor'}>
                 <img className="final-table-palm-logo" src={asset(t.logo)} alt="" loading="lazy" width="36" height="36" />
                 <span>{roll(t.nom)}{t.sub && <small>{roll(t.sub)}</small>}</span>
               </li>
@@ -145,8 +146,8 @@ function Palmares({ player }) {
         <h3>Individuel{wins > 0 && <b>{roll(String(wins))}</b>}</h3>
         {player.individuel.length ? (
           <ul>
-            {player.individuel.map((t) => (
-              <li key={t.titre} className={t.rang > 1 ? 'is-minor' : undefined}>
+            {player.individuel.map((t, i) => (
+              <li key={i} className={t.rang > 1 ? 'is-minor' : undefined}>
                 <img className="final-table-palm-logo" src={asset(t.logo)} alt="" loading="lazy" width="36" height="36" />
                 <span>{roll(t.titre.split(' — ')[0])}<small>{roll(t.competition)}</small></span>
               </li>
@@ -159,8 +160,15 @@ function Palmares({ player }) {
 }
 
 function Table({ player, side, medals, sizes }) {
-  // Chiffres qui défilent à l'affichage du bloc (recréé à chaque changement de joueur).
+  // Le bloc reste en place d'un joueur à l'autre (intitulés, fonds de ligne et icônes ne
+  // disparaissent pas ; les icônes changent d'un coup) : seuls les textes défilent. L'apparition
+  // des lignes (fondu, row) ne se joue qu'à l'arrivée de la page.
   const roll = (t) => <RollText text={t} trigger={player.id} onMount />
+  const appear = useRef(true)
+  useEffect(() => { appear.current = false }, [])
+  // Même cible d'animation à chaque rendu (la retirer annulait l'apparition en cours) ; après
+  // l'arrivée, une ligne nouvelle est là d'emblée (initial: false).
+  const r = (i) => (appear.current ? row(i) : { ...row(i), initial: false })
   // Lignes du tableau, famille par famille : ses compétitions, puis des lignes vides jusqu'à la
   // taille commune de la famille (sizes).
   const lines = GROUPS.flatMap((g, gi) => {
@@ -171,7 +179,7 @@ function Table({ player, side, medals, sizes }) {
     <section className={`details-side is-${side}`}>
       <div className="details-panel">
       {/* En-tête éditorial : sa pièce, puis prénom et nom, poste et âge ; titres de la saison. */}
-      <m.header className="final-table-head" {...row(0)}>
+      <m.header className="final-table-head" {...r(0)}>
         <img className="final-table-coin" src={coinUrl(player.id)} alt="" width="64" height="64" />
         <h2 className="final-table-name">
           <span className="final-table-player">{roll(player.nom)}</span>
@@ -188,8 +196,8 @@ function Table({ player, side, medals, sizes }) {
       {/* Mobile : stats de la saison du joueur, au-dessus de son palmarès (page du duel, Présentation). */}
       {/* Le bloc est recréé à chaque changement de joueur : ses chiffres sont frappés à l'affichage. */}
       <div className="final-table-season"><StatsTable players={[player]} short={SHORT} onMount /></div>
-      <Palmares player={player} />
-      <m.h3 className="final-table-section" {...row(1)}>Détails par compétition</m.h3>
+      <Palmares player={player} r={r} />
+      <m.h3 className="final-table-section" {...r(1)}>Détails par compétition</m.h3>
       <table className={`details-table has-medals-${medals}`}>
         {/* Colonnes de scores toutes de la même largeur. */}
         <colgroup>
@@ -200,7 +208,7 @@ function Table({ player, side, medals, sizes }) {
           <col className="details-indiv-col" />
         </colgroup>
         <thead>
-          <m.tr {...row(1)}>
+          <m.tr {...r(1)}>
             {['Équipe', 'Tournoi', ...COLUMNS, 'Résultat', 'Individuel'].map((c) => (
               <th key={c} scope="col" data-short={SHORT[c]}>{HEADER_TIPS[c] ? <Tip label={HEADER_TIPS[c]}>{c}</Tip> : c}</th>
             ))}
@@ -210,7 +218,7 @@ function Table({ player, side, medals, sizes }) {
           {lines.map((c, i) => c.pad ? (
             <tr key={`pad-${c.pad}`} className="is-pad" aria-hidden="true"><td colSpan={8} /></tr>
           ) : (
-              <m.tr key={c.nom} className={c.trophee ? 'is-won' : undefined} {...row(i + 2)}>
+              <m.tr key={`l-${i}`} className={c.trophee ? 'is-won' : undefined} {...r(i + 2)}>
                 {/* Compétition : logo seul, son nom au survol. */}
                 {/* Équipe avec laquelle la compétition a été jouée : club ou sélection (le logo et le
                     drapeau au-dessus des joueurs s'effacent quand les tableaux apparaissent). */}
@@ -250,7 +258,7 @@ function Table({ player, side, medals, sizes }) {
         {/* Total de la saison : scores de la saison entière, trophées collectifs remportés
             (sous Résultat) et distinctions individuelles de 1er (sous Individuel). */}
         <tfoot>
-          <m.tr {...row(lines.length + 2)}>
+          <m.tr {...r(lines.length + 2)}>
             <th scope="row" colSpan={2} className="final-total-label">Total</th>
             {(() => {
               const t = totals(player)
@@ -278,8 +286,8 @@ export default function FinalTables({ pair }) {
   return (
     <div className="details-grid">
       {/* key : un joueur qui change rejoue l'apparition de ses lignes. */}
-      <Table key={a.id} player={a} side="left" medals={medals} sizes={sizes} />
-      <Table key={b.id} player={b} side="right" medals={medals} sizes={sizes} />
+      <Table player={a} side="left" medals={medals} sizes={sizes} />
+      <Table player={b} side="right" medals={medals} sizes={sizes} />
     </div>
   )
 }
@@ -291,7 +299,7 @@ export function SingleTable({ player }) {
   const medals = Math.min(3, Math.max(0, ...player.competitions.map((c) => c.individuel.length)))
   return (
     <div className="details-grid is-single">
-      <Table key={player.id} player={player} side="left" medals={medals} sizes={sizes} />
+      <Table player={player} side="left" medals={medals} sizes={sizes} />
     </div>
   )
 }
