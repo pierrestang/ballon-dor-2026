@@ -252,3 +252,5 @@ Même jour : intitulés COLLECTIF / INDIVIDUEL du palmarès dans une bande (28 p
 Même jour : scores et intitulés centrés dans leurs colonnes (stats de la saison et détails par compétition, mobile).
 Même jour : fond du palmarès déplacé des intitulés COLLECTIF / INDIVIDUEL vers les lignes de titres (fond de carte, 32 px au moins, 4 px d'écart, comme les lignes des tableaux) ; intitulés sans fond, filet dessous.
 Même jour : en-tête du bloc du joueur — pièce remplacée par l'écusson et le drapeau, puis ligne du club retirée ; enfin l'identité (écusson + drapeau, nom, poste) remonte au-dessus du joueur à la place du nom en arc (`PlayerTag`, mobile), le tableau ne gardant que nom et poste · âge. Fond retiré de la ligne d'intitulés (stats de la saison et détails).
+Même jour : âge ajouté à droite du poste dans l'identité au-dessus du joueur ; en-tête du bloc du tableau (nom, poste · âge) retiré sur mobile, à la demande (le bloc commence par le palmarès ; sur la page du duel, les deux blocs se suivent dans l'ordre des joueurs, gauche puis droite).
+Même jour : « MLS Cup » affiché « MLS » (`AFFICHAGE_COLLECTIF`, `excel_vers_json.py` ; l'Excel garde le nom complet).

@@ -282,10 +282,9 @@
      le tableau suit les stats. */
   :is(.final, .game) :is(.palmares, .intro-down.tables-down) { display: none; }
   :is(.game, .final) .final-tables.details { min-height: 0; justify-content: flex-start; padding: 28px 12px 104px; }
-  /* En-tête du tableau : nom, poste · âge (pièce et écusson retirés : l'identité est au-dessus du
-     joueur) ; filet or dessous. */
-  .final-table-head { margin-bottom: 14px; padding-bottom: 14px; }
-  .final-table-head .final-table-crest { display: none; }
+  /* Pas d'en-tête au bloc du tableau : l'identité (écusson, nom, poste · âge) est au-dessus du
+     joueur ; le bloc commence par le palmarès. */
+  :is(.final, .game) .final-table-head { display: none; }
   /* Au-dessus de chaque joueur : son identité à la place du nom en arc — écusson et drapeau en
      médaillon, nom, poste en toutes lettres, centrés au-dessus de la tête. */
   :is(.final, .game) .figure .arc-name { display: none; }

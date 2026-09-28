@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { animate, cubicBezier, useReducedMotion } from 'framer-motion'
-import { FRAMES, asset, clubLogo, decimal, kitStyle, medalOf, photoUrl, posteLabel } from './data'
+import { FRAMES, ageOf, asset, clubLogo, decimal, kitStyle, medalOf, photoUrl, posteLabel } from './data'
 import { frameAt, hasFrames, open, subscribe } from './sequence'
 import Tip from './Tip'
 
@@ -241,7 +241,7 @@ function Rolling({ text, trigger, onMount = false }) {
 const Flap = ({ trigger, ...props }) => <img key={`${trigger}|${props.src}`} {...props} className={`${props.className} flap`} />
 
 /** Identité du joueur au-dessus de sa tête, sur mobile, à la place du nom en arc (05-page-duel.css) :
-    écusson du club avec le drapeau en médaillon, nom, poste en toutes lettres. Masqué sur grand
+    écusson du club avec le drapeau en médaillon, nom, poste en toutes lettres · âge. Masqué sur grand
     écran. Au changement de joueur, le nom et le poste défilent, les images basculent. */
 export function PlayerTag({ player }) {
   const club = clubLogo(player.club)
@@ -253,7 +253,9 @@ export function PlayerTag({ player }) {
       </span>
       <span className="player-tag-text">
         <span className="player-tag-name"><Rolling text={player.nom} trigger={player.id} /></span>
-        <span className="player-tag-poste"><Rolling text={posteLabel(player.poste)} trigger={player.id} /></span>
+        <span className="player-tag-poste">
+          <Rolling text={ageOf(player.id) !== null ? `${posteLabel(player.poste)} · ${ageOf(player.id)} ans` : posteLabel(player.poste)} trigger={player.id} />
+        </span>
       </span>
     </div>
   )

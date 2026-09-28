@@ -56,6 +56,9 @@ DRAPEAUX = {
     "Argentine": "ar", "Géorgie": "ge", "Norvège": "no",
 }
 
+# Titre collectif affiché sur le site, quand il diffère de l'onglet Distinctions.
+AFFICHAGE_COLLECTIF = {"MLS Cup": "MLS"}
+
 # Titre collectif (onglet Distinctions) → logo de la compétition dans assets/competitions/
 LOGOS_COLLECTIF = {
     "Ligue 1": "ligue-1",
@@ -361,7 +364,9 @@ def main():
             },
             "competitions": competitions(detail.get(nom, []), r["Club (saison)"], r["Sélection"],
                                          accomplissements(toutes_individuelles.get(nom, []))),
-            "collectif": [{"titre": x["Distinction"],
+            # Titre affiché : « MLS » pour « MLS Cup » (demande du propriétaire, 28/09/2026) ;
+            # l'Excel garde le nom complet.
+            "collectif": [{"titre": AFFICHAGE_COLLECTIF.get(x["Distinction"], x["Distinction"]),
                            "icone": asset("competitions", LOGOS_COLLECTIF[x["Distinction"]])}
                           for x in d if x["Type"] == "Collective"],
             "individuel": sorted({t["titre"]: t for t in (individuel(x["Distinction"]) for x in d
