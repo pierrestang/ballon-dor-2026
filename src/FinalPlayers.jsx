@@ -161,13 +161,16 @@ function useRollingText(text, trigger = text, onMount = false) {
     const pool = /^[\d\s,.–-]*$/.test(text) ? ROLL_DIGITS : ROLL_CHARS
     let raf
     const frame = (now) => {
-      const k = rollEase(Math.min(1, (now - t0) / (duration * 1000)))
+      const u = Math.min(1, (now - t0) / (duration * 1000))   // temps écoulé (linéaire)
+      const k = rollEase(u)
       const len = Math.round(old.length + (n - old.length) * Math.min(1, k * 2))
       let out = ''
       for (let i = 0; i < len; i++) {
-        const settle = 0.2 + (0.8 * (i + 1)) / Math.max(1, n)   // la lettre i se pose à cet instant
+        // La lettre i se pose à cet instant, à intervalles de temps réguliers (temps linéaire : sur
+        // la courbe ralentie, les dernières lettres traînaient, la dernière surtout).
+        const settle = 0.2 + (0.8 * (i + 1)) / Math.max(1, n)
         const target = text[i] ?? ''
-        out += k >= settle || /[\s,.–-]/.test(target) ? target : pool[Math.floor(Math.random() * pool.length)]
+        out += u >= settle || /[\s,.–-]/.test(target) ? target : pool[Math.floor(Math.random() * pool.length)]
       }
       setShown(k >= 1 ? text : out)
       raf = k < 1 ? requestAnimationFrame(frame) : 0
