@@ -2,7 +2,6 @@
 /* Page « Présentation des joueurs » (Solo.jsx) : la page du duel à un joueur */
 /* ------------------------------------------------------------------ */
 /* Grand écran : palmarès · joueur (en grand) · stats. */
-.poste-label { display: none; }   /* poste en toutes lettres : Présentation, mobile */
 .solo .solo-grid {
   --fh: min(calc(100svh - var(--band) - 40px - 56px - var(--foot, 0px)), 62vw);
   --fcol: calc(var(--fw) * 0.8);
@@ -30,7 +29,7 @@
   .solo .palmares { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 16px; max-height: none; }
   .solo .palmares .badges { grid-column: 1 / -1; flex-direction: row; align-items: center; justify-content: center; gap: 12px; margin-bottom: 16px; }
   .solo .palmares .poste { display: none; }
-  .solo .palmares .poste-label { display: inline; font-size: 18px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+  .solo .palmares .poste-label { display: inline; flex-basis: auto; font-size: 18px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
   .solo .palmares .block + .block { margin-top: 0; }
   .solo .palmares .block h3 { width: 100%; }
   .solo .palmares .block li { font-size: 14px; }

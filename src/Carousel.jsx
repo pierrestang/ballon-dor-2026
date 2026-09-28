@@ -164,7 +164,7 @@ export default function Carousel({ nav, pair, setPair, onOpen, onGame, onSolo, m
 
   const center = { cx: lay.vw / 2, cy: lay.coinY, scale: 1, yaw: 0 }
   // Emplacement i : la pièce en vol s'y superpose exactement à la pièce fantôme (G / D).
-  const slotPlace = (i) => ({ cx: (ready ? lay.slotXReady : lay.slotX)[i], cy: lay.slotY, scale: lay.G / lay.D, yaw: 0 })
+  const slotPlace = (i) => ({ cx: (ready ? lay.slotXReady : lay.slotX)[i], cy: ready ? lay.slotYReady : lay.slotY, scale: lay.G / lay.D, yaw: 0 })
   // Point de contrôle de la courbe : grand écran, au-dessus du trajet ; mobile (emplacements en
   // haut), écarté vers l'extérieur du côté de l'emplacement.
   const ctrlFor = (a, b, i) => (lay.wide
@@ -446,7 +446,7 @@ export default function Carousel({ nav, pair, setPair, onOpen, onGame, onSolo, m
           return (
             <m.div key={i} className={`pick-slot${s?.landed ? ' is-filled' : ''}`} role="group"
                    aria-label={`${LABELS[i]} : ${name ?? 'vide'}`}
-                   initial={false} animate={{ x: ready ? lay.slotXReady[i] - lay.slotX[i] : 0 }}
+                   initial={false} animate={{ x: ready ? lay.slotXReady[i] - lay.slotX[i] : 0, y: ready ? lay.slotYReady - lay.slotY : 0 }}
                    transition={reduced ? { duration: 0 } : SLIDE}
                    style={{ left: lay.slotX[i] - lay.G / 2, top: lay.slotY - lay.G / 2, scale: slotScale,
                             width: lay.G, height: lay.G, '--d': `${lay.G}px` }}>
@@ -471,8 +471,8 @@ export default function Carousel({ nav, pair, setPair, onOpen, onGame, onSolo, m
         {/* « VS » entre les deux emplacements : toujours sur mobile ; sur grand écran, une fois
             le duel prêt (avant, la pièce centrale est entre les deux). */}
         <m.span className="pick-vs" style={{ top: lay.slotY }} aria-hidden="true"
-                initial={false} animate={{ opacity: !lay.wide || ready ? 1 : 0 }}
-                transition={{ duration: 0.4, delay: ready && lay.wide ? 0.35 : 0 }}>VS</m.span>
+                initial={false} animate={{ opacity: !lay.wide || ready ? 1 : 0, y: ready ? lay.slotYReady - lay.slotY : 0 }}
+                transition={{ duration: 0.4, delay: ready && lay.wide ? 0.35 : 0, y: reduced ? { duration: 0 } : SLIDE }}>VS</m.span>
       </m.section>
       </>}
 

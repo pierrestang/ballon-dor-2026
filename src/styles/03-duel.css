@@ -213,6 +213,7 @@
 }
 .flag-row { display: flex; align-items: center; gap: 12px; }
 .poste { font-size: 28px; line-height: 1; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+.poste-label { display: none; }   /* poste en toutes lettres : mobile seulement (page du duel, jeu, Présentation) */
 .palmares h2 {
   color: var(--text);
   font-size: 19px;
@@ -285,17 +286,28 @@
   .compare-row { --label-w: 84px; }
   .compare-row > span { font-size: 12px; }   /* charte : textes ≥ 12 px */
 
-  .palmares { max-width: none; max-height: 44svh; align-self: start; justify-self: stretch; }
+  /* Infos des joueurs : une carte chacun (comme les tableaux), en entier (plus de zone qui
+     défile dans la page : « Meilleur passeur » était coupé sur les petits écrans). En tête :
+     club et drapeau sur une ligne, poste en toutes lettres dessous (« BUTEUR / AILIER DROIT »
+     plutôt que « BU/AD »). */
+  .palmares { max-width: none; max-height: none; overflow: visible; align-self: stretch; justify-self: stretch;
+              margin-top: 6px; padding: 12px; border-radius: var(--radius);
+              background: rgba(237, 234, 227, 0.03); box-shadow: inset 0 0 0 1px rgba(237, 234, 227, 0.06); }
   .palmares.is-left { grid-area: 3 / 1; }
   .palmares.is-right { grid-area: 3 / 2; }
-  .palmares .badges { gap: 6px; margin-bottom: 10px; }
+  .palmares .badges { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 12px;
+                      padding-bottom: 10px; border-bottom: 1px solid var(--line); }
+  .palmares.is-right .badges { flex-direction: row-reverse; }
+  .palmares .flag-row { display: contents; }
+  .palmares .flag-row > .tip:has(.poste) { display: none; }
+  .palmares .poste-label { display: block; flex-basis: 100%; font-size: 13px; font-weight: 700; line-height: 1.15;
+                           letter-spacing: 0.05em; text-transform: uppercase; color: var(--text); }
   .flag { width: 30px; height: 20px; }
-  .club { width: 32px; height: 32px; }
-  .poste { font-size: 16px; }
+  .club { width: 30px; height: 30px; }
   .palmares h2 { font-size: 14px; margin-bottom: 6px; }
-  .block + .block { margin-top: 10px; }
-  .block h3 { font-size: 12px; }
-  .block li { font-size: 13px; gap: 6px; }
+  .block + .block { margin-top: 12px; }
+  .block h3 { font-size: 12px; width: 100%; margin-bottom: 8px; padding-bottom: 0; border-bottom: 0; }
+  .block li { font-size: 13px; gap: 8px; line-height: 1.15; }
   .block .comp { width: 24px; height: 24px; padding: 2px; }
 }
 

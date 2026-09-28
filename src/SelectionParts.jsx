@@ -19,6 +19,8 @@ const HOVER = { stiffness: 300, damping: 24 }   // pièce centrale soulevée au 
 const NAME_BELOW = 0.72   // bas du nom en arc, en diamètres de la pièce sous son centre
 const BOTTOM_SPACE = 80   // px laissés en bas (grand écran) à l'aide clavier et à la flèche
 const TITLE_MOBILE = 150   // px réservés en haut (mobile) à la flèche « Menu » et au titre « DUEL »
+const BOTTOM_MOBILE = 96   // px réservés en bas (mobile) à « LANCER LE DUEL » et son chevron
+const GROUP_GAP = 28       // mobile : du bas des noms des emplacements au haut de la pièce centrale
 
 // Géométrie de l'écran : diamètre D de la pièce centrale (centre en coinY), diamètre G des pièces
 // fantômes (et des pièces posées), centres des deux emplacements.
@@ -52,18 +54,28 @@ export function useLayout() {
       // Duel prêt : la pièce centrale s'efface et les deux emplacements se rapprochent, « VS »
       // entre les deux (slotXReady).
       const near = G / 2 + 70
-      return { vw, vh, D, G, wide, titleY, coinY, slotY: coinY, slotX: [vw / 2 - off, vw / 2 + off],
+      return { vw, vh, D, G, wide, titleY, coinY, slotY: coinY, slotYReady: coinY, slotX: [vw / 2 - off, vw / 2 + off],
                slotXReady: [vw / 2 - near, vw / 2 + near], ring: ringLayout(vw, vh) }
     }
-    // Mobile : emplacements côte à côte en haut (« VS » entre les deux), pièce dessous.
-    const D = Math.round(Math.min(vw * 0.32, vh * 0.18))
-    const coinY = vh * 0.52   // plus près des emplacements (moins de vide entre eux)
+    // Mobile : emplacements côte à côte (« VS » entre les deux), pièce dessous ; le groupe entier
+    // (emplacements et leurs noms, écart, pièce et son nom) centré entre le titre (TITLE_MOBILE)
+    // et « LANCER LE DUEL » (BOTTOM_MOBILE) — il était calé en haut, 40 % de l'écran vide
+    // dessous, et la pièce chevauchait les noms des emplacements sur les petits écrans ;
+    // pièces réduites si la place manque.
     const vsGap = 30
-    const G = Math.round(Math.min(vw * 0.36, vh * 0.2, (vw - 32) / 2 - vsGap))   // emplacements en haut, sous le titre, sans se serrer
-    // Sous le titre de la page (TITLE_MOBILE px).
-    const slotY = Math.max(G / 2 + TITLE_MOBILE, Math.min(vh * 0.22, coinY - D / 2 - 24 - G * NAME_BELOW))
+    let D = Math.min(vw * 0.32, vh * 0.18)
+    let G = Math.min(vw * 0.36, vh * 0.2, (vw - 32) / 2 - vsGap)
+    const room = vh - TITLE_MOBILE - BOTTOM_MOBILE
+    const fit = (room - GROUP_GAP) / ((G + D) * (0.5 + NAME_BELOW))
+    if (fit < 1) { G *= fit; D *= fit }
+    G = Math.round(G); D = Math.round(D)
+    const groupH = (G + D) * (0.5 + NAME_BELOW) + GROUP_GAP
+    const slotY = TITLE_MOBILE + Math.max(0, (room - groupH) / 2) + G / 2
+    const coinY = slotY + G * NAME_BELOW + GROUP_GAP + D / 2
     const half = G / 2 + vsGap
-    return { vw, vh, D, G, wide, coinY, slotY, slotX: [vw / 2 - half, vw / 2 + half],
+    // Duel prêt : la pièce centrale s'efface, les deux pièces descendent au centre de la place libre.
+    const slotYReady = Math.max(slotY, TITLE_MOBILE + room / 2 - (G * NAME_BELOW - G / 2) / 2)
+    return { vw, vh, D, G, wide, coinY, slotY, slotYReady, slotX: [vw / 2 - half, vw / 2 + half],
              slotXReady: [vw / 2 - half, vw / 2 + half], ring: ringLayout(vw, vh) }
   }
   const [lay, setLay] = useState(measure)
