@@ -300,13 +300,15 @@
   /* Palmarès (au-dessus des détails) : deux colonnes, Collectif (logos des compétitions) et Individuel
      (logos des compétitions, nom dessous), nombre de titres en chiffre italique or. */
   .final-table-palm { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 16px; margin-bottom: 22px; }
-  /* Intitulés COLLECTIF / INDIVIDUEL : bande de l'en-tête des tableaux (28 px, fond 8 %). */
-  .final-table-palm h3 { display: flex; justify-content: space-between; align-items: center; min-height: 28px; box-sizing: border-box;
-                         margin: 0 0 10px; padding: 0 10px; border-radius: var(--radius); background: rgba(237, 234, 227, 0.08);
+  /* Intitulés COLLECTIF / INDIVIDUEL : sans fond, filet dessous ; le fond est sur les lignes. */
+  .final-table-palm h3 { display: flex; justify-content: space-between; align-items: baseline; margin: 0 0 8px; padding-bottom: 6px;
+                         border-bottom: 1px solid rgba(237, 234, 227, 0.08);
                          font-family: var(--font); font-weight: 700; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-secondary); }
   .final-table-palm h3 b { font-family: var(--serif); font-style: italic; font-weight: 600; font-size: 22px; line-height: 1; letter-spacing: 0; color: var(--gold); }
-  .final-table-palm ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
-  .final-table-palm li { display: flex; align-items: center; gap: 10px; }
+  /* Lignes : fond de carte, comme les lignes des tableaux (32 px au moins, 4 px d'écart). */
+  .final-table-palm ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+  .final-table-palm li { display: flex; align-items: center; gap: 10px; min-height: 32px; box-sizing: border-box;
+                         padding: 3px 8px 3px 3px; border-radius: var(--radius); background: rgba(237, 234, 227, 0.04); }
   .final-table-palm li > span { min-width: 0; font-family: var(--font); font-weight: 700; font-size: 13px; line-height: 1.15;
                                 letter-spacing: 0.04em; text-transform: uppercase; color: var(--text); }
   .final-table-palm li small { display: block; margin-top: 2px; font-size: 12px; font-weight: 500; letter-spacing: 0.05em; color: var(--text-secondary); }
