@@ -81,22 +81,6 @@
 .final-tables .has-medals-0 .details-indiv-col { width: 11%; }
 .final-tables .has-medals-1 .details-result-col,
 .final-tables .has-medals-0 .details-result-col { width: 21%; }
-/* Prénom et nom sur une ligne, en tête du tableau, au-dessus des intitulés. */
-.final-table-name {
-  margin: 0 0 calc(6px * var(--k) * var(--z));
-  font-weight: 700;
-  line-height: 1.1;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--text);
-  display: flex;
-  min-width: 0;
-}
-.final-table-player { max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
-.final-table-meta {
-  color: var(--text);
-  letter-spacing: 0.08em;
-}
 .final-tables .details-team .club { width: calc(28px * var(--k) * var(--z)); height: calc(28px * var(--k) * var(--z)); }
 .final-tables .details-team .flag { width: calc(27px * var(--k) * var(--z)); height: calc(18px * var(--k) * var(--z)); }
 .final-tables .details-table th,
@@ -186,24 +170,9 @@
   text-align: left;
   padding-left: 0;
 }
-/* Nom, poste et âge en tête du tableau, agrandis (27/09/2026). */
-.final-table-name {
-  font-family: var(--font);
-  white-space: nowrap;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.45em;
-  font-size: calc(26px * var(--k) * var(--z));
-}
-.final-table-meta {
-  flex: none;
-  font-size: 0.72em;
-}
 /* Colonne Individuel : médailles jamais collées au bord droit du panneau. */
 .final-tables .details-table td.details-indiv,
 .final-tables .details-table th:last-child { padding-right: 6px; }
-/* Infobulle du poste dans l'en-tête des tableaux : dans le flux du texte, sans décalage. */
-.final-table-meta .tip { vertical-align: baseline; }
 /* Mobile seulement (masqués sur grand écran) : identité au-dessus du joueur, tableau des stats de
    la saison, palmarès et intitulé des détails dans le bloc du tableau. */
 .player-tag, .stats-table, .final-table-section, .final-table-season { display: none; }
@@ -247,7 +216,7 @@
   /* Masqués : nom en arc (remplacé par l'identité), palmarès du grand écran, lignes des stats
      face à face (remplacées par le tableau des stats), « Détails des compétitions », en-tête du
      bloc du tableau. */
-  :is(.final, .game) :is(.figure .arc-name, .palmares, .compare > .compare-row, .intro-down.tables-down, .final-table-head) { display: none; }
+  :is(.final, .game) :is(.figure .arc-name, .palmares, .compare > .compare-row, .intro-down.tables-down) { display: none; }
 
   /* Panneau commun : bloc du tableau, identité, stats de la saison. */
   :is(.game, .final) .final-tables .details-panel { padding: 14px 12px 12px; }
@@ -384,37 +353,6 @@
 /* Tableaux éditoriaux (28/09/2026) : moins de traits, plus d'air,     */
 /* compétitions remportées mises en avant, en-tête avec la pièce.      */
 /* ------------------------------------------------------------------ */
-/* En-tête : pièce du joueur · nom, poste et âge · nombre de titres (or, à droite). */
-.final-table-head {
-  display: flex;
-  align-items: center;
-  gap: calc(14px * var(--k) * var(--z));
-  margin: 0 0 calc(14px * var(--k) * var(--z));
-  padding-bottom: calc(12px * var(--k) * var(--z));
-  border-bottom: 1px solid rgba(212, 175, 55, 0.35);
-}
-.final-table-head .final-table-name { margin: 0; flex: 1; min-width: 0; }
-.final-table-coin {
-  width: calc(52px * var(--k) * var(--z));
-  height: calc(52px * var(--k) * var(--z));
-  flex: none;
-  object-fit: contain;
-  transform: scaleX(-1);   /* portrait tourné vers la droite, comme les pièces du site */
-  filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.35));
-}
-.final-table-titles {
-  flex: none;
-  display: flex;
-  align-items: baseline;
-  gap: 4px;
-  font-family: var(--font);
-  font-weight: 700;
-  font-size: calc(13px * var(--k) * var(--z));
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-secondary);
-}
-.final-table-titles b { font-family: var(--serif); font-style: italic; font-weight: 600; font-size: 2.6em; line-height: 1; color: var(--gold); }
 /* Intitulés discrets (gris), sans trait ; lignes séparées par l'espace, pas par des traits. */
 .final-tables .details-table thead th { color: var(--text-secondary); border-bottom: 0; }
 .final-tables .details-table tbody tr,
@@ -428,12 +366,6 @@
 /* Total : séparé par un filet doré, chiffres plus grands. */
 .final-tables .details-table tfoot tr { border-top: 1px solid rgba(212, 175, 55, 0.35); }
 .final-tables .details-table tfoot td { font-size: calc(clamp(20px, 1.9vw, 30px) * var(--k) * var(--z)); }
-/* En-tête : nom et poste · âge resserrés (interligne 1, écart réduit) ; la pièce a exactement
-   la hauteur des deux lignes (--nm : taille du nom ; bloc = 1 + 0,12 + 0,72 = 1,84 × --nm). */
-.final-table-head { --nm: calc(26px * var(--k) * var(--z)); align-items: center; }
-.final-table-head .final-table-name { font-size: var(--nm); line-height: 1; gap: 0.12em; }
-.final-table-head .final-table-meta { line-height: 1; }
-.final-table-head .final-table-coin { width: calc(var(--nm) * 1.62); height: calc(var(--nm) * 1.62); }   /* hauteur des lettres visibles (capitales), du haut du nom au bas de « BU · 33 ANS » */
 
 /* ------------------------------------------------------------------ */
 /* Grand écran (≥ 821 px), 28/09/2026 : même langage que le mobile —    */
@@ -508,7 +440,7 @@
   .final-tables .details-table :is(colgroup, tfoot, tr.is-pad, .details-team, td.details-result, td.details-indiv),
   .final-tables .details-table thead th:is(:nth-child(1), :nth-child(7), :nth-child(8)) { display: none; }
   .final-tables .details-table :is(thead, tbody) tr {
-    display: grid; grid-template-columns: 36px repeat(4, minmax(0, 1fr)); align-items: center; column-gap: 12px;
+    display: grid; grid-template-columns: minmax(0, 2fr) repeat(4, minmax(0, 1fr)); align-items: center; column-gap: 12px;
     height: auto; padding: 4px 14px 4px 4px; border-radius: var(--radius);
   }
   .final-tables .details-table thead tr { min-height: 32px; padding-top: 0; padding-bottom: 0; margin-bottom: 6px; }
@@ -520,6 +452,9 @@
   .final-tables .details-table.details-table :is(td, th) { padding: 0; border: 0; }
   .final-tables .details-table th.details-comp { grid-column: 1; display: flex; align-items: center; }
   .final-tables .details-comp .comp { width: 36px; height: 36px; padding: 4px; }
+  .final-tables .details-table th.details-comp { gap: 12px; text-align: left; }
+  .final-tables .details-comp-name { display: block; min-width: 0; font-family: var(--font); font-weight: 700; font-size: 14px; line-height: 1.15;
+                                     letter-spacing: 0.04em; text-transform: uppercase; color: var(--text); }
   .final-tables .details-table td[data-label] { font-family: var(--font); font-weight: 700; font-size: 20px; line-height: 36px; text-align: center;
                                                font-variant-numeric: tabular-nums; color: var(--text); }
 }

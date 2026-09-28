@@ -4,7 +4,7 @@
 // (clavier, molette, retour) est dans Final.jsx.
 import { useEffect, useRef } from 'react'
 import { m } from 'framer-motion'
-import { ageOf, asset, coinUrl, decimal, posteLabel } from './data'
+import { asset, decimal } from './data'
 import Tip from './Tip'
 import { RollText, StatsTable } from './FinalPlayers'
 import SeasonPalmares from './SeasonPalmares'
@@ -117,21 +117,6 @@ function Table({ player, side, medals, sizes }) {
   return (
     <section className={`details-side is-${side}`}>
       <div className="details-panel">
-      {/* En-tête éditorial : sa pièce, puis prénom et nom, poste et âge ; titres de la saison. */}
-      <m.header className="final-table-head" {...r(0)}>
-        <img className="final-table-coin" src={coinUrl(player.id)} alt="" width="64" height="64" />
-        <h2 className="final-table-name">
-          <span className="final-table-player">{roll(player.nom)}</span>
-          <span className="final-table-meta">
-            <Tip label={posteLabel(player.poste)}>{roll(player.poste)}</Tip>
-            {ageOf(player.id) !== null && <> · {roll(`${ageOf(player.id)} ans`)}</>}
-          </span>
-        </h2>
-        {/* Aucun titre collectif : rien d'affiché (un « 0 » contredirait les distinctions individuelles). */}
-        {totals(player)[4] > 0 && (
-          <span className="final-table-titles"><b>{roll(String(totals(player)[4]))}</b> {totals(player)[4] > 1 ? 'titres' : 'titre'}</span>
-        )}
-      </m.header>
       {/* Mobile : stats de la saison du joueur, au-dessus de son palmarès (page du duel, Présentation). */}
       {/* Le bloc est recréé à chaque changement de joueur : ses chiffres sont frappés à l'affichage. */}
       <div className="final-table-season"><StatsTable players={[player]} short={SHORT} onMount /></div>
@@ -168,6 +153,7 @@ function Table({ player, side, medals, sizes }) {
                   <Tip label={c.nom}>
                     <img className="comp" src={asset(c.logo)} alt={c.nom} loading="lazy" width="36" height="36" />
                   </Tip>
+                  <span className="details-comp-name">{roll(c.nom)}</span>   {/* grand écran seulement */}
                 </th>
                 {/* data-label : intitulé de la colonne, affiché au-dessus du chiffre dans les cartes du mobile. */}
                 {cells(c, roll).map((v, k) => <td key={k} data-label={COLUMNS[k]}>{v}</td>)}

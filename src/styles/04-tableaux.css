@@ -163,3 +163,4 @@
   .details-table td { font-size: 17px; }
   .details-table thead th { font-size: 11px; }
 }
+.details-comp-name { display: none; }   /* nom de la compétition : grand écran seulement (05-page-duel.css) */
