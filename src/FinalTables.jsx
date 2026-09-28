@@ -92,25 +92,56 @@ const totals = (p) => [
   p.individuel.filter((t) => t.rang === 1).length,   // distinctions de 1er du palmarès (Soulier d'or compris)
 ]
 
-/** Distinctions écrites (cartes du mobile) : médaille, intitulé ; places d'honneur atténuées. */
-function Awards({ list }) {
+// Titres collectifs du palmarès (mobile) : les compétitions gagnées, avec leur trophée, sous le
+// nom du titre du palmarès (« MLS Cup » plutôt que la ligne « MLS » du tableau).
+const collectiveTitles = (player) => {
+  const won = player.competitions.filter((c) => c.trophee)
+  const names = player.collectif.map((t) => t.titre)
+  const free = names.filter((n) => !won.some((c) => c.nom === n))
+  return won.map((c) => ({ nom: names.includes(c.nom) ? c.nom : free.shift() ?? c.nom, trophee: c.trophee, label: trophyLabel(c) }))
+}
+
+/** Palmarès du joueur (mobile), au-dessus des détails par compétition : deux colonnes, titres
+    collectifs (trophée) et distinctions individuelles (médaille, compétition dessous ; places
+    d'honneur atténuées), chacune avec son nombre de titres (distinctions : les 1ers). */
+function Palmares({ player }) {
+  const coll = collectiveTitles(player)
+  const wins = player.individuel.filter((t) => t.rang === 1).length
   return (
-    <ul className="details-award-list">
-      {list.map((t) => (
-        <li key={t.titre} className={t.rang > 1 ? 'is-minor' : undefined}>
-          <img src={asset(t.icone ?? medalOf(t))} alt="" width="26" height="26" loading="lazy" />
-          <span>{t.titre}</span>
-        </li>
-      ))}
-    </ul>
+    <m.div className="final-table-palm" {...row(1)}>
+      <div className="final-table-palm-col">
+        <h3>Collectif{coll.length > 0 && <b>{coll.length}</b>}</h3>
+        {coll.length ? (
+          <ul>
+            {coll.map((t) => (
+              <li key={t.nom}>
+                <img className="final-table-palm-trophy" src={asset(t.trophee)} alt="" loading="lazy" height="36" onLoad={balanceTrophy} />
+                <span>{t.nom}</span>
+              </li>
+            ))}
+          </ul>
+        ) : <p className="final-table-palm-empty">Aucun titre</p>}
+      </div>
+      <div className="final-table-palm-col">
+        <h3>Individuel{wins > 0 && <b>{wins}</b>}</h3>
+        {player.individuel.length ? (
+          <ul>
+            {player.individuel.map((t) => (
+              <li key={t.titre} className={t.rang > 1 ? 'is-minor' : undefined}>
+                <img className="final-table-palm-medal" src={asset(medalOf(t))} alt="" loading="lazy" width="26" height="26" />
+                <span>{t.titre.split(' — ')[0]}<small>{t.competition}</small></span>
+              </li>
+            ))}
+          </ul>
+        ) : <p className="final-table-palm-empty">Aucune distinction</p>}
+      </div>
+    </m.div>
   )
 }
 
 function Table({ player, side, medals, sizes }) {
   // Lignes du tableau, famille par famille : ses compétitions, puis des lignes vides jusqu'à la
   // taille commune de la famille (sizes).
-  const wins = player.individuel.filter((t) => t.rang === 1).length   // distinctions de 1er (palmarès)
-  const extra = player.individuel.filter((t) => !player.competitions.some((c) => c.nom === t.competition))
   const lines = GROUPS.flatMap((g, gi) => {
     const own = inGroup(player, g)
     return [...own, ...Array.from({ length: sizes[gi] - own.length }, (_, k) => ({ pad: `${gi}-${k}` }))]
@@ -144,8 +175,9 @@ function Table({ player, side, medals, sizes }) {
           <span className="final-table-club-name">{player.club}</span>
           <span className="final-table-poste">{posteLabel(player.poste)}</span>
         </span>
-        {wins > 0 && <span className="final-table-titles"><b>{wins}</b> {wins > 1 ? 'distinctions' : 'distinction'}</span>}
       </m.div>
+      <Palmares player={player} />
+      <m.h3 className="final-table-section" {...row(1)}>Détails par compétition</m.h3>
       <table className={`details-table has-medals-${medals}`}>
         {/* Colonnes de scores toutes de la même largeur. */}
         <colgroup>
@@ -163,16 +195,6 @@ function Table({ player, side, medals, sizes }) {
           </m.tr>
         </thead>
         <tbody>
-          {/* Mobile : distinctions sans ligne de compétition (Soulier d'or européen). */}
-          {extra.map((t) => (
-            <tr key={t.titre} className="is-extra">
-              <th scope="row" className="details-comp">
-                <img className="comp" src={asset(t.logo)} alt="" loading="lazy" width="36" height="36" />
-                <span className="details-comp-name">{t.titre}</span>
-              </th>
-              <td className="details-awards"><Awards list={[{ ...t, titre: 'Distinction de la saison' }]} /></td>
-            </tr>
-          ))}
           {lines.map((c, i) => c.pad ? (
             <tr key={`pad-${c.pad}`} className="is-pad" aria-hidden="true"><td colSpan={8} /></tr>
           ) : (
@@ -213,10 +235,6 @@ function Table({ player, side, medals, sizes }) {
                       <img src={asset(t.icone)} alt={t.titre} width="26" height="26" loading="lazy" />
                     </Tip>
                   ))}
-                </td>
-                {/* Mobile : colonne Individuel, distinctions écrites (médaille et intitulé), « — » sinon. */}
-                <td className="details-awards">
-                  {c.individuel.length > 0 ? <Awards list={c.individuel} /> : <span className="details-none">—</span>}
                 </td>
               </m.tr>
           ))}
