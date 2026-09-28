@@ -214,8 +214,10 @@ function Table({ player, side, medals, sizes }) {
                     </Tip>
                   ))}
                 </td>
-                {/* Mobile : les distinctions écrites, une ligne chacune (médaille et intitulé). */}
-                {c.individuel.length > 0 && <td className="details-awards"><Awards list={c.individuel} /></td>}
+                {/* Mobile : colonne Individuel, distinctions écrites (médaille et intitulé), « — » sinon. */}
+                <td className="details-awards">
+                  {c.individuel.length > 0 ? <Awards list={c.individuel} /> : <span className="details-none">—</span>}
+                </td>
               </m.tr>
           ))}
         </tbody>
