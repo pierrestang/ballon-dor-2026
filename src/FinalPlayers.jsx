@@ -254,17 +254,6 @@ export function PlayerTag({ player }) {
         <span className="player-tag-poste">
           <Rolling text={ageOf(player.id) !== null ? `${player.poste} ·\u00a0${ageOf(player.id)}\u00a0ans` : player.poste} trigger={player.id} />   {/* poste abrégé (BU, AD…) ; « 39 ANS » jamais coupé */}
         </span>
-        {/* Grand écran : club et pays en lignes, logo en carré blanc (l'écusson et le drapeau du haut y sont masqués). */}
-        <span className="player-tag-meta">
-          <span className="player-tag-line">
-            {club && <Flap trigger={player.id} className="club" src={club} alt="" width="52" height="52" />}
-            <span><Rolling text={player.club} trigger={player.id} /></span>
-          </span>
-          <span className="player-tag-line">
-            <Flap trigger={player.id} className="flag" src={asset(player.drapeau)} alt="" width="48" height="32" />
-            <span><Rolling text={player.selection} trigger={player.id} /></span>
-          </span>
-        </span>
       </span>
     </div>
   )

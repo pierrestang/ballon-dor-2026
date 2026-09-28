@@ -459,21 +459,16 @@
     border-radius: var(--radius); background: rgba(237, 234, 227, 0.04);   /* fond des lignes de stats au milieu */
     pointer-events: none;
   }
-  .figure .player-tag-crest { flex: none; display: flex; gap: 8px; }
-  .figure .player-tag-crest :is(.club, .flag) { width: 44px; height: 44px; padding: 2px; box-sizing: border-box; object-fit: contain;
-                                                filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5)); }
+  /* Écusson et drapeau à droite du nom, en carrés blancs. */
+  .figure .player-tag-crest { flex: none; display: flex; gap: 8px; align-self: flex-start; }
+  .figure .player-tag-crest :is(.club, .flag) { width: 34px; height: 34px; padding: 4px; box-sizing: border-box; object-fit: contain;
+                                                border-radius: 6px; background: rgba(244, 241, 234, 0.92); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5); }
   .figure .player-tag-text { min-width: 0; display: flex; flex-direction: column; gap: 6px; }
   .figure .player-tag-name { font-family: var(--font); font-weight: 700; font-size: 30px; line-height: 1.05; letter-spacing: 0.04em;
                              text-transform: uppercase; color: var(--text); white-space: nowrap; transition: color 0.32s var(--ease-out); }
   .figure .player-tag-poste { font-family: var(--font); font-weight: 700; font-size: 17px; line-height: 1.15; letter-spacing: 0.05em;
                               text-transform: uppercase; color: var(--text-secondary); }
   .game-figure.is-won .player-tag-name { color: var(--gold); }   /* jeu : le nom du joueur choisi passe à l'or */
-  .figure .player-tag-crest { display: none; }   /* logos déplacés dans les lignes Club / Pays */
-  .figure .player-tag-meta { display: flex; gap: 18px; margin-top: 8px; }   /* club et pays sur une ligne */
-  .figure .player-tag-line { display: flex; align-items: center; gap: 10px; font-family: var(--font); font-weight: 700; font-size: 15px;
-                             letter-spacing: 0.05em; text-transform: uppercase; color: var(--text); white-space: nowrap; }
-  .figure .player-tag-line :is(.club, .flag) { flex: none; width: 30px; height: 30px; padding: 4px; box-sizing: border-box; object-fit: contain;
-                                               border-radius: 6px; background: rgba(244, 241, 234, 0.92); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5); }
   .figure .player-tag-last { color: var(--gold); }   /* nom de famille en or */
   .figure .player-tag-last:empty { display: none; }
   /* Palmarès aéré, au pas des cartes de stats : lignes plus hautes (suivent la hauteur d'écran), plus d'écart. */
