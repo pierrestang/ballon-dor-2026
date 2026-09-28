@@ -102,6 +102,14 @@ Traitement éditorial : en-tête avec la pièce du joueur, nom, poste et âge, e
 - Flèches ‹ › des joueurs rapprochées (2 % ; Présentation −4 %) : elles tombaient sur la colonne du palmarès.
 - Pas repris, volontairement : bloc remonté au plexus, sélection du Duel en colonne, curseur de vote (l'interrupteur reste).
 
+## Harmonisation finale (28/09/2026, soir)
+
+- **Un seul système de lignes** (palmarès, détails, stats) : fond de carte à 4 %, coins 6 px ; grand écran — lignes de 34 à 44 px selon la hauteur d'écran, marges 4 / 14 / 4 / 6 px, tuiles de logos 32 px partout ; intitulés gris 13 px ; chiffres des stats de 24 à 40 px (page du duel, jeu, Présentation).
+- **Bandeaux d'identité mobile (page du duel, jeu)** : prénom puis nom sur deux lignes, 16 px : deux bandeaux identiques.
+- **Intitulés courts partout sur mobile** (M · B · P · B+P/M, Présentation comprise) ; stat absente : tiret cadratin « — ».
+- Tableau de la Présentation (grand écran) à la largeur de ceux du duel (540 px) ; jeu : tableaux sous le titre de la manche figé (272 px réservés).
+- Ordinaux laissés tels quels (« 2ÈME PLACE », « 2E MEILLEUR BUTEUR ») : choix du propriétaire.
+
 ## Charte
 
 - Variables dans `:root` (`00-base.css`) : fond `--bg` + dégradé `--bg-center` (redéfinis par version, `data-theme` : Mon classement noir, Duel nuit bleue, Les candidats vert), texte `--text`, gris `--text-secondary` (6,9:1), or `--gold`, halo `--halo`, panneaux `--panel`, durées `--t-fast/med/slow`, courbes `--ease-out/expo`.

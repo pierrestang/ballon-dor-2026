@@ -294,3 +294,4 @@ Même soir : visuel des scores appliqué partout (plus de panneau autour des blo
 Même soir : grand écran — bandeaux d'identité et titre de manche figés en descendant vers les tableaux, le reste s'efface.
 Même soir : mobile — bandeau d'identité figé en descendant, fond opaque au-dessus du bloc.
 Même soir : série de retouches (tableaux sous les bandeaux, Présentation rééquilibrée, annonce de manche en or, bande sombre sous les bandeaux figés, « Comparer », curseur réduit).
+Même soir : audit d'harmonisation web / mobile (captures des 12 écrans × 2 formats, styles relevés) et corrections : titre de manche qui chevauchait les tableaux, bandeaux mobile inégaux, système de lignes et de logos unifié, intitulés courts sur mobile, tiret cadratin.

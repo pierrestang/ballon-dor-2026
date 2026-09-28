@@ -24,7 +24,7 @@ const RATIO_GOALS_TIP = 'Buts / match (passes non relevées)'
 // Ratio nul (0,00) ou inconnu : « – » (27/09/2026).
 const ratioCell = (s, roll = (t) => t) => {
   const r = goalsOnly(s) ? ratio(s) : s.contributionsParMatch
-  if (r === null || Math.round(r * 100) === 0) return '–'
+  if (r === null || Math.round(r * 100) === 0) return '—'
   return goalsOnly(s) ? <Tip label={RATIO_GOALS_TIP}>{roll(decimal(r))}</Tip> : roll(decimal(r))
 }
 // Assists non relevées : 0 (27/09/2026).

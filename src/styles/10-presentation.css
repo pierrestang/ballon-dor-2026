@@ -19,7 +19,7 @@
 .solo .figure-picker .arrow.is-outer-right { right: -4%; }
 /* Un seul tableau, centré. */
 .final.solo .final-tables .details-grid { justify-content: center; }
-.final.solo .final-tables .details-side { width: min(820px, 92vw); }
+.final.solo .final-tables .details-side { width: min(540px, 92vw); }   /* largeur des tableaux du duel */
 @media (max-width: 820px) {
   /* Mobile : le joueur, ses stats sur une ligne, puis son palmarès (comme la page du duel). */
   .solo .solo-grid { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto auto; grid-template-areas: 'figA' 'mid' 'palmA'; padding-top: 146px; row-gap: 0; }
