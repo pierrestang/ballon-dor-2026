@@ -236,9 +236,8 @@
     padding: 7px 12px 7px 8px;
     pointer-events: none;
   }
-  /* Écusson du club dans un carré blanc (comme les logos des compétitions), drapeau dans un petit
-     carré blanc posé en médaillon sur son coin. */
-  .player-tag-crest { position: relative; flex: none; width: 34px; height: 34px; margin-right: 4px; }
+  /* Écusson du club et drapeau : deux carrés blancs côte à côte (comme les logos des compétitions). */
+  .player-tag-crest { flex: none; display: flex; gap: 4px; }
   .player-tag-text { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
   .player-tag-name { font-family: var(--font); font-weight: 700; font-size: 14px; line-height: 1.05; letter-spacing: 0.04em;
                      text-transform: uppercase; color: var(--text); transition: color 0.32s var(--ease-out); }
@@ -247,7 +246,7 @@
   .game-figure.is-won .player-tag-name { color: var(--gold); }   /* jeu : le nom du joueur choisi passe à l'or */
   /* Présentation (un seul joueur) : plus grand, toute la largeur de l'écran. */
   .solo .player-tag { gap: 12px; width: calc(100vw - 24px); min-height: 0; padding: 10px 16px 10px 12px; }
-  .solo .player-tag-crest { width: 44px; height: 44px; }
+  .solo .player-tag-crest { gap: 6px; }
   .solo .player-tag-name { font-size: 22px; }
   .solo .player-tag-poste { font-size: 13px; }
 
@@ -276,14 +275,14 @@
   .stats-table-slot { position: relative; grid-column: 1; }   /* nom du joueur pour les lecteurs d'écran */
 
   /* Bloc du tableau : palmarès puis détails par compétition, sous les stats. */
-  :is(.game, .final) .final-tables.details { min-height: 0; justify-content: flex-start; padding: 28px 12px 104px; }
+  :is(.game, .final) .final-tables.details { min-height: 0; justify-content: flex-start; padding: 16px 12px 104px; }
 
   /* Palmarès : deux colonnes, Collectif (logos des compétitions gagnées, puis finales et
      demi-finales perdues, plus sombres) et Individuel (logo, intitulé, compétition dessous) ;
      intitulés sans fond, filet dessous, nombre de titres en chiffre italique or ; lignes au fond
      de carte (32 px au moins, 4 px d'écart). */
-  .final-table-palm { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 16px; margin-bottom: 22px; }
-  .final-table-palm h3 { display: flex; justify-content: space-between; align-items: baseline; margin: 0 0 8px; padding-bottom: 6px;
+  .final-table-palm { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 16px; }
+  .final-table-palm h3 { display: flex; justify-content: space-between; align-items: center; min-height: 30px; box-sizing: border-box; margin: 0 0 8px; padding-bottom: 4px;
                          border-bottom: 1px solid rgba(237, 234, 227, 0.08);
                          font-family: var(--font); font-weight: 700; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-secondary); }
   .final-table-palm h3 b { font-family: var(--serif); font-style: italic; font-weight: 600; font-size: 22px; line-height: 1; letter-spacing: 0; color: var(--gold); }
@@ -303,11 +302,8 @@
     border-radius: 6px; background: rgba(244, 241, 234, 0.92); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
   }
 
-  .player-tag-crest .club { width: 34px; height: 34px; padding: 4px; }
-  .player-tag-crest .flag { position: absolute; right: -6px; bottom: -6px; width: 20px; height: 20px; padding: 2px;
-                            box-shadow: 0 0 0 2px var(--panel), 0 1px 3px rgba(0, 0, 0, 0.5); }
-  .solo .player-tag-crest .club { width: 44px; height: 44px; padding: 5px; }
-  .solo .player-tag-crest .flag { width: 24px; height: 24px; }
+  .player-tag-crest :is(.club, .flag) { width: 28px; height: 28px; padding: 3px; }
+  .solo .player-tag-crest :is(.club, .flag) { width: 40px; height: 40px; padding: 4px; }
 
   /* Détails par compétition : intitulé, puis le tableau en lignes (ni nom écrit, ni résultat, ni
      distinctions, ni total ; colonne Équipe retirée). */
@@ -325,40 +321,46 @@
   .final-tables .details-table th.details-comp { grid-column: 1; display: flex; align-items: center; }
   .final-tables .details-table td[data-label] .tip { display: inline; line-height: inherit; }   /* ratio en infobulle : même hauteur de ligne */
 
-  /* Page du duel et Présentation : les stats de la saison entrent dans le bloc de chaque joueur,
-     au-dessus du palmarès (plus sous les joueurs) ; le jeu les garde sous les joueurs, près du
-     vote. */
-  .final .final-players .compare { display: none; }   /* l'emporte sur .solo .solo-stats */
-  .final .final-table-season { display: block; margin-bottom: 20px; }
+  /* Stats de la saison dans le bloc de chaque joueur, au-dessus du palmarès (plus sous les
+     joueurs) : page du duel, Présentation, jeu. */
+  :is(.final .final-players, .game .game-grid) .compare { display: none; }   /* l'emporte sur .solo .solo-stats */
+  :is(.final, .game) .final-table-season { display: block; margin-bottom: 20px; }
   .final-table-season .stats-table { padding: 0; background: none; box-shadow: none; }
   /* Dans le bloc, une seule ligne : sans colonne de logo, chiffres centrés sur la largeur du bloc. */
   .final-table-season :is(.stats-table-head, .stats-table-row) { grid-template-columns: repeat(4, minmax(0, 1fr)); padding-left: 10px; }
-  .final:not(.solo) .final-table-season .stats-table :is(.stats-table-head, .stats-table-row) { grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(0, 1.4fr); padding-left: 4px; }
+  :is(.final:not(.solo), .game) .final-table-season .stats-table :is(.stats-table-head, .stats-table-row) { grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(0, 1.4fr); padding-left: 4px; }
   .final-table-season :is(.stats-table-slot, .stats-table-head > span:first-child) { display: none; }
 
-  /* Mode Duel : les blocs des deux joueurs côte à côte, en deux colonnes ; palmarès sur une
+  /* Mode Duel et jeu : les blocs des deux joueurs côte à côte, en deux colonnes ; palmarès sur une
      colonne (Collectif puis Individuel) ; lignes resserrées ; intitulés courts M · B · A · B+A/M
      (data-short). */
-  .final:not(.solo) .final-tables.details { padding: 28px 8px 104px; }
+  :is(.final:not(.solo), .game) .final-tables.details { padding: 16px 8px 104px; }
   /* Rubriques alignées d'une colonne à l'autre (stats, Collectif, Individuel, intitulé et tableau
      des détails) : une grille commune aux deux blocs, partagée par sous-grille (subgrid). */
-  .final:not(.solo) .final-tables .details-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  :is(.final:not(.solo), .game) .final-tables .details-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
                                                   grid-template-rows: repeat(5, auto); column-gap: 8px; row-gap: 0; }
-  .final:not(.solo) .final-tables .details-side { grid-row: 1 / span 5; display: grid; grid-template-rows: subgrid; width: auto; min-width: 0; }
-  .final:not(.solo) .final-tables .details-panel { grid-row: 1 / span 5; display: grid; grid-template-rows: subgrid; align-content: start; padding: 10px 8px; }
-  .final:not(.solo) .final-table-palm { display: contents; }
-  .final:not(.solo) .final-table-palm-col { margin-bottom: 18px; }
-  .final:not(.solo) .final-table-palm li { gap: 8px; padding-right: 6px; }
-  .final:not(.solo) .final-table-palm li > span { font-size: 12px; }
-  .final:not(.solo) :is(.stats-table-head, .stats-table-row, .final-tables .details-table :is(thead, tbody) tr) {
+  :is(.final:not(.solo), .game) .final-tables .details-side { grid-row: 1 / span 5; display: grid; grid-template-rows: subgrid; width: auto; min-width: 0; }
+  :is(.final:not(.solo), .game) .final-tables .details-panel { grid-row: 1 / span 5; display: grid; grid-template-rows: subgrid; align-content: start; padding: 10px 8px; }
+  :is(.final:not(.solo), .game) .final-table-palm { display: contents; }
+  :is(.final:not(.solo), .game) .final-table-palm-col { margin-bottom: 20px; }
+  :is(.final:not(.solo), .game) .final-table-palm li { gap: 8px; padding-right: 6px; }
+  :is(.final:not(.solo), .game) .final-table-palm li > span { font-size: 12px; }
+  :is(.final:not(.solo), .game) :is(.stats-table-head, .stats-table-row, .final-tables .details-table :is(thead, tbody) tr) {
     grid-template-columns: 22px repeat(3, minmax(0, 1fr)) minmax(0, 1.4fr); column-gap: 4px; padding-right: 4px;
   }
-  .final:not(.solo) :is(.final-table-palm-logo, .final-tables .details-comp .comp) { width: 22px; height: 22px; padding: 2px; }
-  .final:not(.solo) :is(.stats-table-row strong, .final-tables .details-table td[data-label]) { font-size: 14px; }
-  .final:not(.solo) :is(.stats-table-head > span, .final-tables .details-table thead th)[data-short] { font-size: 0; letter-spacing: 0; }
-  .final:not(.solo) :is(.stats-table-head > span, .final-tables .details-table thead th)[data-short]::after {
+  :is(.final:not(.solo), .game) :is(.final-table-palm-logo, .final-tables .details-comp .comp) { width: 22px; height: 22px; padding: 2px; }
+  :is(.final:not(.solo), .game) :is(.stats-table-row strong, .final-tables .details-table td[data-label]) { font-size: 14px; }
+  :is(.final:not(.solo), .game) :is(.stats-table-head > span, .final-tables .details-table thead th)[data-short] { font-size: 0; letter-spacing: 0; }
+  :is(.final:not(.solo), .game) :is(.stats-table-head > span, .final-tables .details-table thead th)[data-short]::after {
     content: attr(data-short); font-size: 12px; letter-spacing: 0.04em;
   }
+
+  /* Espaces : 16 px de la vidéo au bloc (les rangées masquées — stats face à face, palmarès du
+     grand écran, vote fixé en bas — ne gardent plus de place), 20 px entre les rubriques. */
+  :is(.final .final-players, .game .game-grid) { row-gap: 0; padding-bottom: 0; }
+  .game .game-mid { gap: 0; }
+  .game .game-duel { padding-bottom: 0; }
+  .final-table-palm { margin-bottom: 20px; }
 }
 /* Infobulle cachée : sans largeur tant qu'elle n'est pas affichée (elle élargissait les tableaux
    sur mobile). */

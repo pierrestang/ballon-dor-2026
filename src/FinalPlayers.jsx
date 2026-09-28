@@ -254,7 +254,7 @@ export function PlayerTag({ player }) {
       <span className="player-tag-text">
         <span className="player-tag-name"><Rolling text={player.nom} trigger={player.id} /></span>
         <span className="player-tag-poste">
-          <Rolling text={ageOf(player.id) !== null ? `${posteLabel(player.poste)} · ${ageOf(player.id)} ans` : posteLabel(player.poste)} trigger={player.id} />
+          <Rolling text={ageOf(player.id) !== null ? `${posteLabel(player.poste)} ·\u00a0${ageOf(player.id)}\u00a0ans` : posteLabel(player.poste)} trigger={player.id} />   {/* « 39 ANS » jamais coupé */}
         </span>
       </span>
     </div>
