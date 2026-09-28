@@ -292,7 +292,7 @@
   .player-tag::before { content: ''; position: absolute; inset: 0; z-index: -1; border-radius: inherit; background: linear-gradient(var(--panel), var(--panel)), var(--bg); opacity: calc(var(--down, 0) * 4); }   /* opaque dès le quart du chemin */
   /* Présentation : dernier intitulé des stats en court. */
   .solo .stats-table-head > span:last-child, .solo .final-tables .details-table thead th:nth-child(6) { font-size: 0; letter-spacing: 0; }
-  .solo .stats-table-head > span:last-child::after, .solo .final-tables .details-table thead th:nth-child(6)::after { content: 'B + P / M'; font-size: 12px; letter-spacing: 0.04em; }
+  .solo .stats-table-head > span:last-child::after, .solo .final-tables .details-table thead th:nth-child(6)::after { content: 'B+P/M'; font-size: 12px; letter-spacing: 0.04em; }
   /* Présentation (toute la largeur) : nom de la compétition à côté de son logo, comme le grand écran. */
   .solo .final-tables .details-table :is(thead, tbody) tr { grid-template-columns: minmax(0, 3.2fr) repeat(4, minmax(0, 1fr)); column-gap: 6px; }   /* intitulés courts (M · B · P · B+P/M) */
   .solo .final-tables .details-table th.details-comp { gap: 8px; text-align: left; }
