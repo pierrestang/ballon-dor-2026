@@ -454,7 +454,7 @@
   :is(.final, .game) .figure .arc-name { display: none; }
   .figure .player-tag {
     display: flex; flex-direction: row-reverse; justify-content: flex-end; align-items: center; gap: 20px;
-    position: absolute; left: 50%; bottom: calc(100% + 12px); translate: -50% 0; z-index: 3;
+    position: absolute; left: 50%; bottom: calc(100% + 44px); translate: -50% 0; z-index: 3;
     width: max-content; min-width: 300px; max-width: 480px; box-sizing: border-box; padding: 14px 16px 14px 22px;
     border-radius: var(--radius); background: rgba(237, 234, 227, 0.04);   /* fond des lignes de stats au milieu */
     pointer-events: none;
@@ -496,6 +496,7 @@
   :is(.final:not(.solo), .game) .compare { width: fit-content; justify-self: center; }
   /* Bloc du milieu compact : chiffres plus petits, colonne du libellé plus étroite, cartes plus serrées. */
   :is(.final:not(.solo), .game) .compare { gap: clamp(10px, 1.8vh, 18px); }
+  .final:not(.solo) .final-players .compare { margin-bottom: 96px; }   /* page du duel : stats remontées (48 px au-dessus du centre des joueurs) */
   :is(.final:not(.solo), .game) .compare-row > span { max-width: none; }
   :is(.final:not(.solo), .game) .compare-row { --label-w: 124px; padding: 10px 22px; column-gap: 16px; }
   :is(.final:not(.solo), .game) .compare-row strong { font-size: clamp(24px, 2.4vw, 40px); }
