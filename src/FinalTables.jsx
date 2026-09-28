@@ -3,7 +3,7 @@
 // au-dessus du tableau (colonne Équipe et ligne Total remises le 27/09/2026). Le comportement de page
 // (clavier, molette, retour) est dans Final.jsx.
 import { m } from 'framer-motion'
-import { ageOf, asset, clubLogo, coinUrl, decimal, medalOf, posteLabel } from './data'
+import { ageOf, asset, clubLogo, coinUrl, decimal, posteLabel } from './data'
 import Tip from './Tip'
 import { ClubLogo, Flag } from './Nameplate'
 import { SLIDE } from './transitions'
@@ -92,31 +92,37 @@ const totals = (p) => [
   p.individuel.filter((t) => t.rang === 1).length,   // distinctions de 1er du palmarès (Soulier d'or compris)
 ]
 
-// Titres collectifs du palmarès (mobile) : les compétitions gagnées, avec leur trophée, sous le
-// nom du titre du palmarès (« MLS Cup » plutôt que la ligne « MLS » du tableau).
+// Titres collectifs du palmarès (mobile) : les compétitions gagnées, avec leur logo, sous le nom
+// du titre du palmarès (« MLS Cup » plutôt que la ligne « MLS » du tableau).
 const collectiveTitles = (player) => {
   const won = player.competitions.filter((c) => c.trophee)
   const names = player.collectif.map((t) => t.titre)
   const free = names.filter((n) => !won.some((c) => c.nom === n))
-  return won.map((c) => ({ nom: names.includes(c.nom) ? c.nom : free.shift() ?? c.nom, trophee: c.trophee, label: trophyLabel(c) }))
+  return won.map((c) => ({ nom: names.includes(c.nom) ? c.nom : free.shift() ?? c.nom, logo: c.logo }))
 }
+// Puis les finales et demi-finales perdues, en plus sombre (sans compter dans les titres).
+const NEAR = [['Finale', 'Finaliste'], ['Demi-finale', 'Demi-finaliste']]
+const nearTitles = (player) => NEAR.flatMap(([r, label]) => player.competitions
+  .filter((c) => !c.trophee && c.resultat === r).map((c) => ({ nom: c.nom, logo: c.logo, sub: label })))
 
 /** Palmarès du joueur (mobile), au-dessus des détails par compétition : deux colonnes, titres
-    collectifs (trophée) et distinctions individuelles (médaille, compétition dessous ; places
+    collectifs (logo de la compétition ; finales et demi-finales perdues ensuite, atténuées) et
+    distinctions individuelles (logo de la compétition, son nom dessous ; places
     d'honneur atténuées), chacune avec son nombre de titres (distinctions : les 1ers). */
 function Palmares({ player }) {
   const coll = collectiveTitles(player)
+  const near = nearTitles(player)
   const wins = player.individuel.filter((t) => t.rang === 1).length
   return (
     <m.div className="final-table-palm" {...row(1)}>
       <div className="final-table-palm-col">
         <h3>Collectif{coll.length > 0 && <b>{coll.length}</b>}</h3>
-        {coll.length ? (
+        {coll.length + near.length ? (
           <ul>
-            {coll.map((t) => (
-              <li key={t.nom}>
-                <img className="final-table-palm-trophy" src={asset(t.trophee)} alt="" loading="lazy" height="36" onLoad={balanceTrophy} />
-                <span>{t.nom}</span>
+            {[...coll, ...near].map((t) => (
+              <li key={t.nom} className={t.sub ? 'is-minor' : undefined}>
+                <img className="final-table-palm-logo" src={asset(t.logo)} alt="" loading="lazy" width="36" height="36" />
+                <span>{t.nom}{t.sub && <small>{t.sub}</small>}</span>
               </li>
             ))}
           </ul>
@@ -128,7 +134,7 @@ function Palmares({ player }) {
           <ul>
             {player.individuel.map((t) => (
               <li key={t.titre} className={t.rang > 1 ? 'is-minor' : undefined}>
-                <img className="final-table-palm-medal" src={asset(medalOf(t))} alt="" loading="lazy" width="26" height="26" />
+                <img className="final-table-palm-logo" src={asset(t.logo)} alt="" loading="lazy" width="36" height="36" />
                 <span>{t.titre.split(' — ')[0]}<small>{t.competition}</small></span>
               </li>
             ))}
