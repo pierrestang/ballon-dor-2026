@@ -7,6 +7,7 @@ Ce fichier décrit **l'état actuel**. Le détail de chaque décision, date par 
 ## Contraintes
 
 - **Léger.** Intro : ~680 Ko au premier chargement (JS + CSS ~200 Ko, 10 pièces ~480 Ko), hors polices. Les séquences vidéo (~1,8 Mo par joueur) ne se chargent qu'à l'entrée dans Duel (sélection : préchargement des deux joueurs affichés), dans la page du duel, la Présentation ou un duel du jeu. Jamais depuis l'intro.
+- **En ligne** : https://pierrestang.github.io/ballon-dor-2026/ (dépôt `pierrestang/ballon-dor-2026`). Chaque push sur `main` recompile et publie (`.github/workflows/pages.yml`) ; config Firebase dans les variables Actions du dépôt (en local : `.env`).
 - **Déploiement GitHub Pages** : base Vite relative (`./`). Aucun chemin absolu (`/…`) ; les chemins du JSON commencent par `assets/`, à préfixer avec `asset()` (`data.js`). Une `url()` passée par une variable CSS se résout depuis la feuille de style : lui donner une adresse absolue (ex. `--coin`, `Coin.jsx`).
 - `prefers-reduced-motion` respecté partout (pas de rotation ni de vol ; fondus).
 
@@ -21,7 +22,7 @@ python3 scripts/convertir.py ~/videos/<fichier>.mp4 <id>           # vidéo fond
 node scripts/comparer_formats.mjs [parties]                        # moteur du jeu : vérifs + comparaison
 ```
 
-Vidéos brutes hors projet (`~/videos/`) ; rien d'inutilisé dans `public/` (tout y est publié). Sources d'images : `assets-source/` (dont `coins-q70/`, pièces avant réencodage en AVIF q50). Aperçu des liens partagés : `public/og.jpg` (1200 × 630) et balises Open Graph dans `index.html` (`og:image` relative : à rendre absolue une fois le domaine connu).
+Vidéos brutes hors projet (`~/videos/`) ; rien d'inutilisé dans `public/` (tout y est publié). Sources d'images : `assets-source/` (dont `coins-q70/`, pièces avant réencodage en AVIF q50). Aperçu des liens partagés : `public/og.jpg` (1200 × 630) et balises Open Graph dans `index.html` (`og:url` et `og:image` en adresses absolues).
 
 ## Fichiers
 
