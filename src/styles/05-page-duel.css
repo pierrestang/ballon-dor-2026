@@ -4,7 +4,7 @@
 /* Reprend les classes des pages 2 (.sticky.duel-grid, .figure, .palmares, .compare) et 3
    (.details, .details-grid, .details-table) ; seules les différences sont ici, sous .final. */
 .final { position: relative; z-index: 1; background: radial-gradient(ellipse at 50% 50%, var(--bg-center) 0%, var(--bg) 70%) fixed, var(--bg); }
-.final .final-players { position: relative; top: auto; transform-origin: 50% 0; will-change: transform; }
+.final .final-players { position: relative; top: auto; }   /* sans will-change : le bandeau d'identité doit pouvoir passer au-dessus du bloc du tableau */
 
 /* Pages de joueurs (page du duel, Présentation) et duels de Mon classement : même mise en page
    (27/09/2026). En haut, la grille des joueurs sur un écran (sous la flèche de retour, 56 px) ;
@@ -16,7 +16,7 @@
   /* Bas réservé à « Détails des compétitions » (--foot) : les pieds ne le touchent jamais. */
   :is(.final .final-players, .game .game-grid) { --foot: 72px; padding-bottom: var(--foot); --fh: min(calc(100svh - var(--band) - 60px - 56px - var(--foot)), 38vw); }
 }
-:is(.final .final-players, .game-grid) .figure { filter: opacity(calc(1 - var(--down, 0))); }   /* filter, pas opacity : la vidéo et la photo gardent leur propre opacité */
+:is(.final .final-players, .game-grid) :is(.figure > :not(.player-tag), .figure::before, .figure::after) { filter: opacity(calc(1 - var(--down, 0))); }   /* filter, pas opacity : la vidéo et la photo gardent leur propre opacité ; le bandeau d'identité reste (figé, --sy) */
 
 /* Tableaux détaillés : sous les joueurs, chacun dans son panneau, répartis sur la largeur. */
 :is(.game, .final) .final-tables.details {
@@ -223,8 +223,9 @@
 
   /* Identité au-dessus de chaque joueur : écusson et drapeau en médaillon, nom, poste · âge ;
      page du duel et jeu : deux bandeaux de même taille (colonne du joueur, nom sur deux lignes). */
+  /* Figé à l'écran en descendant (--sy) ; son fond devient celui du panneau à mesure (--down), le bloc passant dessous. */
   .player-tag {
-    position: absolute; left: 50%; bottom: calc(100% + 6px); translate: -50% 0;
+    position: absolute; left: 50%; bottom: calc(100% + 6px); translate: -50% var(--sy, 0px); z-index: 3; isolation: isolate;
     display: flex; flex-direction: row-reverse; justify-content: space-between; align-items: center; gap: 8px;   /* texte à gauche, écusson et drapeau à droite */
     width: calc(50vw - 18px); min-height: 58px; box-sizing: border-box;
     padding: 7px 8px 7px 12px;
@@ -288,6 +289,8 @@
                                         border-radius: 5px; background: rgba(244, 241, 234, 0.92); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5); }
   .solo .player-tag-crest :is(.club, .flag) { width: 34px; height: 34px; padding: 4px; border-radius: 6px; }
   .player-tag-last { color: var(--gold); }
+  :is(.final .final-players, .game .game-grid) { overflow-x: clip; overflow-y: visible; }   /* le bandeau figé sort de la grille en descendant */
+  .player-tag::before { content: ''; position: absolute; inset: 0; z-index: -1; border-radius: inherit; background: linear-gradient(var(--panel), var(--panel)), var(--bg); opacity: calc(var(--down, 0) * 4); }   /* opaque dès le quart du chemin */
   /* Présentation : écusson et drapeau juste à droite du nom (grand écran). */
   .solo .player-tag { justify-content: flex-end; gap: 16px; }
   .solo .player-tag-crest { align-self: flex-start; }
@@ -406,8 +409,8 @@
      playerPage.js / Game.jsx) ; tout le reste de la vue des joueurs s'efface (--down) ; les tableaux
      arrivent dessous. */
   :is(.final .final-players, .game .game-grid) { overflow: visible; }
-  :is(.final .final-players, .game-grid) .figure { filter: none; z-index: 3; }
-  :is(.final .final-players, .game-grid) :is(.figure > :not(.player-tag), .figure::before, .figure::after, .palmares, .compare, .game-mid) {
+  :is(.final .final-players, .game-grid) .figure { z-index: 3; }
+  :is(.final .final-players, .game-grid) :is(.palmares, .compare, .game-mid) {
     filter: opacity(calc(1 - var(--down, 0)));
   }
   .game-grid-head { position: relative; z-index: 3; translate: 0 var(--sy, 0px); }

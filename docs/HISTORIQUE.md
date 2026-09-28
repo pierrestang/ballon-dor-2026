@@ -292,3 +292,4 @@ Même jour (soir) : grand écran — bloc des stats plus compact ; « Assists »
 Même soir : en-tête des tableaux détaillés (pièce, nom, poste · âge, titres) retiré partout ; grand écran : nom de la compétition à côté de son logo dans les détails.
 Même soir : visuel des scores appliqué partout (plus de panneau autour des blocs, seules les lignes ont un fond) ; sur mobile, le bloc du tableau ne remonte plus sur le joueur (sans panneau, texte illisible sur la vidéo).
 Même soir : grand écran — bandeaux d'identité et titre de manche figés en descendant vers les tableaux, le reste s'efface.
+Même soir : mobile — bandeau d'identité figé en descendant, fond opaque au-dessus du bloc.
