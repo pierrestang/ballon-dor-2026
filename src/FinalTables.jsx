@@ -108,11 +108,11 @@ const collectiveTitles = (player) => {
 // (Coupe du monde : match pour la 3e place) est une demi-finale perdue.
 const nearLabel = (c) => {
   if (c.trophee) return null
-  if (c.type === 'championnat') return c.resultat === '2e' ? '2e place' : c.resultat === '3e' ? '3e place' : null
+  if (c.type === 'championnat') return c.resultat === '2e' ? '2ème place' : c.resultat === '3e' ? '3ème place' : null
   if (c.resultat === 'Finale') return 'Finaliste'
   return c.resultat === 'Demi-finale' || /^[34]e$/.test(c.resultat) ? 'Demi-finaliste' : null
 }
-const nearTitles = (player) => ['Finaliste', '2e place', 'Demi-finaliste', '3e place'].flatMap((label) => player.competitions
+const nearTitles = (player) => ['Finaliste', '2ème place', 'Demi-finaliste', '3ème place'].flatMap((label) => player.competitions
   .filter((c) => nearLabel(c) === label).map((c) => ({ nom: c.nom, logo: c.logo, sub: label })))
 
 /** Palmarès du joueur (mobile), au-dessus des détails par compétition : deux colonnes, titres

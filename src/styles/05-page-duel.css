@@ -236,9 +236,9 @@
     padding: 7px 12px 7px 8px;
     pointer-events: none;
   }
-  /* Écusson du club et drapeau : chacun dans un carré blanc, comme les logos des compétitions ;
-     l'un sous l'autre (côte à côte sur la Présentation). */
-  .player-tag-crest { flex: none; display: flex; flex-direction: column; gap: 4px; }
+  /* Écusson du club dans un carré blanc (comme les logos des compétitions), drapeau dans un petit
+     carré blanc posé en médaillon sur son coin. */
+  .player-tag-crest { position: relative; flex: none; width: 34px; height: 34px; margin-right: 4px; }
   .player-tag-text { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
   .player-tag-name { font-family: var(--font); font-weight: 700; font-size: 14px; line-height: 1.05; letter-spacing: 0.04em;
                      text-transform: uppercase; color: var(--text); transition: color 0.32s var(--ease-out); }
@@ -247,8 +247,7 @@
   .game-figure.is-won .player-tag-name { color: var(--gold); }   /* jeu : le nom du joueur choisi passe à l'or */
   /* Présentation (un seul joueur) : plus grand, toute la largeur de l'écran. */
   .solo .player-tag { gap: 12px; width: calc(100vw - 24px); min-height: 0; padding: 10px 16px 10px 12px; }
-  .solo .player-tag-crest { flex-direction: row; gap: 6px; }
-  .solo .player-tag-crest :is(.club, .flag) { width: 34px; height: 34px; padding: 4px; }
+  .solo .player-tag-crest { width: 44px; height: 44px; }
   .solo .player-tag-name { font-size: 22px; }
   .solo .player-tag-poste { font-size: 13px; }
 
@@ -297,11 +296,18 @@
   .final-table-palm li.is-minor { opacity: 0.5; }   /* places d'honneur, finales et demi-finales perdues */
   .final-table-palm li.is-minor img { filter: grayscale(0.5) drop-shadow(0 1px 2px rgba(0, 0, 0, 0.6)); }
   .final-table-palm-empty { margin: 4px 0 0; font-family: var(--serif); font-style: italic; font-weight: 600; font-size: 17px; color: var(--text-secondary); }
-  /* Logos en tuile claire : compétitions (palmarès et détails), écusson et drapeau de l'identité. */
+  /* Logos en tuile claire : compétitions (palmarès et détails), écusson et drapeau de l'identité
+     (tailles de l'identité : plus bas). */
   :is(.final-table-palm-logo, .final-tables .details-comp .comp, .player-tag-crest .club, .player-tag-crest .flag) {
     flex: none; width: 26px; height: 26px; padding: 3px; box-sizing: border-box; object-fit: contain;
     border-radius: 6px; background: rgba(244, 241, 234, 0.92); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
   }
+
+  .player-tag-crest .club { width: 34px; height: 34px; padding: 4px; }
+  .player-tag-crest .flag { position: absolute; right: -6px; bottom: -6px; width: 20px; height: 20px; padding: 2px;
+                            box-shadow: 0 0 0 2px var(--panel), 0 1px 3px rgba(0, 0, 0, 0.5); }
+  .solo .player-tag-crest .club { width: 44px; height: 44px; padding: 5px; }
+  .solo .player-tag-crest .flag { width: 24px; height: 24px; }
 
   /* Détails par compétition : intitulé, puis le tableau en lignes (ni nom écrit, ni résultat, ni
      distinctions, ni total ; colonne Équipe retirée). */
@@ -325,15 +331,23 @@
   .final .final-players .compare { display: none; }   /* l'emporte sur .solo .solo-stats */
   .final .final-table-season { display: block; margin-bottom: 20px; }
   .final-table-season .stats-table { padding: 0; background: none; box-shadow: none; }
+  /* Dans le bloc, une seule ligne : sans colonne de logo, chiffres centrés sur la largeur du bloc. */
+  .final-table-season :is(.stats-table-head, .stats-table-row) { grid-template-columns: repeat(4, minmax(0, 1fr)); padding-left: 10px; }
+  .final:not(.solo) .final-table-season .stats-table :is(.stats-table-head, .stats-table-row) { grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(0, 1.4fr); padding-left: 4px; }
+  .final-table-season :is(.stats-table-slot, .stats-table-head > span:first-child) { display: none; }
 
   /* Mode Duel : les blocs des deux joueurs côte à côte, en deux colonnes ; palmarès sur une
      colonne (Collectif puis Individuel) ; lignes resserrées ; intitulés courts M · B · A · B+A/M
      (data-short). */
   .final:not(.solo) .final-tables.details { padding: 28px 8px 104px; }
-  .final:not(.solo) .final-tables .details-grid { flex-direction: row; align-items: stretch; column-gap: 8px; }
-  .final:not(.solo) .final-tables .details-side { flex: 1 1 0; width: auto; min-width: 0; }
-  .final:not(.solo) .final-tables .details-panel { padding: 10px 8px; }
-  .final:not(.solo) .final-table-palm { grid-template-columns: minmax(0, 1fr); row-gap: 16px; }
+  /* Rubriques alignées d'une colonne à l'autre (stats, Collectif, Individuel, intitulé et tableau
+     des détails) : une grille commune aux deux blocs, partagée par sous-grille (subgrid). */
+  .final:not(.solo) .final-tables .details-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+                                                  grid-template-rows: repeat(5, auto); column-gap: 8px; row-gap: 0; }
+  .final:not(.solo) .final-tables .details-side { grid-row: 1 / span 5; display: grid; grid-template-rows: subgrid; width: auto; min-width: 0; }
+  .final:not(.solo) .final-tables .details-panel { grid-row: 1 / span 5; display: grid; grid-template-rows: subgrid; align-content: start; padding: 10px 8px; }
+  .final:not(.solo) .final-table-palm { display: contents; }
+  .final:not(.solo) .final-table-palm-col { margin-bottom: 18px; }
   .final:not(.solo) .final-table-palm li { gap: 8px; padding-right: 6px; }
   .final:not(.solo) .final-table-palm li > span { font-size: 12px; }
   .final:not(.solo) :is(.stats-table-head, .stats-table-row, .final-tables .details-table :is(thead, tbody) tr) {
