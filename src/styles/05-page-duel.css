@@ -322,27 +322,10 @@
   /* Présentation (toute la largeur) : intitulés en toutes lettres, sauf B+P/M. */
   .solo :is(.stats-table-head > span, .final-tables .details-table thead th)[data-short]:not([data-short="B+P/M"]) { font-size: 12px; letter-spacing: 0.04em; }
   .solo :is(.stats-table-head > span, .final-tables .details-table thead th)[data-short]:not([data-short="B+P/M"])::after { content: none; }
-  /* Page du duel et jeu : stats face à face entre les deux joueurs, en colonne (intitulé court au milieu,
-     chiffre de chaque joueur de son côté), au-dessus du plexus ; plus de stats dans les blocs. */
-  :is(.final:not(.solo), .game) .final-table-season { display: none; }
-  .final .final-players:not(.solo-grid) .compare, .game .game-grid .game-mid {
-    display: grid; grid-row: figA; grid-column: figA-start / figB-end; align-self: start; justify-self: center; z-index: 2; margin-top: 10px; }   /* sous la bande sombre du haut (3) */
-  .game .game-grid .game-mid .compare { display: grid; }
-  :is(.final .final-players:not(.solo-grid), .game .game-grid) .compare { gap: 4px; width: auto; padding: 0; filter: opacity(calc(1 - var(--down, 0))); }
-  :is(.final .final-players:not(.solo-grid), .game .game-grid) .compare > .compare-row { display: grid; --label-w: 44px; column-gap: 6px; width: 148px; padding: 4px 8px;
-    border-radius: var(--radius); background: color-mix(in srgb, var(--panel) 80%, transparent); }
-  :is(.final .final-players:not(.solo-grid), .game .game-grid) .compare-row strong { font-size: 16px; }
-  :is(.final .final-players:not(.solo-grid), .game .game-grid) .compare-row > span[data-short] { font-size: 0; letter-spacing: 0; max-width: none; }
-  :is(.final .final-players:not(.solo-grid), .game .game-grid) .compare-row > span[data-short]::after { content: attr(data-short); font-size: 12px; letter-spacing: 0.04em; }
-  :is(.final .final-players:not(.solo-grid), .game .game-grid) .compare .stats-table { display: none; }
-  /* Intitulés en double (Collectif, Individuel, Détails) fusionnés : un seul, centré entre les deux blocs ;
-     le nombre de titres de chaque joueur de son côté. */
-  :is(.final:not(.solo), .game) .details-side.is-left { position: relative; z-index: 1; }   /* l'intitulé centré passe au-dessus du bloc de droite */
-  :is(.final:not(.solo), .game) .details-side.is-left :is(.final-table-palm h3, .final-table-section) { position: relative; flex-direction: row-reverse; font-size: 0; }
-  :is(.final:not(.solo), .game) .details-side.is-left :is(.final-table-palm h3, .final-table-section)::after {
-    content: attr(data-label); position: absolute; left: calc(100% + 10px); top: 50%; translate: -50% -50%; white-space: nowrap;
-    font-size: 12px; letter-spacing: 0.08em; color: var(--text-secondary); }
-  :is(.final:not(.solo), .game) .details-side.is-right :is(.final-table-palm h3, .final-table-section) { font-size: 0; }
+  /* Page du duel et jeu : stats de chaque joueur dans son bloc, sous lui (plus de colonne de stats
+     entre les deux joueurs, 28/09/2026) ; intitulés (Collectif, Individuel, Détails) dans chaque
+     bloc, avec le nombre de titres du joueur. Le jeu garde .game-mid pour le curseur de vote. */
+  :is(.final .final-players:not(.solo-grid), .game .game-grid) .compare { display: none; }
   .final-table-season .stats-table { padding: 0; background: none; box-shadow: none; }
   /* Dans le bloc, une seule ligne : sans colonne de logo, chiffres centrés sur la largeur du bloc. */
   .final-table-season :is(.stats-table-head, .stats-table-row) { grid-template-columns: repeat(4, minmax(0, 1fr)); padding-left: 10px; }
@@ -352,28 +335,24 @@
   /* Mode Duel et jeu : les blocs des deux joueurs côte à côte, en deux colonnes ; palmarès sur une
      colonne (Collectif puis Individuel) ; lignes resserrées ; intitulés courts M · B · A · B+A/M
      (data-short). */
-  :is(.final:not(.solo), .game) .final-tables.details { padding: 16px 8px 104px; }
+  :is(.final:not(.solo), .game) .final-tables.details { padding: 16px 12px 104px; }   /* bords et écart des blocs = ceux des joueurs et bandeaux (.sticky : 12 px) */
   /* Rubriques alignées d'une colonne à l'autre (stats, Collectif, Individuel, intitulé et tableau
      des détails) : une grille commune aux deux blocs, partagée par sous-grille (subgrid). */
   :is(.final:not(.solo), .game) .final-tables .details-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-                                                  grid-template-rows: repeat(5, auto); column-gap: 8px; row-gap: 0; }
+                                                  grid-template-rows: repeat(5, auto); column-gap: 12px; row-gap: 0; }
   :is(.final:not(.solo), .game) .final-tables .details-side { grid-row: 1 / span 5; display: grid; grid-template-rows: subgrid; width: auto; min-width: 0; }
   :is(.final:not(.solo), .game) .final-tables .details-panel { grid-row: 1 / span 5; display: grid; grid-template-rows: subgrid; align-content: start; padding: 10px 8px; }
   :is(.final:not(.solo), .game) .final-table-palm { display: contents; }
-  /* Chaque rubrique (Collectif, Individuel, Détails par compétition) : un fond commun aux deux joueurs,
-     d'un bord à l'autre ; rubriques séparées par un espace. */
-  :is(.final:not(.solo), .game) .final-tables .details-grid { column-gap: 0; }
+  /* Chaque rubrique (Collectif, Individuel, Détails par compétition) : un fond par joueur, les deux
+     blocs séparés (12 px, comme les bandeaux) ; rubriques séparées par un espace. */
   :is(.final:not(.solo), .game) .final-tables .details-panel { padding-left: 0; padding-right: 0; }
   :is(.final:not(.solo), .game) :is(.final-table-palm-col, .final-table-section, .details-table) { background: rgba(237, 234, 227, 0.03); padding-left: 10px; padding-right: 10px; }
   :is(.final:not(.solo), .game) .final-table-palm-col { margin-bottom: 16px; padding-top: 8px; padding-bottom: 10px; }
   :is(.final:not(.solo), .game) .final-table-section { margin-bottom: 0; padding-top: 8px; }
   :is(.final:not(.solo), .game) .details-table { padding-bottom: 10px; box-sizing: border-box; }
-  :is(.final:not(.solo), .game) .details-side.is-left :is(.final-table-palm-col, .final-table-section) { border-radius: var(--radius) 0 0 0; }
-  :is(.final:not(.solo), .game) .details-side.is-left .final-table-palm-col { border-radius: var(--radius) 0 0 var(--radius); }
-  :is(.final:not(.solo), .game) .details-side.is-right .final-table-palm-col { border-radius: 0 var(--radius) var(--radius) 0; }
-  :is(.final:not(.solo), .game) .details-side.is-right .final-table-section { border-radius: 0 var(--radius) 0 0; }
-  :is(.final:not(.solo), .game) .details-side.is-left .details-table { border-radius: 0 0 0 var(--radius); }
-  :is(.final:not(.solo), .game) .details-side.is-right .details-table { border-radius: 0 0 var(--radius) 0; }
+  :is(.final:not(.solo), .game) .final-table-palm-col { border-radius: var(--radius); }
+  :is(.final:not(.solo), .game) .final-table-section { border-radius: var(--radius) var(--radius) 0 0; }
+  :is(.final:not(.solo), .game) .details-table { border-radius: 0 0 var(--radius) var(--radius); }
   :is(.final:not(.solo), .game) .final-table-palm li { gap: 8px; padding-right: 6px; }
   :is(.final:not(.solo), .game) .final-table-palm li > span { font-size: 12px; }
   :is(.final:not(.solo), .game) :is(.stats-table-head, .stats-table-row, .final-tables .details-table :is(thead, tbody) tr) {
@@ -392,6 +371,10 @@
   .game .game-mid { gap: 0; }
   .game .game-duel { padding-bottom: 0; }
   .final-table-palm { margin-bottom: 20px; }
+  .final-table-palm h3 b { font-size: 34px; }   /* nombre de titres : chiffre or un peu plus grand que le grand écran (30 px) */
+  /* Présentation : bloc plus sombre là où il passe sur le joueur. */
+  .solo .final-tables .details-panel { backdrop-filter: blur(6px);
+    background: linear-gradient(to bottom, color-mix(in srgb, var(--bg) 94%, transparent) calc(var(--plexus, 0px) - 16px), transparent calc(var(--plexus, 0px) + 32px)); }
 }
 /* Infobulle cachée : sans largeur tant qu'elle n'est pas affichée (elle élargissait les tableaux
    sur mobile). */
@@ -514,19 +497,6 @@
   .final-tables .details-table thead th:nth-child(2) { visibility: hidden; font-size: 0; }
   .final-tables .details-table tbody tr { min-height: clamp(34px, 4.2vh, 44px); box-sizing: border-box; background: rgba(237, 234, 227, 0.04); }   /* hauteur des lignes du palmarès */
   .final-tables .details-table tbody tr + tr { margin-top: 6px; }
-  /* Survol d'une carte (stats, palmarès, compétitions, bandeau du nom) : le fond s'éclaire, sans
-     contour (souris seulement). Transitions de .palmares li (03-duel.css) reprises ; pas de
-     transition de translate sur le bandeau du nom (il suit le défilement, --sy). */
-  @media (hover: hover) {
-    :is(.compare-row, .final-table-palm li, .final-tables .details-table tbody tr) {
-      transition: translate var(--t-fast) var(--ease-out), filter var(--t-fast) var(--ease-out),
-                  background-color var(--t-fast) var(--ease-out);
-    }
-    .figure .player-tag { pointer-events: auto; transition: background-color var(--t-fast) var(--ease-out); }
-    :is(.compare-row, .final-table-palm li, .final-tables .details-table tbody tr, .figure .player-tag):hover {
-      background-color: rgba(237, 234, 227, 0.09);
-    }
-  }
   .final-tables .details-table.details-table :is(td, th) { padding: 0; border: 0; }
   .final-tables .details-table th.details-comp { grid-column: 1; display: flex; align-items: center; }
   .final-tables .details-comp .comp { width: 32px; height: 32px; padding: 3px; }
@@ -539,3 +509,16 @@
                                                font-variant-numeric: tabular-nums; color: var(--text); }
 }
 
+/* Surbrillance d'une carte (stats, palmarès, compétitions, bandeau du nom), grand écran et mobile :
+   le fond s'éclaire, sans contour — au survol (souris), à l'appui (doigt). Transitions de
+   .palmares li (03-duel.css) reprises ; pas de transition de translate sur le bandeau du nom (il
+   suit le défilement, --sy). */
+:is(.compare-row, .stats-table-row, .final-table-palm li, .final-tables .details-table tbody tr) {
+  transition: translate var(--t-fast) var(--ease-out), filter var(--t-fast) var(--ease-out),
+              background-color var(--t-fast) var(--ease-out);
+}
+.figure .player-tag { pointer-events: auto; transition: background-color var(--t-fast) var(--ease-out); }
+:is(.compare-row, .stats-table-row, .final-table-palm li, .final-tables .details-table tbody tr, .figure .player-tag):active { background-color: rgba(237, 234, 227, 0.09); }
+@media (hover: hover) {
+  :is(.compare-row, .stats-table-row, .final-table-palm li, .final-tables .details-table tbody tr, .figure .player-tag):hover { background-color: rgba(237, 234, 227, 0.09); }
+}
