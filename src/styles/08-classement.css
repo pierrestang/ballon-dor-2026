@@ -295,18 +295,12 @@
      petit téléphone (il passait sous la ligne de flottaison) et depuis les tableaux ; le bas de
      la page lui laisse sa place. */
   /* Vote : curseur (VoteSlider) fixé en bas — ligne horizontale, point doré au milieu qu'on glisse
-     vers un joueur ; noms aux deux bouts ; l'interrupteur est masqué. */
+     vers un joueur ; l'interrupteur est masqué. */
   .game-switch { display: none; }
   .game-slider { display: flex; position: fixed; z-index: 7; left: 50%; bottom: calc(14px + var(--safe-bottom)); translate: -50% 0;
-                 align-items: center; gap: 12px; width: min(380px, calc(100vw - 24px)); height: 52px; box-sizing: border-box; padding: 0 14px;
+                 align-items: center; width: min(300px, calc(100vw - 48px)); height: 52px; box-sizing: border-box; padding: 0 22px;
                  border-radius: 999px; background: color-mix(in srgb, var(--panel) 90%, transparent); backdrop-filter: blur(8px);
                  box-shadow: inset 0 0 0 1px rgba(237, 234, 227, 0.1), 0 8px 24px rgba(0, 0, 0, 0.45); }
-  .game-slider-name { flex: none; width: 78px; padding: 0; background: none; border: 0; cursor: pointer;
-                      font-family: var(--font); font-weight: 700; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase;
-                      color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: color var(--t-fast) var(--ease-out); }
-  .game-slider-name.is-left { text-align: left; }
-  .game-slider-name.is-right { text-align: right; }
-  .game-slider-name.is-on { color: var(--gold); }
   .game-slider-track { position: relative; flex: 1; height: 100%; touch-action: none; }
   .game-slider-line { position: absolute; left: 0; right: 0; top: 50%; height: 2px; translate: 0 -50%; border-radius: 2px;
                       background: linear-gradient(90deg, rgba(212, 175, 55, 0.55), rgba(212, 175, 55, 0.2) 50%, rgba(212, 175, 55, 0.55)); }

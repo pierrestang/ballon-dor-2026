@@ -322,38 +322,29 @@ function VoteSwitch({ left, right, picked, onVote }) {
 
 /** Mobile : vote au curseur — une ligne horizontale, un point doré au milieu qu'on fait glisser
     vers un joueur (vers la gauche : celui de gauche) ; au-delà de 40 % de la course au lâcher, le
-    vote est pris et le point se pose au bout, sinon il revient au centre. Nom de famille des
-    joueurs aux deux bouts (or quand le point va de leur côté). */
+    vote est pris et le point se pose au bout, sinon il revient au centre. */
 function VoteSlider({ left, right, picked, onVote }) {
   const track = useRef(null)
   const x = useMotionValue(0)
-  const [lean, setLean] = useState(0)
   const side = picked === left.id ? -1 : picked === right.id ? 1 : 0
   const half = () => (track.current?.clientWidth ?? 0) / 2
   useEffect(() => {
     const to = side * half()
     const c = animate(x, to, { duration: 0.35, ease: [0.65, 0, 0.35, 1] })
-    if (!side) setLean(0)
     return () => c.stop()
   }, [side])
-  const surname = (p) => p.nom.split(' ').at(-1)
   return (
     <div className={`game-slider${side ? ' is-set' : ''}`} role="group" aria-label="Choisir votre favori">
-      <button className={`game-slider-name is-left${lean < 0 || side < 0 ? ' is-on' : ''}`} onClick={() => onVote(left.id)}
-              disabled={!!picked} aria-label={`Choisir ${left.nom}`}>{surname(left)}</button>
       <div ref={track} className="game-slider-track">
         <span className="game-slider-line" aria-hidden="true" />
         <m.span className="game-slider-dot" aria-hidden="true" style={{ x }}
                 drag={picked ? false : 'x'} dragConstraints={track} dragElastic={0} dragMomentum={false}
-                onDrag={() => { const v = x.get(); setLean(Math.abs(v) > 8 ? Math.sign(v) : 0) }}
                 onDragEnd={() => {
                   const v = x.get()
                   if (Math.abs(v) >= half() * 0.4) onVote(v < 0 ? left.id : right.id)
-                  else { setLean(0); animate(x, 0, { duration: 0.3, ease: [0.65, 0, 0.35, 1] }) }
+                  else animate(x, 0, { duration: 0.3, ease: [0.65, 0, 0.35, 1] })
                 }} />
       </div>
-      <button className={`game-slider-name is-right${lean > 0 || side > 0 ? ' is-on' : ''}`} onClick={() => onVote(right.id)}
-              disabled={!!picked} aria-label={`Choisir ${right.nom}`}>{surname(right)}</button>
     </div>
   )
 }
