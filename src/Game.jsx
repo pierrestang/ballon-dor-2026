@@ -249,9 +249,11 @@ function DrawCoin({ id, size, delay, fly }) {
     <m.div ref={ref} className="game-draw-coin" style={{ '--d': `${size}px`, x, y, opacity }}>
       <LiveCoin player={byId[id]} rotateY={rotateY} phase={IDS.indexOf(id) * 0.7} />
       <ArcText text={byId[id].nom} side="bottom" className="game-card-name" />
-      {/* Mobile : nom de famille en texte droit, sur une ligne, à côté de la pièce (l'arc y tombait
-          à 8 px ; prénom et nom passaient sur deux lignes). */}
-      <span className="game-pairing-name" aria-hidden="true">{byId[id].nom.split(' ').at(-1)}</span>
+      {/* Mobile : prénom sur la 1re ligne, nom sur la 2e (texte droit à côté de la pièce ; l'arc y
+          tombait à 8 px). Un seul mot (« Rodri ») : une ligne. */}
+      <span className="game-pairing-name" aria-hidden="true">
+        {byId[id].nom.includes(' ') ? <>{byId[id].nom.split(' ')[0]}<br />{byId[id].nom.split(' ').slice(1).join(' ')}</> : byId[id].nom}
+      </span>
     </m.div>
   )
 }
