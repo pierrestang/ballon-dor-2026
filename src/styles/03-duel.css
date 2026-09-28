@@ -214,6 +214,7 @@
 .flag-row { display: flex; align-items: center; gap: 12px; }
 .poste { font-size: 28px; line-height: 1; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
 .poste-label { display: none; }   /* poste en toutes lettres : mobile seulement (page du duel, jeu, Présentation) */
+.palm-club-name, .palm-count, .palm-sub, .palm-medal { display: none; }   /* cartes du mobile seulement */
 .palmares h2 {
   color: var(--text);
   font-size: 19px;
@@ -286,29 +287,74 @@
   .compare-row { --label-w: 84px; }
   .compare-row > span { font-size: 12px; }   /* charte : textes ≥ 12 px */
 
-  /* Infos des joueurs : une carte chacun (comme les tableaux), en entier (plus de zone qui
-     défile dans la page : « Meilleur passeur » était coupé sur les petits écrans). En tête :
-     club et drapeau sur une ligne, poste en toutes lettres dessous (« BUTEUR / AILIER DROIT »
-     plutôt que « BU/AD »). */
-  .palmares { max-width: none; max-height: none; overflow: visible; align-self: stretch; justify-self: stretch;
-              margin-top: 6px; padding: 12px; border-radius: var(--radius);
-              background: rgba(237, 234, 227, 0.03); box-shadow: inset 0 0 0 1px rgba(237, 234, 227, 0.06); }
+  /* Infos des joueurs : une carte chacun, en entier (pas de zone qui défile dans la page).
+     Filet or en haut, éclairage du haut vers le bas, ombre douce. En-tête : écusson du club et
+     drapeau en médaillon, nom du club, poste en toutes lettres (gris). Sections : intitulé et
+     nombre de titres (chiffre italique or, comme l'en-tête des tableaux) ; lignes séparées par un
+     filet ; distinctions : compétition en sous-ligne et médaille à droite. Carte de droite en
+     miroir. */
+  .palmares {
+    position: relative;
+    max-width: none; max-height: none; overflow: visible;
+    align-self: stretch; justify-self: stretch;
+    margin-top: 6px; padding: 14px 12px 8px;
+    border-radius: 12px;
+    background: linear-gradient(180deg, rgba(237, 234, 227, 0.06), rgba(237, 234, 227, 0.015) 55%, rgba(237, 234, 227, 0.01));
+    box-shadow: inset 0 0 0 1px rgba(237, 234, 227, 0.07), 0 12px 32px rgba(0, 0, 0, 0.35);
+  }
+  .palmares::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 14px; right: 14px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.75), transparent);
+    pointer-events: none;
+  }
   .palmares.is-left { grid-area: 3 / 1; }
   .palmares.is-right { grid-area: 3 / 2; }
-  .palmares .badges { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 12px;
-                      padding-bottom: 10px; border-bottom: 1px solid var(--line); }
-  .palmares.is-right .badges { flex-direction: row-reverse; }
+  /* En-tête. */
+  .palmares .badges {
+    position: relative;
+    display: grid;
+    grid-template-columns: 38px minmax(0, 1fr);
+    grid-template-areas: 'crest club' 'crest poste';
+    align-items: center;
+    column-gap: 10px; row-gap: 3px;
+    margin-bottom: 12px; padding-bottom: 12px;
+    border-bottom: 1px solid rgba(237, 234, 227, 0.08);
+  }
+  .palmares.is-right .badges { grid-template-columns: minmax(0, 1fr) 38px; grid-template-areas: 'club crest' 'poste crest'; align-items: center; }
   .palmares .flag-row { display: contents; }
   .palmares .flag-row > .tip:has(.poste) { display: none; }
-  .palmares .poste-label { display: block; flex-basis: 100%; font-size: 13px; font-weight: 700; line-height: 1.15;
-                           letter-spacing: 0.05em; text-transform: uppercase; color: var(--text); }
-  .flag { width: 30px; height: 20px; }
-  .club { width: 30px; height: 30px; }
+  .palmares .club { grid-area: crest; width: 38px; height: 38px; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5)); }
+  .palmares .flag { position: absolute; left: 25px; top: 27px; width: 18px; height: 12px; object-fit: cover; border-radius: 2px;
+                    box-shadow: 0 0 0 1.5px rgba(8, 8, 10, 0.95); }
+  .palmares.is-right .flag { left: auto; right: 25px; }
+  .palmares .palm-club-name { grid-area: club; align-self: end; display: block; font-size: 14px; font-weight: 700; line-height: 1.1;
+                              letter-spacing: 0.04em; text-transform: uppercase; color: var(--text); }
+  .palmares .poste-label { grid-area: poste; align-self: start; display: block; font-size: 12px; font-weight: 700; line-height: 1.15;
+                           letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-secondary); }
+  /* Sections. */
   .palmares h2 { font-size: 14px; margin-bottom: 6px; }
-  .block + .block { margin-top: 12px; }
-  .block h3 { font-size: 12px; width: 100%; margin-bottom: 8px; padding-bottom: 0; border-bottom: 0; }
-  .block li { font-size: 13px; gap: 8px; line-height: 1.15; }
-  .block .comp { width: 24px; height: 24px; padding: 2px; }
+  .block + .block { margin-top: 14px; }
+  .block h3 { display: flex; justify-content: space-between; align-items: baseline; width: 100%;
+              font-size: 12px; margin-bottom: 2px; padding-bottom: 0; border-bottom: 0; }
+  .palmares.is-right .block h3 { flex-direction: row-reverse; }
+  .palm-count { display: inline-block; font-family: var(--serif); font-style: italic; font-weight: 600; font-size: 20px; line-height: 1; letter-spacing: 0; color: var(--gold); }
+  .block ul { gap: 0; }
+  .block li { font-size: 13px; gap: 9px; line-height: 1.15; padding: 8px 0; border-top: 1px solid rgba(237, 234, 227, 0.06); }
+  .block li:first-child { border-top: 0; }
+  .block .comp { width: 26px; height: 26px; padding: 3px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5); }
+  .palm-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+  .block li .palm-text > span { flex: none; }
+  .palmares.is-right .palm-text { align-items: flex-end; }
+  .palm-sub { display: block; font-size: 12px; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-secondary); }
+  /* Distinctions : la médaille à la place du logo (la compétition est écrite dessous). */
+  .block li:has(.palm-medal) .comp { display: none; }
+  .palm-medal { display: block; order: -1; width: 26px; height: 26px; flex: none; object-fit: contain; filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.6)); }
+  /* Aucun titre : en italique à empattements, discret. */
+  .palmares .empty { padding: 6px 0 4px; font-family: var(--serif); font-style: italic; font-weight: 600; font-size: 17px;
+                     letter-spacing: 0; text-transform: none; color: var(--text-secondary); }
 }
 
 /* Lumière de scène (27/09/2026) : derrière chaque joueur en vidéo, un halo à la couleur de son
