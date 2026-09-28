@@ -21,7 +21,7 @@ const ROWS = [
   { label: 'Matches', value: (p) => p.stats.matchs },
   { label: 'Buts', value: (p) => p.stats.buts },
   { label: 'Assists', value: (p) => p.stats.passes },
-  { label: 'Ratio', tip: 'Buts + Assists / match', value: (p) => p.stats.contributionsParMatch,
+  { label: 'B+A/Match', tip: 'Buts + Assists / match', value: (p) => p.stats.contributionsParMatch,
     format: (v) => decimal(round2(v)) },
 ]
 

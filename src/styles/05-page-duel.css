@@ -158,6 +158,7 @@
   letter-spacing: 0.03em;
 }
 .final-tables .details-table thead th:first-child { padding-left: 0; }
+.final-tables .details-table thead th:nth-child(6) { letter-spacing: 0; }   /* « B+A/MATCH » : tient dans sa colonne */
 /* Lignes de remplissage en fin de tableau (alignement des lignes Total) : invisibles, sans trait. */
 .final-tables .details-table tbody tr:nth-last-child(1 of :not(.is-pad)) { border-bottom: 0; }
 /* Lignes vides en fin de famille : gardent le trait de séparation, pour la lisibilité. */
@@ -226,42 +227,45 @@
   .final-tables { --z: 1; }
   .final-tables .details-table,
   .final-tables .details-table :is(thead, tbody, tfoot) { display: block; width: 100%; }
-  .final-tables .details-table :is(colgroup, thead, tr.is-pad, .details-team) { display: none; }
-  /* Une ligne par compétition : son logo, puis les 4 stats (intitulé au-dessus du chiffre) ; ni
-     nom écrit, ni résultat (le palmarès, au-dessus, dit ce qui a été gagné). */
-  .final-tables .details-table :is(tbody, tfoot) tr {
+  .final-tables .details-table :is(colgroup, tr.is-pad, .details-team) { display: none; }
+  /* Une ligne par compétition, de la hauteur d'une ligne de Collectif (logo en tuile de 26 px,
+     10 px d'écart, sans fond) : le logo puis les 4 chiffres ; intitulés une seule fois, en tête
+     des colonnes ; ni nom écrit, ni résultat (le palmarès, au-dessus, dit ce qui a été gagné). */
+  .final-tables .details-table tr {
     display: grid;
-    grid-template-columns: 44px repeat(4, minmax(0, 1fr));
+    grid-template-columns: 26px repeat(4, minmax(0, 1fr));
     align-items: center;
-    column-gap: 8px;
+    column-gap: 10px;
     height: auto;
-    padding: 10px 12px 10px 12px;
-    border-radius: var(--radius);
+    padding: 0;
+    background: none;
+    border-radius: 0;
   }
-  .final-tables .details-table tbody tr + tr { margin-top: 6px; }
-  .final-tables .details-table tbody tr { background: rgba(237, 234, 227, 0.03); }   /* toutes pareilles, gagnées comprises */
+  .final-tables .details-table :is(thead, tbody, tfoot) tr { height: auto; }   /* l'emporte sur les hauteurs de ligne du grand écran */
+  .final-tables .details-table thead tr { margin-bottom: 10px; }
+  .final-tables .details-table thead th { padding: 0; text-align: left; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-secondary); }
+  .final-tables .details-table thead th:is(:nth-child(1), :nth-child(7), :nth-child(8)) { display: none; }
+  .final-tables .details-table thead th:nth-child(2) { visibility: hidden; }   /* colonne des logos */
+  /* Fond de carte sur chaque ligne ; 32 px de haut et 4 px d'écart : même pas (36 px) que les
+     lignes de Collectif. */
+  .final-tables .details-table tbody tr { padding: 3px 10px 3px 3px; border-radius: var(--radius); background: rgba(237, 234, 227, 0.04); }
+  .final-tables .details-table tbody tr + tr { margin-top: 4px; }
+  .final-tables .details-table thead tr { padding: 0 10px 0 3px; }
+  .final-tables .details-table tfoot tr { padding-left: 3px; padding-right: 10px; }
   .final-tables .details-table.details-table :is(tbody, tfoot) tr:not(.is-pad) :is(td, th) { border: 0; }   /* traits des cellules du tableau */
   .final-tables .details-table :is(td, th) { padding: 0; text-align: left; }
   .final-tables .details-table th.details-comp { grid-column: 1; display: flex; align-items: center; }
-  .final-tables .details-comp .comp { width: 34px; height: 34px; flex: none; }
+  .final-tables .details-comp .comp { width: 26px; height: 26px; padding: 3px; box-sizing: border-box; flex: none;
+                                      border-radius: 6px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5); }
   .final-tables .details-table :is(td.details-result, td.details-indiv) { display: none; }
-  .final-tables .details-table td[data-label] { font-size: 20px; line-height: 1; font-variant-numeric: tabular-nums; }
-  .final-tables .details-table td[data-label]::before {
-    content: attr(data-label);
-    display: block;
-    margin-bottom: 5px;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--text-secondary);
-  }
-  /* Total : même ligne, séparée par le filet doré ; sans le mot « TOTAL » (sa colonne reste vide,
-     les chiffres restent alignés sur ceux des compétitions). */
-  .final-tables .details-table tfoot tr { margin-top: 14px; border-top: 1px solid rgba(212, 175, 55, 0.35); border-radius: 0; padding-top: 14px; }
+  .final-tables .details-table td[data-label] { height: 26px; font-size: 16px; line-height: 26px; font-variant-numeric: tabular-nums; color: var(--text); }
+  .final-tables .details-table td[data-label] .tip { display: inline; line-height: inherit; }   /* ratio en infobulle : même hauteur de ligne */
+  /* Total : même ligne, sous le filet doré ; sans le mot « TOTAL » (sa colonne reste vide, les
+     chiffres restent alignés sur ceux des compétitions). */
+  .final-tables .details-table tfoot tr { margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(212, 175, 55, 0.35); }
   .final-tables .details-table.details-table tfoot th.final-total-label { grid-column: 1; visibility: hidden; }
   .final-tables .details-table tfoot td:is(.details-total-titles, .details-total-indiv) { display: none; }   /* comptés dans le palmarès */
-  .final-tables .details-table tfoot td[data-label] { font-size: 22px; }
+  .final-tables .details-table tfoot td[data-label] { font-size: 18px; }
   /* Un seul bloc par joueur : le palmarès séparé et « Voir le tableau détaillé » disparaissent,
      le tableau suit les stats. */
   :is(.final, .game) :is(.palmares, .intro-down.tables-down) { display: none; }

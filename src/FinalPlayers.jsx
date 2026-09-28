@@ -309,7 +309,7 @@ export function Compare({ a, b, titles = true }) {
     { label: 'Matches', get: (p) => p.stats.matchs, format: same },
     { label: 'Buts', get: (p) => p.stats.buts, format: same },
     { label: 'Assists', get: (p) => p.stats.passes, format: same },
-    { label: 'Ratio', tip: 'Buts + Assists / match', get: (p) => round2(p.stats.contributionsParMatch),
+    { label: 'B+A/Match', tip: 'Buts + Assists / match', get: (p) => round2(p.stats.contributionsParMatch),
       format: decimal },
   ]
   return (

@@ -241,3 +241,5 @@ Même jour, palmarès mobile : trophées de la colonne Collectif puis médailles
 Même jour : cartes « Détails par compétition » réduites à une ligne (demande du propriétaire) : logo + 4 stats, nom écrit et résultat retirés (code supprimé : `.details-comp-name`, `.details-won`) ; « TOTAL » dans la colonne du logo.
 
 Même jour : sur mobile, plus de voile ni de filet or sur les lignes des compétitions gagnées, et plus d'atténuation des autres lignes (règles d'origine limitées au grand écran, `min-width: 821px`) ; mot « TOTAL » masqué (`visibility: hidden`, la colonne garde sa largeur).
+
+Même jour : lignes « Détails par compétition » au pas des lignes de Collectif (36 px) : intitulés sortis des lignes (une ligne d'en-tête, `thead` réaffiché sur mobile), logo en tuile de 26 px, chiffres 16 px sur une ligne ; fond de carte remis à la demande (32 px de haut, 4 px d'écart). « Ratio » renommé « B+A/Match » partout (tableaux, stats face à face, Présentation ; infobulle « Buts + Assists / match » gardée).

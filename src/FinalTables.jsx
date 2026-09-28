@@ -8,9 +8,9 @@ import Tip from './Tip'
 import { ClubLogo, Flag } from './Nameplate'
 import { SLIDE } from './transitions'
 
-// « Ratio » : buts + assists par match, détaillé au survol de l'intitulé.
-const COLUMNS = ['Matches', 'Buts', 'Assists', 'Ratio']
-const HEADER_TIPS = { Ratio: 'Buts + Assists / match' }
+// « B+A/Match » (ex-« Ratio », 28/09/2026) : buts + assists par match, détaillé au survol de l'intitulé.
+const COLUMNS = ['Matches', 'Buts', 'Assists', 'B+A/Match']
+const HEADER_TIPS = { 'B+A/Match': 'Buts + Assists / match' }
 // Ratio : buts + assists par match. Passes non relevées (« n.r. » : qualifications de la Coupe du
 // monde, supercoupes, certaines coupes) : buts par match à la place, signalé en infobulle.
 const goalsOnly = (s) => s.contributionsParMatch === null && s.passes === null && s.matchs > 0
