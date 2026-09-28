@@ -452,6 +452,7 @@
   .final-tables .details-table.details-table :is(td, th) { padding: 0; border: 0; }
   .final-tables .details-table th.details-comp { grid-column: 1; display: flex; align-items: center; }
   .final-tables .details-comp .comp { width: 36px; height: 36px; padding: 4px; }
+  :is(.game, .final) .final-tables .details-panel { padding: 0; background: none; box-shadow: none; }   /* pas de panneau : lignes sur le fond de page */
   .final-tables .details-table th.details-comp { gap: 12px; text-align: left; }
   .final-tables .details-comp-name { display: block; min-width: 0; font-family: var(--font); font-weight: 700; font-size: 14px; line-height: 1.15;
                                      letter-spacing: 0.04em; text-transform: uppercase; color: var(--text); }
