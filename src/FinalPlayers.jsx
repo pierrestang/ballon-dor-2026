@@ -154,48 +154,25 @@ export function SwapTurn({ id, name, onMid, onStart }) {
   )
 }
 
-/** Textes et chiffres des pages de joueurs au changement de joueur (façon tableau d'affichage) : chaque
-    position passe par des lettres au hasard puis se pose sur la bonne, de gauche à droite
-    (0,6 s en tout) ; la longueur passe de l'ancien nom au nouveau. Mouvement réduit : direct. */
-const ROLL_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZÉ'
-const ROLL_DIGITS = '0123456789'
-// Même rythme que le compteur des chiffres (Counter) : 0,6 s, courbe [0.16, 1, 0.3, 1] ; toutes
-// les lettres d'un texte et tous les textes défilent ensemble, sans décalage.
+/** Textes et chiffres des pages de joueurs au changement de joueur : fondu simple, l'ancien texte
+    s'efface sur la première moitié, le nouveau apparaît sur la seconde (ancien défilement de
+    lettres au hasard retiré le 12/10/2026). Mouvement réduit : direct. */
 const ROLL = { duration: 0.6, ease: [0.16, 1, 0.3, 1] }
-const rollEase = cubicBezier(...ROLL.ease)
 
-/** Défilement vers `text` à chaque changement de `trigger` (le joueur) : même si le texte ne
-    change pas, il défile. Chaque position passe par des caractères au hasard (lettres, ou
-    chiffres pour un texte numérique) et se pose sur la bonne, de gauche à droite, au fil de
-    la courbe ROLL ; la longueur passe de l'ancienne à la nouvelle. Mouvement réduit : direct. */
-/** Durée du défilement des textes (s) : 0,6 par défaut ; les pages de joueurs la calent sur la
-    rotation de la vidéo (RollDuration), pour que textes et vidéo finissent ensemble. */
+/** Durée du changement des textes (s) : 0,6 par défaut ; les pages de joueurs la calent sur la
+    rotation de la vidéo (RollDuration), pour que textes et vidéo finissent ensemble (nouveau
+    texte posé au moment où le joueur est de dos). */
 export const RollDuration = createContext(ROLL.duration)
 
-/** Texte affiché au temps u (0 → 1) du défilement de `old` vers `text` : chaque position passe par
-    des caractères au hasard (lettres, ou chiffres pour un texte numérique) et se pose sur la
-    bonne, à intervalles de temps réguliers, de gauche à droite ; la longueur passe de l'ancienne à
-    la nouvelle. */
-const ROLL_TICK_MS = 90   // une lettre au hasard change toutes les 90 ms (à chaque image, elle tournait trop vite)
-// Caractère « au hasard » stable pendant un pas (position i, pas tick) : même tirage d'une image à
-// l'autre tant que le pas ne change pas.
-const pickAt = (pool, i, tick) => pool[Math.abs(Math.imul(i * 7919 + tick * 104729 + 1, 2654435761) >> 7) % pool.length]
-function rollString(old, text, u, tick = 0) {
-  const n = text.length
-  const pool = /^[\d\s,.–-]*$/.test(text) ? ROLL_DIGITS : ROLL_CHARS
-  const len = Math.round(old.length + (n - old.length) * Math.min(1, rollEase(u) * 2))
-  let out = ''
-  for (let i = 0; i < len; i++) {
-    // Lettres posées sur le temps linéaire (sur la courbe ralentie, les dernières traînaient).
-    const settle = 0.2 + (0.8 * (i + 1)) / Math.max(1, n)
-    const target = text[i] ?? ''
-    out += u >= settle || /[\s,.–-]/.test(target) ? target : pickAt(pool, i, tick)
-  }
-  return u >= 1 ? text : out
+/** Texte et opacité au temps u (0 → 1) du fondu de `old` vers `text`. */
+const smooth = (x) => x * x * (3 - 2 * x)
+function fadeAt(old, text, u) {
+  if (u >= 1) return { text, o: 1 }
+  return u < 0.5 ? { text: old, o: 1 - smooth(u * 2) } : { text, o: smooth(u * 2 - 1) }
 }
 
-/** Même défilement, écrit directement dans la page (sans rendu React à chaque image) : pour les
-    nombreux textes des tableaux. Défile à l'affichage (`onMount`) et à chaque changement de
+/** Même fondu, écrit directement dans la page (sans rendu React à chaque image) : pour les
+    nombreux textes des tableaux. Change à l'affichage (`onMount`) et à chaque changement de
     `trigger`. */
 export function RollText({ text, trigger, onMount = false }) {
   const duration = useContext(RollDuration)
@@ -208,16 +185,19 @@ export function RollText({ text, trigger, onMount = false }) {
     const changed = before.trigger !== trigger || before.text !== text
     prev.current = { text, trigger }
     el.textContent = text
+    el.style.opacity = ''
     if (!changed || reduced) return
     const t0 = performance.now()
     let raf = 0, done = false
     const frame = (now) => {
       const u = Math.min(1, (now - t0) / (duration * 1000))
-      el.textContent = rollString(before.text, text, u, Math.floor((now - t0) / ROLL_TICK_MS))
+      const f = fadeAt(before.text, text, u)
+      el.textContent = f.text
+      el.style.opacity = f.o
       if (u < 1) raf = requestAnimationFrame(frame); else done = true
     }
     raf = requestAnimationFrame(frame)
-    return () => { cancelAnimationFrame(raf); if (!done) { prev.current = before; el.textContent = text } }
+    return () => { cancelAnimationFrame(raf); if (!done) { prev.current = before; el.textContent = text; el.style.opacity = '' } }
   }, [text, trigger, reduced, duration])
   return <span ref={ref} />
 }
@@ -226,34 +206,35 @@ export { SWAP_S }
 function useRollingText(text, trigger = text, onMount = false) {
   const duration = useContext(RollDuration)
   const reduced = useReducedMotion()
-  const [shown, setShown] = useState(text)
-  const prev = useRef({ text, trigger: onMount ? {} : trigger })   // onMount : défile dès l'affichage
+  const [shown, setShown] = useState({ text, o: 1 })
+  const prev = useRef({ text, trigger: onMount ? {} : trigger })   // onMount : fondu dès l'affichage
   useEffect(() => {
     const before = prev.current
     const old = before.text
     const changed = before.trigger !== trigger || old !== text
     prev.current = { text, trigger }
-    if (!changed || reduced) { setShown(text); return }
+    if (!changed || reduced) { setShown({ text, o: 1 }); return }
     const t0 = performance.now()
     let raf
     const frame = (now) => {
       const u = Math.min(1, (now - t0) / (duration * 1000))   // temps écoulé (linéaire)
-      setShown(rollString(old, text, u, Math.floor((now - t0) / ROLL_TICK_MS)))
+      setShown(fadeAt(old, text, u))
       raf = u < 1 ? requestAnimationFrame(frame) : 0
     }
     let done = false
     const frame0 = frame
     raf = requestAnimationFrame(function run(now) { frame0(now); if (!raf) done = true })
     // Interrompu avant la fin (effet rejoué en développement, ou texte qui rechange) : on remet
-    // l'état d'avant, pour que le défilement reparte au lieu d'être tenu pour fait.
+    // l'état d'avant, pour que le fondu reparte au lieu d'être tenu pour fait.
     return () => { cancelAnimationFrame(raf); if (!done) prev.current = before }
   }, [text, trigger, reduced])
   return shown
 }
 
-/** Texte qui défile à chaque changement de joueur (`trigger`), même s'il est identique. */
+/** Texte en fondu à chaque changement de joueur (`trigger`), même s'il est identique. */
 function Rolling({ text, trigger, onMount = false }) {
-  return useRollingText(text, trigger, onMount)
+  const { text: t, o } = useRollingText(text, trigger, onMount)
+  return <span style={o < 1 ? { opacity: o } : undefined}>{t}</span>
 }
 
 /** Image qui bascule comme une palette de tableau d'affichage à chaque changement de joueur
@@ -286,16 +267,16 @@ export function PlayerTag({ player }) {
 }
 
 export function ArcName({ id, name: target, letters = false }) {
-  // Taille selon le nom final (pas de saut de taille pendant le défilement des lettres).
+  // Taille selon le nom final (pas de saut de taille pendant le fondu).
   const fontSize = Math.min(135, 880 / (target.length * 0.5))
-  const name = useRollingText(target, id)
+  const { text: name, o } = useRollingText(target, id)
   // letters : une lettre par <tspan>, retard de transition selon la distance au milieu du nom
   // (passage du blanc à l'or du centre vers les bords, duels de Mon classement).
   const mid = (name.length - 1) / 2
   return (
     <svg className="arc-name" viewBox="0 0 1000 260" aria-hidden="true">
       <path id={`final-name-${id}`} d="M 80 250 A 520 520 0 0 1 920 250" />
-      <text fontSize={fontSize}>
+      <text fontSize={fontSize} style={o < 1 ? { opacity: o } : undefined}>
         <textPath href={`#final-name-${id}`} startOffset="50%" textAnchor="middle">
           {letters ? [...name].map((ch, i) => (
             <tspan key={i} style={{ transitionDelay: `${Math.round(Math.abs(i - mid) * 38)}ms` }}>{ch}</tspan>
@@ -325,9 +306,9 @@ function CompareRow({ label, short, tip, left, right, format, trigger }) {
 /** Chiffre qui défile comme un compteur mécanique vers sa nouvelle valeur quand elle change
     (0,6 s, décélération) ; à l'arrivée et en mouvement réduit, la valeur directement. */
 export function Counter({ value, format = String, trigger, onMount = false }) {
-  // Changement de joueur : les chiffres défilent au hasard puis se posent, de gauche à droite
-  // (useRollingText, comme les textes).
-  return <span className="counter">{useRollingText(format(value), trigger, onMount)}</span>
+  // Changement de joueur : fondu (useRollingText, comme les textes).
+  const { text, o } = useRollingText(format(value), trigger, onMount)
+  return <span className="counter" style={o < 1 ? { opacity: o } : undefined}>{text}</span>
 }
 
 // Stats de la saison, dans le tableau du mobile (StatsTable) : mêmes colonnes que les détails par
@@ -341,7 +322,7 @@ const SEASON = [
 
 /** Stats de la saison sur mobile, au format des détails par compétition (05-page-duel.css) : ligne
     d'en-tête, puis une ligne par joueur (colonne du logo laissée vide, pour l'alignement avec les
-    détails ; les 4 chiffres, qui défilent au changement de joueur). Masqué sur grand écran. */
+    détails ; les 4 chiffres, en fondu au changement de joueur). Masqué sur grand écran. */
 export function StatsTable({ players, short = {}, onMount = false }) {
   return (
     <div className="stats-table">

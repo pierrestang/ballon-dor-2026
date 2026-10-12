@@ -299,3 +299,7 @@ Même soir : bandeau figé qui monte en haut de l'écran ; mobile — stats face
 Même soir : grand écran — annonce de manche : prénom en blanc, halo réduit à la pièce (la bande orange sur toute la ligne venait du halo étendu au nom) ; rotation au défilement réduite (≈ 1,5 tour → ½ tour) et flèche vers les tableaux plus lente (0,8 → 1,2 s) ; surbrillance des cartes au survol (essai avec filet or écarté : sans contour).
 Même soir : mobile — surbrillance des cartes (appui) ; page du duel et jeu : retour sur la fusion de 20 h 47 (stats entre les joueurs, intitulés fusionnés, fond commun) : stats sous chaque joueur, blocs et intitulés de nouveau par joueur, écarts de 12 px partout ; nombre de titres agrandi (essai à 42 px, trop grand : 34 px) ; Présentation : bloc plus sombre sur le joueur.
 Même soir : l'intro s'ouvre sur Mon classement (grand écran et mobile), et non plus sur Les candidats.
+
+## Changement de joueur : fondu au lieu des lettres au hasard (12/10/2026)
+
+Demande : le défilement façon tableau d'affichage (lettres au hasard qui se posent de gauche à droite) remplacé par une transition plus simple. Fondu enchaîné sur la même durée (`RollDuration`, calée sur la rotation) : ancien texte effacé sur la première moitié, nouveau texte affiché sur la seconde, au moment où le joueur est de dos (`fadeAt`, `FinalPlayers.jsx`). Partout : nom en arc, bandeau d'identité, chiffres, palmarès et tableaux. `rollString`, `ROLL_TICK_MS` et les jeux de caractères supprimés.
