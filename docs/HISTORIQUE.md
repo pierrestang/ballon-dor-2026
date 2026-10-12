@@ -43,7 +43,7 @@ Tous les chemins du JSON commencent par `assets/` : les préfixer avec `import.m
 
 ## Icône de l'onglet
 
-`public/favicon.svg` : le trophée de l'intro en or sur fond noir (déclaré dans `index.html`, `favicon.png` en repli). `public/apple-touch-icon.png` reste la pièce de Messi (180 px, sur fond noir).
+`public/favicon.svg` : le logo du site (12/10/2026, `assets-source/logo-ballon-dor-2026.png`) redessiné en vectoriel — ballon en cercle et socle en trapèze, trait or #E3B66E épaissi, sans le texte, sur fond #0B0B0B à coins arrondis (déclaré dans `index.html`, `favicon.png` 64 px en repli). `public/apple-touch-icon.png` : le logo complet, texte compris, réduit à 180 px (remplace la pièce de Messi).
 
 ## Page 0 — l'intro (chargement : `src/Intro.jsx` ; scène : `src/Carousel.jsx`)
 
